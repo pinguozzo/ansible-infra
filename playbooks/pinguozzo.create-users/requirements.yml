@@ -1,4 +1,0 @@
----
-
-- src: git+https://github.com/ryandaniels/ansible-role-create-users.git
-  name: pinguozzo.create-users
