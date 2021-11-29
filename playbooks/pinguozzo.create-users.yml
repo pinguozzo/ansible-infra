@@ -3,4 +3,4 @@
 - hosts: all
   become: yes
   roles:
-  - ansible-role-create-users
+  - pinguozzo.create-users
