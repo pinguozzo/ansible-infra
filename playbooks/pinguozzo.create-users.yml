@@ -2,7 +2,7 @@
 
 - hosts: all
   become: yes
-  ignore_unreachable: yes
+  gather_facts: true
 
   roles:
     - name: pinguozzo.create_users
