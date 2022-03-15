@@ -1,0 +1,11 @@
+---
+- name: download AAP
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  vars:
+    offline_token: "{{ vault_offline_token }}"
+
+  roles:
+    - name: ansible.workshops.aap_download
