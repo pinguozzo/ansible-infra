@@ -8,5 +8,9 @@ all:
     jumper:
   children:
     Test:
+      hosts:
     Dev:
+      hosts:
+        jumper:
     Prod:
+      hosts:
