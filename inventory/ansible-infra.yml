@@ -2,7 +2,7 @@
 all:
   vars:
     location: CH
-    timezone: 'Europe\Zurich'
+    timezone: "Europe\Zurich"
   hosts:
     localhost:
       ansible_connection: local
