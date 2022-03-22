@@ -13,7 +13,6 @@ all:
     LAB:
     Dev:
       vars:
-        lfe: LFE-DEV
       hosts:
         jumper:
     Prod:
