@@ -1,6 +1,7 @@
 ---
 all:
   vars:
+    location: CH
   hosts:
     localhost:
       ansible_connection: local
