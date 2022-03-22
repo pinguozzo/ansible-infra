@@ -1,0 +1,5 @@
+---
+hosts:
+  jumper:
+    ansible_port: 5555
+    ansible_host: 127.0.0.1
