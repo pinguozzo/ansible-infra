@@ -10,7 +10,10 @@ all:
   children:
     Test:
       hosts:
+    LAB:
     Dev:
+      vars:
+        lfe: DEV
       hosts:
         jumper:
     Prod:
