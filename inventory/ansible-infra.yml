@@ -1,0 +1,10 @@
+---
+all:
+  vars:
+  hosts:
+    localhost:
+      ansible_connection: local
+  children:
+    Test:
+    Dev:
+    Prod:
