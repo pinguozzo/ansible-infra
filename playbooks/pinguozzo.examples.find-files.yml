@@ -1,0 +1,44 @@
+---
+###
+- name: 'example-1: find filename from url with `basename`'
+  hosts: localhost
+  connection: local
+  vars:
+    url: "http://foo.com/a/b/c/filename.tar.gz"
+    file_name: "{{ url | basename }}"
+  gather_facts: false
+
+  tasks:
+    - name: "Grab the file name from {{ url }}"
+      debug:
+        msg: 'Basename: {{ file_name }}'
+
+###
+- name: 'example-2: find filename from url with `urlsplit`'
+  hosts: localhost
+  connection: local
+
+  vars:
+    url: "http://foo.com/a/b/c/filename.tar.gz"
+    file_name: "{{ url | urlsplit('path') | basename }}"
+
+  tasks:
+    - debug:
+        msg: 'Basename: {{ file_name }}'
+
+###
+- name: 'example-3: get files from dir'
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: get files from dir
+      find:
+        paths: "./"
+      register: found_files
+
+    - name: print file names without path
+      debug:
+        msg: "{{ found_files['files'] | map(attribute='path') | map('regex_replace','^.*/(.*)$','\\1') | list | sort }}"
+
+###
