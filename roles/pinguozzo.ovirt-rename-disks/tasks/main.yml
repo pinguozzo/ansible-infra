@@ -1,0 +1,12 @@
+---
+# tasks file for pinguozzo.ovirt-rename-disks
+
+- name: include vars
+  include_vars: "{{ item }}.yml"
+  with_items:
+    - engine_vars
+
+- name: include tasks
+  include_tasks: "{{ item }}.yml"
+  with_items:  
+    - ovirt_auth
