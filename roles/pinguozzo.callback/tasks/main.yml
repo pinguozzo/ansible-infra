@@ -1,0 +1,5 @@
+---
+# tasks file for pinguozzo.callback
+#
+- name: show hostname
+  debug: var=inventory_hostname
