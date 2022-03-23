@@ -7,6 +7,7 @@
 - debug: var=vm_info
 
 - ovirt_disk_info:
+    auth: "{{ ovirt_auth }}"
     pattern: "name={{ vm_name }}"
   register: result
 
