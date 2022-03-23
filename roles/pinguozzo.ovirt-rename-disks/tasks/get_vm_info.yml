@@ -2,18 +2,11 @@
 - ovirt_vm_info:
     auth: "{{ ovirt_auth }}"
     pattern: "name={{ vm_name }}"
+    fetch_nested: true
+    nested_attributes: disks  
   register: vm_info
 
 - debug: var=vm_info
 
-- ovirt_disk_info:
-    auth: "{{ ovirt_auth }}"
-    pattern: "name={{ vm_name }}"
-  register: result
-
-- ansible.builtin.debug:
-    msg: "{{ result.ovirt_disks }}"
-
-
 - debug:
-    msg: "{{ vm_info.ovirt_vms[0].disk_attachments[0].disk.id }}"
+    msg: "{{ vm_info.ovirt_vms.disk_attachments[0].disk.id }}"
