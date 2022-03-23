@@ -2,7 +2,6 @@
 - ovirt_vm_info:
     auth: "{{ ovirt_auth }}"
     pattern: "name={{ vm_name }}"
-    follow: 'diskattachments.disk'
   register: vm_info
 
 - debug: var=vm_info
