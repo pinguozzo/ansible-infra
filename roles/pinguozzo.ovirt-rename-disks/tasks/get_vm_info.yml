@@ -9,4 +9,4 @@
 - debug: var=vm_info
 
 - debug:
-    msg: "{{ vm_info.ovirt_vms.disk_attachments[0].disk.id }}"
+    msg: "{{ vm_info.ovirt_vms.[0].disk_attachments[0].id }}"
