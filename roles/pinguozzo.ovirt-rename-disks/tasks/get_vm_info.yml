@@ -10,4 +10,4 @@
     msg: "Hostname is {{ vm_info.ovirt_vms[0].fqdn }}"
 
 - debug:
-    msg: 'Disk id: {{ vm_info.ovirt_vms[0].disk_attachments.[0].id }}'
+    msg: 'Disk id: {{ vm_info.ovirt_vms[0].disk_attachments[0].id }}'
