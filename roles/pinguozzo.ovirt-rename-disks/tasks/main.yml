@@ -10,3 +10,4 @@
   include_tasks: "{{ item }}.yml"
   with_items:  
     - ovirt_auth
+    - get_vm_info

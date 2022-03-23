@@ -1,0 +1,11 @@
+---
+- ovirt_vm_info:
+    pattern: name="{{ target_host }}"
+    fetch_nested: true
+    nested_attributes: disks
+  register: result
+
+- debug: var=result
+
+- name: show disk id
+  debug: var=result[0].vm.disks[0].id
