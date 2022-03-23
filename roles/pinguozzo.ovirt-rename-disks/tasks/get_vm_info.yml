@@ -6,7 +6,8 @@
     nested_attributes: disks  
   register: vm_info
 
-- debug: var=vm_info
+- debug: 
+    msg: "Hostname is {{ vm_info.ovirt_vms.[0].fqdn }}"
 
 - debug:
-    msg: "{{ vm_info.ovirt_vms.[0].disk_attachments.[0].id }}"
+    msg: 'Disk id: {{ vm_info.ovirt_vms.[0].disk_attachments.[0].id }}'
