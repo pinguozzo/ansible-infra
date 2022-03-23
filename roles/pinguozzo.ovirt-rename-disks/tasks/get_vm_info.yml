@@ -1,5 +1,5 @@
 ---
-- ovirt_vm_info:
+- ovirt.ovirt.ovirt_vm_info:
     auth: "{{ ovirt_auth }}"
     pattern: "name={{ vm_name }}"
     fetch_nested: true
