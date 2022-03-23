@@ -1,12 +1,12 @@
 ---
 # tasks file for pinguozzo.ovirt-rename-disks
 
-- name: include vars
-  include_vars: "{{ item }}.yml"
-  with_items:
-    - engine_vars
-
 - block:
+  - name: include vars
+    include_vars: "{{ item }}.yml"
+    with_items:
+      - engine_vars
+  
   - name: Login to oVirt
     ovirt_auth:
       url: "{{ engine_url | default(lookup('env','OVIRT_URL')) | default(omit) }}"
@@ -30,4 +30,4 @@
         ovirt_auth: "{{ ovirt_auth }}"
       when: not loggedin.skipped | default(false)
 
-  delegate_to: localhost
+  delegate_to: 127.0.0.1
