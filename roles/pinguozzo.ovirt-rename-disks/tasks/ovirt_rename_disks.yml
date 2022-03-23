@@ -1,7 +1,7 @@
 ---
 - ovirt_vm_info:
     auth: "{{ ovirt_auth }}"
-    pattern: "name={{ inventory_hostname if inventory_hostname is defined else vm_name + '?' }}
+    pattern: "name={{ inventory_hostname if inventory_hostname is defined else vm_name + '?' }}"
     fetch_nested: true
     nested_attributes: disks  
   register: vm_info
