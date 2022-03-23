@@ -21,7 +21,7 @@
   - name: include tasks
     include_tasks: "{{ item }}.yml"
     with_items:  
-      - get_vm_info
+      - ovirt_rename_disks
 
   always:
     - name: Logout from oVirt
