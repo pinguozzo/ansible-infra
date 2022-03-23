@@ -11,3 +11,10 @@
 
 - debug:
     msg: 'Disk id: {{ vm_info.ovirt_vms[0].disk_attachments[0].id }}'
+
+- ovirt_disk:
+    id: "{{ vm_info.ovirt_vms[0].disk_attachments[0].id }}"
+    storage_domain: Ceph_iSCSI
+    name: "{{ vm_info.ovirt_vms[0].fqdn }}"
+    vm_name: "{{ vm_info.ovirt_vms[0].fqdn }}"
+
