@@ -6,5 +6,13 @@
 
 - debug: var=vm_info
 
+- ovirt.ovirt.ovirt_disk_info:
+    pattern: "name={{ vm_name }}"
+  register: result
+
+- ansible.builtin.debug:
+    msg: "{{ result.ovirt_disks }}"
+
+
 - debug:
     msg: "{{ vm_info.ovirt_vms[0].disk_attachments[0].disk.id }}"
