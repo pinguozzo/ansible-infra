@@ -29,3 +29,5 @@
         state: absent
         ovirt_auth: "{{ ovirt_auth }}"
       when: not loggedin.skipped | default(false)
+
+  delegate_to: localhost
