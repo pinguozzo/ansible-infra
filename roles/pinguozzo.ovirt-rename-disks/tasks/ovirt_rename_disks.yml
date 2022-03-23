@@ -1,7 +1,7 @@
 ---
 - ovirt_vm_info:
     auth: "{{ ovirt_auth }}"
-    pattern: "name={{ inventory_hostname | default(vm_name) }}"
+    pattern: "name={{ inventory_hostname if inventory_hostname is defined else vm_name + '?' }}
     fetch_nested: true
     nested_attributes: disks  
   register: vm_info
@@ -9,8 +9,8 @@
 - name: show info about the host 
   debug: 
     msg: >
-      Hostname is: "{{ vm_info.ovirt_vms[0].fqdn }}",
-      Disk id: "{{ vm_info.ovirt_vms[0].disk_attachments[0].id }}"
+      Hostname is: {{ vm_info.ovirt_vms[0].fqdn }},
+      Disk id: {{ vm_info.ovirt_vms[0].disk_attachments[0].id }}
 
 - ovirt_disk:
     auth: "{{ ovirt_auth }}"
