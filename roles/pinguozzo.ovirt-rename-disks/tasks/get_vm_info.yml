@@ -1,12 +1,11 @@
 ---
 - ovirt_vm_info:
     auth: "{{ ovirt_auth }}"
-    pattern: name="{{ target_host }}"
-    fetch_nested: true
-    nested_attributes: disks
-  register: result
+    pattern: "name={{ vm_name }}"
+    follow: 'diskattachments.disk'
+  register: vm_info
 
-- debug: var=result
+- debug: var=vm_info
 
-- name: show disk id
-  debug: var=result[0].vm.disks[0].id
+- debug:
+    msg: "{{ vm_info.ovirt_vms[0].disk_attachments[0].disk.id }}"
