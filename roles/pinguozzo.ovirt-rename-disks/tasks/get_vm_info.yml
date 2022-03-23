@@ -1,5 +1,6 @@
 ---
 - ovirt_vm_info:
+    auth: "{{ ovirt_auth }}"
     pattern: name="{{ target_host }}"
     fetch_nested: true
     nested_attributes: disks
