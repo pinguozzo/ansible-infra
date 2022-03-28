@@ -9,7 +9,7 @@ all:
     jumper:
   children:
     CH:
-    children: 
+      children: 
       Test:
         hosts:
       LAB:
