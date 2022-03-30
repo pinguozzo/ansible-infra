@@ -1,4 +1,4 @@
 ---
 collections:
   - name: ovirt.ovirt
-  - name: ansible.workshops
+  - name: community.general  

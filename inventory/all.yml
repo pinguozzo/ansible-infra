@@ -10,13 +10,13 @@ all:
   children:
     CH:
       children: 
-      Test:
-        hosts:
-      LAB:
-      Dev:
-        vars:
-        hosts:
-          jumper:
-      Prod:
-        hosts:
-      dc1:
+        Test:
+          hosts:
+        LAB:
+        Dev:
+          vars:
+          hosts:
+            jumper:
+        Prod:
+          hosts:
+        dc1:
