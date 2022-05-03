@@ -18,6 +18,5 @@
     auth: "{{ ovirt_auth }}"
     id: "{{ vm_info.ovirt_vms[0].disk_attachments[0].id }}"
     storage_domain: Ceph_iSCSI
-    name: "{{ vm_info.ovirt_vms[0].fqdn }}"
+    name: "{{ vm_info.ovirt_vms[0].fqdn }}_Disk1"
     vm_name: "{{ vm_info.ovirt_vms[0].fqdn }}"
-
