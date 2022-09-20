@@ -6,7 +6,7 @@
     - name: load pre-req
       block:
         - name: include infra-vault
-          ansible.builtin.include_vars: "{{ playbook_dir}}/../../vaults/infra-vault.yml"
+          ansible.builtin.include_vars: "{{ playbook_dir }}/../../vaults/infra-vault.yml"
       tags: always
     
 - name: Include cv_version_create.yml 
