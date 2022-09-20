@@ -1,0 +1,7 @@
+- name: Clean old and unused cvs and ccvs
+  hosts: localhost
+
+  roles:
+    - role: redhat.satellite.content_view_version_cleanup
+      vars:
+        satellite_content_view_version_cleanup_keep: 0

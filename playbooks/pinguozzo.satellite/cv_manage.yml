@@ -1,0 +1,19 @@
+---
+- name: Manage Content Views
+  hosts: localhost
+
+  tasks:
+    - name: include infra-vault
+      ansible.builtin.include_vars: ../../vaults/infra-vault.yml
+    
+- name: Include cv_version_create.yml 
+  ansible.builtin.import_playbook: cv_version_create.yml
+  tags: cv_create  
+
+- name: Include cv_version_publish.yml 
+  ansible.builtin.import_playbook: cv_version_publish_promote.yml
+  tags: cv_publish
+
+- name: Include cv_version_cleanup.yml 
+  ansible.builtin.import_playbook: cv_version_cleanup.yml
+  tags: cv_cleanup
