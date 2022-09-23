@@ -2,13 +2,6 @@
 - name: Manage Content Views
   hosts: localhost
 
-  tasks:
-    - name: load pre-req
-      block:
-        - name: include infra-vault
-          ansible.builtin.include_vars: "{{ playbook_dir }}/../../vaults/infra-vault.yml"
-      tags: always
-    
 - name: Include cv_version_create.yml 
   ansible.builtin.import_playbook: cv_version_create.yml
   tags: cv_create  

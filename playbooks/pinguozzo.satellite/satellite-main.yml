@@ -1,0 +1,17 @@
+---
+- name: Manage Content Views
+  hosts: localhost
+
+  tasks:
+    - name: load pre-req
+      block:
+        - name: include infra-vault
+          ansible.builtin.include_vars: "{{ playbook_dir }}/../../vaults/infra-vault.yml"
+      tags: always
+    
+- name: Include cv_manage.yml
+  ansible.builtin.import_playbook: cv_manage.yml
+
+- name: Include repos.yml
+  ansible.builtin.import_playbook: repos.yml
+  tags: repos
