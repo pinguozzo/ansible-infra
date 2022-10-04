@@ -1,0 +1,129 @@
+---
+- name: create host collection and add host(s) to it
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/infra-vault.yml"
+
+  vars:
+    json_query_name: "json.results[*].name"
+    json_query_id: "json.results[?name==`{{ hc_name }}`].id|[0]"  
+    org_id: "{{ org_id }}"
+
+  tasks:
+    - name: load pre-req
+      block:
+        - name: include infra-vault
+          ansible.builtin.include_vars: "{{ playbook_dir }}/../../vaults/infra-vault.yml"
+
+        - name: check that hc_name is set
+          assert:
+            that: hc_name is defined and (hc_name !="")
+            fail_msg: 'hc_name variable is not defined'
+
+        - name: check that host_ids is set
+          assert:
+            that: host_ids is defined and (host_ids !="")
+            fail_msg: 'host_ids variable is not defined'
+
+        - name: check that org_id is set
+          assert:
+            that: org_id is defined and (org_id !="")
+            fail_msg: 'org_id variable is not defined'
+      tags: always
+          
+    - name: get host collections list
+      uri:
+        url: "{{ satellite_server_url }}/katello/api/host_collections/"
+        user: "{{ satellite_username }}"
+        password: "{{ satellite_password }}"
+        method: GET
+        return_content: yes
+        force_basic_auth: yes
+        validate_certs: no
+        status_code: [200,201,202]
+      no_log: True 
+      register: hc_search_result
+      tags: hc_search
+
+    - name: set_fact hc_list
+      set_fact:
+        hc_list: "{{ hc_search_result | json_query(json_query_name) | join(', ') }}"
+      tags: hc_search
+
+    - name: show hc_list
+      debug: var=hc_list
+
+    - name: get host_collections names and id
+      set_fact:
+        host_collections: "{{ host_collections|default({}) | combine ( {item.name : item.id } ) }}"
+      with_items: "{{ hc_search_result| json_query('json.results[*]')}}" 
+      no_log: True   
+
+    - name: show host_collections, id{{':'}}
+      debug: var=host_collections
+
+    - name: create host collection {{ hc_name }}
+      uri:
+        url: "{{ satellite_server_url }}/katello/api/host_collections/"
+        user: "{{ satellite_username }}"
+        password: "{{ satellite_password }}"
+        method: POST
+        return_content: yes
+        force_basic_auth: yes
+        validate_certs: no
+        body_format: json
+        body: '{"name":"{{ hc_name }}","organization_id":"{{ org_id }}", "description":"hc created by ansible"}'
+        status_code: [200,201]
+      notify: refresh
+      register: hc_create
+      when: hc_name not in hc_list
+      changed_when: hc_create.status == 201
+    
+    - meta: flush_handlers
+
+    - name: get {{hc_name}} id
+      set_fact:
+        hc_name_id: "{{ hc_search_result | json_query(json_query_id) }}"
+      vars:
+        hc_id_query: "json.results[?name==`{{ hc_name }}`].id | [0]"
+          
+    - name: hc_name{{':'}} {{hc_name}} id
+      debug: var=hc_name_id
+
+    - name: add host to {{ hc_name }}
+      uri:
+        url: "{{ satellite_server_url }}/katello/api/host_collections/{{ hc_name_id }}/add_hosts/"
+        user: "{{ satellite_username }}"
+        password: "{{ satellite_password }}"
+        method: PUT
+        return_content: yes
+        force_basic_auth: yes
+        validate_certs: no
+        body_format: json
+        body: >
+          {"host_ids": {{ host_ids }}}
+      when:
+        - host_ids is defined and (host_ids !="")
+      register: response_add_host
+
+  handlers:
+  - name: refresh
+    uri:
+      url: "{{ satellite_server_url }}/katello/api/host_collections/"
+      user: "{{ satellite_username }}"
+      password: "{{ satellite_password }}"
+      method: GET
+      return_content: yes
+      force_basic_auth: yes
+      validate_certs: no
+      status_code: [200,201,202]
+    no_log: True 
+    register: hc_search_result
+    tags: hc_search
+    changed_when: hc_search_result.status == 200
+
+
+# host to run the playbook:  ansible-playbook playbooks/pinguozzo.satellite/host-collections.yml -e '{"host_ids": [1173]}' -e hc_name=test4 -e org_id=9
