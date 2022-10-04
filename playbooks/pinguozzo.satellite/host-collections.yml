@@ -10,7 +10,6 @@
   vars:
     json_query_name: "json.results[*].name"
     json_query_id: "json.results[?name==`{{ hc_name }}`].id|[0]"  
-    org_id: "{{ org_id }}"
 
   tasks:
     - name: load pre-req
@@ -32,6 +31,7 @@
           assert:
             that: org_id is defined and (org_id !="")
             fail_msg: 'org_id variable is not defined'
+
       tags: always
           
     - name: get host collections list
