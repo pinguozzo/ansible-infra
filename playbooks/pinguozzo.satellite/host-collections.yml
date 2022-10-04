@@ -27,10 +27,10 @@
             that: host_ids is defined and (host_ids !="")
             fail_msg: 'host_ids variable is not defined'
 
-        - name: check that org_id is set
+        - name: check that satellite_satellite_org_id is set
           assert:
-            that: org_id is defined and (org_id !="")
-            fail_msg: 'org_id variable is not defined'
+            that: satellite_satellite_org_id is defined and (satellite_org_id !="")
+            fail_msg: 'satellite_satellite_org_id variable is not defined'
 
       tags: always
           
@@ -75,7 +75,7 @@
         force_basic_auth: yes
         validate_certs: no
         body_format: json
-        body: '{"name":"{{ hc_name }}","organization_id":"{{ org_id }}", "description":"hc created by ansible"}'
+        body: '{"name":"{{ hc_name }}","organization_id":"{{ satellite_org_id }}", "description":"hc created by ansible"}'
         status_code: [200,201]
       notify: refresh
       register: hc_create
@@ -126,4 +126,4 @@
     changed_when: hc_search_result.status == 200
 
 
-# host to run the playbook:  ansible-playbook playbooks/pinguozzo.satellite/host-collections.yml -e '{"host_ids": [1173]}' -e hc_name=test4 -e org_id=9
+# host to run the playbook:  ansible-playbook playbooks/pinguozzo.satellite/host-collections.yml -e '{"host_ids": [1173]}' -e hc_name=test4 -e satellite_org_id=9
