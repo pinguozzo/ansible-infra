@@ -126,4 +126,4 @@
     changed_when: hc_search_result.status == 200
 
 
-# host to run the playbook:  ansible-playbook playbooks/pinguozzo.satellite/host-collections.yml -e '{"host_ids": [1173]}' -e hc_name=test4 -e satellite_org_id=9
+# how to run the playbook:  ansible-playbook playbooks/pinguozzo.satellite/host-collections.yml -e '{"host_ids": [1173]}' -e hc_name=test4 -e satellite_org_id=9
