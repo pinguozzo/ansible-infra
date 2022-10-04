@@ -50,7 +50,7 @@
 
     - name: set_fact hc_list
       set_fact:
-        hc_list: "{{ hc_search_result | json_query(json_query_name) | join(', ') }}"
+        hc_list: "{{ hc_search_result | community.general.json_query(json_query_name) | join(', ') }}"
       tags: hc_search
 
     - name: show hc_list
@@ -59,7 +59,7 @@
     - name: get host_collections names and id
       set_fact:
         host_collections: "{{ host_collections|default({}) | combine ( {item.name : item.id } ) }}"
-      with_items: "{{ hc_search_result| json_query('json.results[*]')}}" 
+      with_items: "{{ hc_search_result| community.general.json_query('json.results[*]')}}" 
       no_log: True   
 
     - name: show host_collections, id{{':'}}
@@ -86,7 +86,7 @@
 
     - name: get {{hc_name}} id
       set_fact:
-        hc_name_id: "{{ hc_search_result | json_query(json_query_id) }}"
+        hc_name_id: "{{ hc_search_result | community.general.json_query(json_query_id) }}"
       vars:
         hc_id_query: "json.results[?name==`{{ hc_name }}`].id | [0]"
           
