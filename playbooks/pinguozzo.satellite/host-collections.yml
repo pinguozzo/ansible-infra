@@ -29,8 +29,8 @@
 
         - name: check that satellite_satellite_org_id is set
           assert:
-            that: satellite_satellite_org_id is defined and (satellite_org_id !="")
-            fail_msg: 'satellite_satellite_org_id variable is not defined'
+            that: satellite_org_id is defined and (satellite_org_id !="")
+            fail_msg: 'satellite_org_id variable is not defined'
 
       tags: always
           
