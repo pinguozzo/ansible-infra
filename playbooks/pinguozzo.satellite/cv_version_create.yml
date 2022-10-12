@@ -1,6 +1,9 @@
 - name: Create cvs and ccvs
   hosts: localhost
 
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/infra-vault.yml"
+
   roles:
     - role: redhat.satellite.content_views
       vars:
