@@ -1,70 +1,74 @@
 - hosts: localhost
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/infra-vault.yml"
+  
   roles:
     - role: redhat.satellite.repositories
       vars:
         satellite_products:
-          # - name: Red Hat Enterprise Linux Server
-          #   repository_sets:
-          #     - name: Red Hat Enterprise Linux 7 Server (RPMs)
-          #       basearch: x86_64
-          #       releasever: 7Server
-          #     - name: Red Hat Enterprise Linux 7 Server - Extras (RPMs)
-          #       basearch: x86_64
-          #     - name: Red Hat Enterprise Linux 7 Server - Optional (RPMs)
-          #       basearch: x86_64
-          #       releasever: 7Server
-          #     - name: Red Hat Enterprise Linux 7 Server - RH Common (RPMs)
-          #       basearch: x86_64
-          #       releasever: 7Server
-          #     - name: Red Hat Enterprise Linux 7 Server - Supplementary (RPMs)
-          #       basearch: x86_64
-          #       releasever: 7Server
-          # - name: Red Hat Enterprise Linux for x86_64
-          #   repository_sets:
-          #     - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS Kickstart
-          #       releasever: 8.4
-          #     - name: Red Hat Enterprise Linux 8 for x86_64 - Supplementary (RPMs)
-          #       releasever: 8.4
-          #     - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
-          #       releasever: 8.4
-          #     - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
-          #       releasever: 8.4
-          #     - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream Kickstart
-          #       releasever: 8.4
-          #     - name: Red Hat Enterprise Linux 8 for x86_64 - Supplementary (RPMs)
-          #       releasever: 8.5
-          #     - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
-          #       releasever: 8.5
-          #     - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS Kickstart
-          #       releasever: 8.5
-          #     - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
-          #       releasever: 8.5
-          #     - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream Kickstart
-          #       releasever: 8.5
-          #     - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS Kickstart
-          #       releasever: 8.5
+          - name: Red Hat Enterprise Linux Server
+            repository_sets:
+              - name: Red Hat Enterprise Linux 7 Server (RPMs)
+                basearch: x86_64
+                releasever: 7Server
+              - name: Red Hat Enterprise Linux 7 Server - Extras (RPMs)
+                basearch: x86_64
+              - name: Red Hat Enterprise Linux 7 Server - Optional (RPMs)
+                basearch: x86_64
+                releasever: 7Server
+              - name: Red Hat Enterprise Linux 7 Server - RH Common (RPMs)
+                basearch: x86_64
+                releasever: 7Server
+              - name: Red Hat Enterprise Linux 7 Server - Supplementary (RPMs)
+                basearch: x86_64
+                releasever: 7Server
+          
+         #- name: Red Hat Enterprise Linux for x86_64
+         #  all_repositories: true
+         #  labels: 
+         #    - rhel-8-for-x86_64-appstream-kickstart
+         #    - rhel-8-for-x86_64-baseos-kickstart
 
-          # - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS Kickstart
-          #        releasever: 8.6
-          #        basearch: noarch
-          #      - name: Red Hat Enterprise Linux 8 for x86_64 - Supplementary (RPMs)
-          #        releasever: 8.6
-          #      - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
-          #        releasever: 8.6
-          #      - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
-          #        releasever: 8.6
-          #      - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream Kickstart
-          #        releasever: 8.6
-          #      - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
-          #        releasever: 8
-          #      - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
-          #        releasever: 8
-          #      - name: Red Hat Enterprise Linux 8 for x86_64 - Supplementary (RPMs)
-          #        releasever: 8
-          #      - name: Red Hat Enterprise Linux 9 for x86_64 - BaseOS (RPMs)
-          #        releasever: 9
-          #      - name: Red Hat Enterprise Linux 9 for x86_64 - AppStream (RPMs)
-          #        releasever: 9
+          - name: Red Hat Enterprise Linux for x86_64
+            repository_sets:
+              - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (Kickstart)
+                releasever: 8.4
+              - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (Kickstart)
+                releasever: 8.6
+              - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (Kickstart)
+                releasever: 8.4
+              - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (Kickstart)
+                releasever: 8.6
+              - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+                releasever: 8.4
+              - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+                releasever: 8.5
+              - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+                releasever: 8.6
+              - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
+                releasever: 8.4
+              - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
+                releasever: 8.5
+              - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
+                releasever: 8.6
+              - name: Red Hat Enterprise Linux 8 for x86_64 - Supplementary (RPMs)
+                releasever: 8.4
+              - name: Red Hat Enterprise Linux 8 for x86_64 - Supplementary (RPMs)
+                releasever: 8.5
+              - name: Red Hat Enterprise Linux 8 for x86_64 - Supplementary (RPMs)
+                releasever: 8.6
+              - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
+                releasever: 8
+              - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+                releasever: 8
+              - name: Red Hat Enterprise Linux 8 for x86_64 - Supplementary (RPMs)
+                releasever: 8
+              - name: Red Hat Enterprise Linux 9 for x86_64 - BaseOS (RPMs)
+                releasever: 9
+              - name: Red Hat Enterprise Linux 9 for x86_64 - AppStream (RPMs)
+                releasever: 9
+                  
           - name: Red Hat Enterprise Linux for x86_64
             repository_sets:
               - name: Red Hat Satellite Utils 6.11 for RHEL 8 x86_64 (RPMs)
@@ -74,15 +78,15 @@
               - name: Fast Datapath for RHEL 8 x86_64 (RPMs)
           - name: Red Hat Enterprise Linux for x86_64 - Extended Update Support 
             repository_sets:
-              - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream - Extended Update Support (RPMs)
-                releasever: 8.4
-              - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS - Extended Update Support (RPMs)
-                releasever: 8.4
-              - name: Red Hat Enterprise Linux 8 for x86_64 - Supplementary - Extended Update Support (RPMs)
-                releasever: 8.4
-              - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream - Extended Update Support (RPMs)
-                releasever: 8.6
-              - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS - Extended Update Support (RPMs)
-                releasever: 8.6
-              - name: Red Hat Enterprise Linux 8 for x86_64 - Supplementary - Extended Update Support (RPMs)
-                releasever: 8.6
+               - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS - Extended Update Support (RPMs)
+                 releasever: 8.4
+               - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS - Extended Update Support (RPMs)
+                 releasever: 8.6
+               - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream - Extended Update Support (RPMs)
+                 releasever: 8.4
+               - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream - Extended Update Support (RPMs)
+                 releasever: 8.6
+               - name: Red Hat Enterprise Linux 8 for x86_64 - Supplementary - Extended Update Support (RPMs)
+                 releasever: 8.4
+               - name: Red Hat Enterprise Linux 8 for x86_64 - Supplementary - Extended Update Support (RPMs)
+                 releasever: 8.6
