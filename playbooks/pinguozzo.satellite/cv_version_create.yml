@@ -13,19 +13,20 @@
             repositories:
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream Kickstart 8.4', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream Kickstart 8.6', product: 'Red Hat Enterprise Linux for x86_64' }
+              - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS Kickstart 8.4', product: 'Red Hat Enterprise Linux for x86_64' }
+              - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS Kickstart 8.6', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream RPMs 8', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream - Extended Update Support RPMs 8.4', product: 'Red Hat Enterprise Linux for x86_64 - Extended Update Support' }
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream - Extended Update Support RPMs 8.6', product: 'Red Hat Enterprise Linux for x86_64 - Extended Update Support' }
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream RPMs 8.4', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream RPMs 8.5', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream RPMs 8.6', product: 'Red Hat Enterprise Linux for x86_64' }
-              - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS Kickstart 8.4', product: 'Red Hat Enterprise Linux for x86_64' }
-              - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS Kickstart 8.6', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS RPMs 8', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS - Extended Update Support RPMs 8.4', product: 'Red Hat Enterprise Linux for x86_64 - Extended Update Support' }
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS - Extended Update Support RPMs 8.6', product: 'Red Hat Enterprise Linux for x86_64 - Extended Update Support' }
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS RPMs 8.4', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS RPMs 8.5', product: 'Red Hat Enterprise Linux for x86_64' }
+              - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS RPMs 8.6', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat Ansible Engine 2.9 for RHEL 8 x86_64 RPMs', product: 'Red Hat Ansible Engine' }
               - { name: 'Fast Datapath for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux Fast Datapath' }
               - { name: 'Red Hat Satellite Utils 6.11 for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
