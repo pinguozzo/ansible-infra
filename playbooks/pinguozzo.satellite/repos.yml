@@ -40,24 +40,32 @@
                 releasever: 8.4
               - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (Kickstart)
                 releasever: 8.6
+              - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (Kickstart)
+                releasever: 8.7
               - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
                 releasever: 8.4
               - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
                 releasever: 8.5
               - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
                 releasever: 8.6
+              - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+                releasever: 8.7
               - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
                 releasever: 8.4
               - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
                 releasever: 8.5
               - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
                 releasever: 8.6
+              - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
+                releasever: 8.7
               - name: Red Hat Enterprise Linux 8 for x86_64 - Supplementary (RPMs)
                 releasever: 8.4
               - name: Red Hat Enterprise Linux 8 for x86_64 - Supplementary (RPMs)
                 releasever: 8.5
               - name: Red Hat Enterprise Linux 8 for x86_64 - Supplementary (RPMs)
                 releasever: 8.6
+              - name: Red Hat Enterprise Linux 8 for x86_64 - Supplementary (RPMs)
+                releasever: 8.7
               - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
                 releasever: 8
               - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
