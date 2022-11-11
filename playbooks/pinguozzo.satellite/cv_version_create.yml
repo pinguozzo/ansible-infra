@@ -16,6 +16,13 @@
               - { name: 'Red Hat Enterprise Linux 9 for x86_64 - BaseOS RPMs 9', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat Satellite Client 6 for RHEL 9 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
 
+          - name: cv-rhel9_soe_extras
+            description: "RHEL 9 SOE Extra Content"
+            repositories:
+              - { name: 'Red Hat Enterprise Linux 9 for x86_64 - Supplementary RPMs 9', product: 'Red Hat Enterprise Linux for x86_64' }
+              - { name: 'Red Hat Enterprise Linux 9 for x86_64 - High Availability RPMs 9', product: 'Red Hat Enterprise Linux High Availability for x86_64' }
+              - { name: 'Red Hat Ansible Automation Platform 2.2 for RHEL 9 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
+
           - name: cv-rhel8_soe
             description: "RHEL 8 SOE Content"
             repositories:
@@ -44,7 +51,6 @@
               - { name: 'Red Hat Satellite Utils 6.11 for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat Satellite Client 6 for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
 
-
           - name: cv-rhel8_soe_extras
             description: "RHEL 8 SOE Extra Content"
             repositories:
@@ -69,4 +75,12 @@
               - content_view: cv-rhel8_soe
                 latest: true
               - content_view: cv-rhel8_soe_extras
+                latest: true
+
+          - name: ccv-rhel9_soe
+            description: "CCV RHEL9 SOE"
+            components:
+              - content_view: cv-rhel9_soe
+                latest: true
+              - content_view: cv-rhel9_soe_extras
                 latest: true

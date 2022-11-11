@@ -7,6 +7,7 @@
   vars:
     satellite_composite_content_views:
       - name: ccv-rhel8_soe
+      - name: ccv-rhel9_soe
     satellite_content_views:
       - cv-rhel8_soe
       - cv-rhel8_soe_extras
