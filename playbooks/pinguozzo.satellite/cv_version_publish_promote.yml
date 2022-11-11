@@ -12,6 +12,7 @@
       - cv-rhel8_soe
       - cv-rhel8_soe_extras
       - cv-rhel9_soe
+      - cv-rhel9_soe_extras
     lifecycle_paths:
       - - label: LAB
     lifecycle_environments: "{{ lifecycle_paths|flatten|map(attribute='label')|list }}"

@@ -15,6 +15,8 @@
               - { name: 'Red Hat Enterprise Linux 9 for x86_64 - AppStream RPMs 9', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat Enterprise Linux 9 for x86_64 - BaseOS RPMs 9', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat Satellite Client 6 for RHEL 9 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
+              - { name: 'Red Hat Enterprise Linux 9 for x86_64 - AppStream Kickstart 9.0', product: 'Red Hat Enterprise Linux for x86_64' }
+              - { name: 'Red Hat Enterprise Linux 9 for x86_64 - BaseOS Kickstart 9.0', product: 'Red Hat Enterprise Linux for x86_64' }
 
           - name: cv-rhel9_soe_extras
             description: "RHEL 9 SOE Extra Content"
