@@ -8,6 +8,14 @@
     - role: redhat.satellite.content_views
       vars:
         satellite_content_views:
+
+          - name: cv-rhel9_soe
+            description: "RHEL 9 SOE Content"
+            repositories:
+              - { name: 'Red Hat Enterprise Linux 9 for x86_64 - AppStream RPMs 9', product: 'Red Hat Enterprise Linux for x86_64' }
+              - { name: 'Red Hat Enterprise Linux 9 for x86_64 - BaseOS RPMs 9', product: 'Red Hat Enterprise Linux for x86_64' }
+              - { name: 'Red Hat Satellite Client 6 for RHEL 9 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
+
           - name: cv-rhel8_soe
             description: "RHEL 8 SOE Content"
             repositories:
