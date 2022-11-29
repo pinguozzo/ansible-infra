@@ -20,3 +20,7 @@ all:
         Prod:
           hosts:
         dc1:
+    IT:
+    SG:
+      children:
+        DevCloud:
