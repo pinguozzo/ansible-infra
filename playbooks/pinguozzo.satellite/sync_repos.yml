@@ -1,0 +1,29 @@
+---
+- hosts: localhost
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/infra-vault.yml"
+
+  vars:
+    satellite_products:
+      - name: Red Hat Ansible Automation Platform
+        repository_sets:
+          - name: Red Hat Ansible Automation Platform 2.2 for RHEL 9 x86_64 (RPMs)
+          - name: Red Hat Ansible Automation Platform 2.3 for RHEL 9 x86_64 (RPMs)
+          - name: Red Hat Ansible Automation Platform 2.2 for RHEL 8 x86_64 (RPMs)
+          - name: Red Hat Ansible Automation Platform 2.3 for RHEL 8 x86_64 (RPMs)
+          - name: Red Hat Automation Hub 4.2 for RHEL 8 x86_64 (RPMs)
+
+  tasks: 
+    - name: "Sync repository"
+      redhat.satellite.repository_sync:
+        username: "{{ satellite_username | default(omit) }}"
+        password: "{{ satellite_password | default(omit) }}"
+        server_url: "{{ satellite_server_url | default(omit) }}"
+        organization: "{{ satellite_organization }}"
+        validate_certs: "{{ satellite_validate_certs | default(omit) }}"
+        product: "{{ item.0.name }}"
+        repository: "{{ item.1.name }}"
+      with_subelements:
+        - "{{ satellite_products | selectattr('repository_sets', 'defined') | list }}"
+        - repository_sets
