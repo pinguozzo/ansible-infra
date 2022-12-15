@@ -4,8 +4,12 @@
   connection: local
   gather_facts: no
 
+  vars_files:
+    - "{{ playbook_dir }}/../vaults/infra-vault.yml"
+
   vars:
     offline_token: "{{ vault_offline_token }}"
 
   roles:
     - name: ansible.workshops.aap_download
+
