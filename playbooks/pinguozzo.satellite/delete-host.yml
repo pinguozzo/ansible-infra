@@ -1,0 +1,32 @@
+---
+- hosts: localhost
+  connection: local
+
+  module_defaults:
+    redhat.satellite.host:
+      username: "{{ satellite_username }}"
+      password: "{{ satellite_password }}"
+      server_url: "{{ satellite_server_url }}"
+      validate_certs: no
+
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/infra-vault.yml"
+
+  pre_tasks:
+    - name: check that required variables are defined
+      ansible.builtin.assert:
+        that: 
+          - vm_name
+        fail_msg: "hostname(s) must be defined"
+
+  tasks:
+    - name: Delete  VM
+      block:
+        - name: "Delete host{{':'}} {{ vm_name }}"
+          redhat.satellite.host:
+            name: "{{ item }}"  
+            state: absent
+          loop: "{{ vm_name }}"
+
+# ansible-playbook playbooks/pinguozzo.satellite/delete-host.yml -e '{"vm_name": [fqdn1,fqdn2]}'
