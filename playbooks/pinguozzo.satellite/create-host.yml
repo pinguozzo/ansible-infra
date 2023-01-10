@@ -44,7 +44,7 @@
 
     - debug:
         msg: >-
-          VM created{% if vm_name |length > 1 %} are{% else %} is{% endif %} {{ item }}
+          VM created{% if vm_name |length > 1 %} are{% else %} is{% endif %} "{{ output | community.general.json_query('results[*].entity.hosts[*].name') | join(' ')}}"
       loop: 
         - "{{ vm_name }}"
 
