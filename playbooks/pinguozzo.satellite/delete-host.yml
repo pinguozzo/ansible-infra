@@ -23,7 +23,7 @@
   tasks:
     - name: Delete  VM
       block:
-        - name: "Delete host{{':'}} {{ vm_name }}"
+        - name: "Delete {% if vm_name |length > 1 %}hosts{% else %}host{% endif %}{{':'}} {{ vm_name }}"
           redhat.satellite.host:
             name: "{{ item }}"  
             state: absent
