@@ -1,6 +1,5 @@
 ---
 - hosts: localhost
-  connection: local
 
   module_defaults:
     redhat.satellite.host:
