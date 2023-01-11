@@ -37,11 +37,6 @@
       register: output      
       with_sequence: start=1 end="{{ num_instances|default(1) }}"
 
-    - name: get vm names
-      set_fact:
-        vm_name: "{{ output | community.general.json_query('results[*].entity.hosts[*].name') | join(' ')}}"
-      no_log: True
-
     - debug:
         msg: >-
           VM created{% if vm_name |length > 1 %} are{% else %} is{% endif %} "{{ output | community.general.json_query('results[*].entity.hosts[*].name') | join(' ')}}"
