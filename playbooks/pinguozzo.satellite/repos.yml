@@ -121,6 +121,10 @@
               - name: Single Sign-On 7.5 for RHEL 8 x86_64 (RPMs)
               - name: Single Sign-On 7.4 for RHEL 8 x86_64 (RPMs)
 
+          - name: Red Hat Virtualization Manager
+            repository_sets:
+              - name: Red Hat Virtualization Manager 4.4 for RHEL 8 x86_64 (RPMs)
+
           - name: Red Hat Ansible Automation Platform
             repository_sets:
               - name: Red Hat Ansible Automation Platform 2.2 for RHEL 9 x86_64 (RPMs)

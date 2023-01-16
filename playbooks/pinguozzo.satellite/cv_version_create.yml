@@ -72,6 +72,7 @@
               - { name: 'Single Sign-On 7.5 for RHEL 8 x86_64 RPMs', product: 'Red Hat Single Sign-On' }
               - { name: 'Single Sign-On 7.4 for RHEL 8 x86_64 RPMs', product: 'Red Hat Single Sign-On' }
               - { name: 'Red Hat Automation Hub 4.2 for RHEL 8 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
+              - { name: 'Red Hat Virtualization Manager 4.4 for RHEL 8 x86_64 RPMs', product: 'Red Hat Virtualization Manager' }
 
           - name: ccv-rhel8_soe
             description: "CCV RHEL8 SOE"
