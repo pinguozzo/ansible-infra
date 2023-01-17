@@ -16,6 +16,7 @@
   vars:
     hg_name: []
     domain_name: "{{ satellite_domain }}"
+    num_instances: 1  
 
   pre_tasks:
     - name: check that required variables are defined
@@ -37,8 +38,8 @@
       register: output      
       with_sequence: start=1 end="{{ num_instances|default(1) }}"
 
-    - debug:
-        msg: >-
-          "{{ output | community.general.json_query('results[*].entity.hosts[*].name') | join(' ')}}"
+    - name: host fqdn
+      debug:
+        msg: "New VM: {{ output | community.general.json_query('results[*].entity.hosts[*].name') | join('')}}"
 
 # ansible-playbook playbooks/pinguozzo.satellite/create-host.yml -e num_instances=2
