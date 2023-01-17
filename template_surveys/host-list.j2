@@ -1,0 +1,18 @@
+{
+   "name": "Select host to delete",
+   "description": "Delete host(s) survey",
+   "spec": [
+      {
+        "question_description": "Delete host(s) survey",
+        "min": 0,
+        "default": "",
+        "max": 0,
+        "required": true,
+        "choices": "{% for fqdn in hosts %}{{ fqdn | join('')}}{%- if loop.length > 1 and not loop.last-%}\n{% endif %}{% endfor %}",
+        "new_question": true,
+        "variable": "vm_name",
+        "question_name": "What host(s) do you want to delete?",
+        "type": "multiselect"
+      }
+    ]
+}
