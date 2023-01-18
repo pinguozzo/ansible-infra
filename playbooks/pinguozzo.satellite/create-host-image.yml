@@ -1,0 +1,49 @@
+---
+- hosts: localhost
+
+  module_defaults:
+    redhat.satellite.host:
+      username: "{{ satellite_username }}"
+      password: "{{ satellite_password }}"
+      server_url: "{{ satellite_server_url }}"
+      location: "{{ satellite_location }}"
+      organization: "{{ satellite_organization }}"
+      validate_certs: no
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/infra-vault.yml"
+
+  vars:
+    hg_name: []
+    domain_name: "{{ satellite_domain }}"
+    num_instances: 1  
+
+  pre_tasks:
+    - name: check that required variables are defined
+      ansible.builtin.assert:
+        that: 
+          - domain_name is defined
+          - hg_name is defined
+        fail_msg: "domain and hg_name must be defined"
+
+  tasks:
+    - name: create host(s)
+      redhat.satellite.host:
+        hostgroup: "{{ hg_name }}"
+        name: "{{ lookup('community.general.random_pet') + '.' + domain_name }}"
+        state: present
+        compute_resource: "RHV"
+        compute_profile: "2-Medium"
+        compute_attributes:
+          start: "1"
+        provision_method: "image"
+        image: "RHEL-8.4-KVM_Template"
+        build: true
+      register: output      
+      with_sequence: start=1 end="{{ num_instances|default(1) }}"
+
+    - name: host fqdn
+      debug:
+        msg: "New VM: {{ output | community.general.json_query('results[*].entity.hosts[*].name') | join('')}}"
+
+# ansible-playbook playbooks/pinguozzo.satellite/create-host.yml -e num_instances=2
