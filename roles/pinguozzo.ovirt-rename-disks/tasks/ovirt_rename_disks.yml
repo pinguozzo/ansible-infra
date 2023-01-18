@@ -13,8 +13,8 @@
 - name: show info about the host 
   vars:
     msg: |
-         - Hostname is: {{ vm_info.ovirt_vms[*].fqdn }}
-         - Disk id: {{ vm_info.ovirt_vms[*].disk_attachments[*].id }}
+         - Hostname is: {{ vm_info.ovirt_vms[0].fqdn }}
+         - Disk id: {{ vm_info.ovirt_vms[0].disk_attachments[0].id }}
   debug:
     msg: "{{ msg.split('\n') }}"
 
