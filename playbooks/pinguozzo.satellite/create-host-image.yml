@@ -14,7 +14,7 @@
     - "{{ playbook_dir }}/../../vaults/infra-vault.yml"
 
   vars:
-    hg_name: []
+    hg_name_image: []
     domain_name: "{{ satellite_domain }}"
     num_instances: 1  
 
@@ -23,17 +23,17 @@
       ansible.builtin.assert:
         that: 
           - domain_name is defined
-          - hg_name is defined
+          - hg_name_image is defined
         fail_msg: "domain and hg_name must be defined"
 
   tasks:
     - name: create host(s)
       redhat.satellite.host:
-        hostgroup: "{{ hg_name }}"
+        hostgroup: "{{ hg_name_image }}"
         name: "{{ lookup('community.general.random_pet') + '.' + domain_name }}"
         state: present
         compute_resource: "RHV"
-        compute_profile: "2-Medium"
+        compute_profile: "2-Medium IMAGE NET_apps"
         compute_attributes:
           start: "1"
         provision_method: "image"
