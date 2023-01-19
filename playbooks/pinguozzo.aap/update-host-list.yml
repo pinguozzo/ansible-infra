@@ -13,7 +13,7 @@
     json_query_name: "json.results[*].name"
 
   pre_tasks:
-    - name: Include vars from controller_configs directory
+    - name: include vars from controller_configs directory
       include_vars:
         dir: ../../configs
         ignore_files: [controller_config.yml.template]
@@ -38,10 +38,6 @@
       no_log: True
       loop: 
         - "{{ host_list }}"
-
-    - debug: 
-        msg: >-
-          {{ hosts }}
 
     - name: create a new token using controller username/password
       ansible.controller.token:

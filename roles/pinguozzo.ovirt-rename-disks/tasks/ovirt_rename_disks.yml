@@ -6,10 +6,6 @@
     nested_attributes: disks  
   register: vm_info
 
-- name: show vm_info
-  debug:
-    var: vm_info
-
 - name: show info about the host 
   vars:
     msg: |
