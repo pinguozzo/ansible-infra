@@ -3,7 +3,7 @@
     auth: "{{ ovirt_auth }}"
     pattern: "name={{ vm_name }}"
     fetch_nested: true
-    nested_attributes: disks  
+    nested_attributes: all  
   register: vm_info
 
 - name: show info about the host 
