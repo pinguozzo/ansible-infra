@@ -20,4 +20,5 @@
     storage_domain: Ceph_iSCSI
     name: "{{ item.ovirt_vms[0].fqdn }}_Disk1"
     vm_name: "{{ item.ovirt_vms[0].fqdn }}"
-  loop: "{{ vm_info }}"
+  loop: 
+    - "{{ vm_info }}"
