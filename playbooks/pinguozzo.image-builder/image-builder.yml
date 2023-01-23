@@ -1,0 +1,55 @@
+---
+- name: install image-builder
+  hosts: all
+  become: True
+
+  tasks:
+
+    #  - name: Register Host
+    #    community.general.redhat_subscription:
+    #      state: present
+    #      username: "{{ lookup('file', '/var/secrets/redhat-portal-credentials/username') }}"
+    #      password: "{{ lookup('file', '/var/secrets/redhat-portal-credentials/password') }}"
+    #      pool_ids: "{{ lookup('file', '/var/secrets/redhat-portal-credentials/pool_id') }}"
+    
+    - name: Setup Repositories
+      community.general.rhsm_repository:
+        state: enabled
+        purge: yes
+        name:
+          - rhel-8-for-x86_64-appstream-rpms
+          - rhel-8-for-x86_64-baseos-rpms
+    
+    - name: Install Packages
+      ansible.builtin.dnf:
+        state: latest
+        name:
+          - osbuild-composer
+          - composer-cli
+          - cockpit-composer
+          - bash-completion
+          - firewalld
+          - genisoimage
+          - httpd
+          - syslinux
+    
+    - name: Enable Cockpit/Composer/Firewalld/Apache
+      ansible.builtin.systemd:
+        state: started
+        enabled: yes
+        name: "{{ item }}"
+      loop:
+        - osbuild-composer.socket
+        - cockpit.socket
+        - httpd.service
+        - firewalld
+    
+    - name: Enable Firewall Ports for Cockpit/Composer/Apache
+      ansible.posix.firewalld:
+        permanent: yes
+        immediate: yes
+        service: "{{ item }}"
+        state: enabled
+      loop:
+        - cockpit
+        - http

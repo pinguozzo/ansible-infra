@@ -30,7 +30,8 @@
     - name: create host(s)
       redhat.satellite.host:
         hostgroup: "{{ hg_name_image }}"
-        name: "{{ lookup('community.general.random_pet') + '.' + domain_name }}"
+        name: "{{ lookup('ansible.builtin.vars','vm_name' , default=lookup('community.general.random_pet')) + (vm_name is defined)|ternary(item, '') + '.' + domain_name }}"
+          #name: "{{ lookup('community.general.random_pet') + '.' + domain_name }}"
         state: present
         compute_resource: "RHV"
         compute_profile: "2-Medium IMAGE NET_apps"
@@ -46,4 +47,4 @@
       debug:
         msg: "New VM: {{ output | community.general.json_query('results[*].entity.hosts[*].name') | join('')}}"
 
-# ansible-playbook playbooks/pinguozzo.satellite/create-host.yml -e num_instances=2
+# ansible-playbook playbooks/pinguozzo.satellite/create-host-image.yml -e num_instances=2 or ansible-playbook playbooks/pinguozzo.satellite/create-host-image.yml -e vm_name=node -e num_instances=2 - it will create node1, node2
