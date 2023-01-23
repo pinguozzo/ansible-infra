@@ -31,7 +31,6 @@
       redhat.satellite.host:
         hostgroup: "{{ hg_name_image }}"
         name: "{{ lookup('ansible.builtin.vars','vm_name' , default=lookup('community.general.random_pet')) + (vm_name is defined)|ternary(item, '') + '.' + domain_name }}"
-          #name: "{{ lookup('community.general.random_pet') + '.' + domain_name }}"
         state: present
         compute_resource: "RHV"
         compute_profile: "2-Medium IMAGE NET_apps"
