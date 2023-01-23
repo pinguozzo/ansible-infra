@@ -23,6 +23,11 @@
     with_items:  
       - ovirt_rename_disks
 
+  rescue:
+      - name: Print when errors
+        ansible.builtin.debug:
+          var: vm_info 
+
   always:
     - name: Logout from oVirt
       ovirt_auth:
