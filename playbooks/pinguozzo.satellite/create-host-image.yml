@@ -46,4 +46,5 @@
       debug:
         msg: "New VM: {{ output | community.general.json_query('results[*].entity.hosts[*].name') | join('')}}"
 
-# ansible-playbook playbooks/pinguozzo.satellite/create-host-image.yml -e num_instances=2 or ansible-playbook playbooks/pinguozzo.satellite/create-host-image.yml -e vm_name=node -e num_instances=2 - it will create node1, node2
+# ansible-playbook playbooks/pinguozzo.satellite/create-host-image.yml -e num_instances=2 # it will create 2 instances with random names 
+# ansible-playbook playbooks/pinguozzo.satellite/create-host-image.yml -e num_instances=2 -e vm_name=node # it will create 2 instances with hostname: node1, node2
