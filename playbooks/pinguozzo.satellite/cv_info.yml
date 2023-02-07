@@ -1,0 +1,24 @@
+- hosts: localhost
+  collections: redhat.satellite
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/infra-vault.yml"
+  
+  vars:
+    name: "cv-capsules"
+
+  tasks:
+    - name: "Get content view info"
+      redhat.satellite.content_view_info:
+        username: "{{ satellite_username }}"
+        password: "{{ satellite_password }}"
+        server_url: "{{ satellite_server_url }}"
+        validate_certs: "{{ satellite_validate_certs }}"
+        organization: "{{ satellite_organization }}"
+        name: "{{ name }}"
+      register: cv
+
+    - name: "Output found repository sets, see the contentUrl section for possible repository substitutions"
+      set_fact:
+        repos: "{{ cv | community.general.json_query('content_view.repositories[*].name') }}"
+
+    - debug: var=repos
