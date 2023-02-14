@@ -142,6 +142,23 @@
             repository_sets:
               - name: Red Hat Virtualization Manager 4.4 for RHEL 8 x86_64 (RPMs)
 
+          - name: Red Hat Virtualization
+            repository_sets:
+              - name: Red Hat Virtualization 4 Management Agents for RHEL 8 x86_64 (RPMs)
+
+          - name: Red Hat Enterprise Linux Advanced Virtualization
+            repository_sets:
+              - name: Advanced Virtualization for RHEL 8 x86_64 (RPMs)
+                basearch: noarch
+
+          - name: Cinderlib
+            repository_sets:
+              - name: Red Hat OpenStack Platform 16.2 Cinderlib for RHEL 8 x86_64 (RPMs)
+
+          - name: Red Hat Ceph Storage
+            repository_sets:
+              - name: Red Hat Ceph Storage Tools 4 for RHEL 8 x86_64 (RPMs)
+
           - name: Red Hat Ansible Automation Platform
             repository_sets:
               - name: Red Hat Ansible Automation Platform 2.2 for RHEL 9 x86_64 (RPMs)

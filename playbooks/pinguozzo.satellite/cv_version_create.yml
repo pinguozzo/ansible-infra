@@ -110,6 +110,10 @@
               - { name: 'Single Sign-On 7.4 for RHEL 8 x86_64 RPMs', product: 'Red Hat Single Sign-On' }
               - { name: 'Red Hat Automation Hub 4.2 for RHEL 8 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
               - { name: 'Red Hat Virtualization Manager 4.4 for RHEL 8 x86_64 RPMs', product: 'Red Hat Virtualization Manager' }
+              - { name: 'Red Hat Virtualization 4 Management Agents for RHEL 8 x86_64 RPMs', product: 'Red Hat Virtualization' }
+              - { name: 'Advanced Virtualization for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux Advanced Virtualization' }
+              - { name: 'Red Hat OpenStack Platform 16.2 Cinderlib for RHEL 8 x86_64 RPMs', product: 'Cinderlib' }
+              - { name: 'Red Hat Ceph Storage Tools 4 for RHEL 8 x86_64 RPMs', product: 'Red Hat Ceph Storage' }
 
           - name: ccv-rhel8_soe
             description: "CCV RHEL8 SOE"
