@@ -15,6 +15,8 @@
 
   vars:
     hg_name_image: []
+    compute_profile: []
+    image_name: []
     domain_name: "{{ satellite_domain }}"
     num_instances: 1  
 
@@ -24,7 +26,9 @@
         that: 
           - domain_name is defined
           - hg_name_image is defined
-        fail_msg: "domain and hg_name must be defined"
+          - compute_profile is defined
+          - image_name is defined
+        fail_msg: "domain, hg_name, compute_profile and image_name must be defined"
 
   tasks:
     - name: create host(s)
@@ -33,11 +37,11 @@
         name: "{{ lookup('ansible.builtin.vars','vm_name' , default=lookup('community.general.random_pet')) + (vm_name is defined)|ternary(item, '') + '.' + domain_name }}"
         state: present
         compute_resource: "RHV"
-        compute_profile: "2-Medium IMAGE NET_apps"
+        compute_profile: "{{ compute_profile }}"
         compute_attributes:
           start: "1"
         provision_method: "image"
-        image: "RHEL-8.4-KVM_Template"
+        image: "{{ image_name }}"
         build: true
       register: output      
       with_sequence: start=1 end="{{ num_instances|default(1) }}"
