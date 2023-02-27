@@ -34,7 +34,7 @@
     - name: create host(s)
       redhat.satellite.host:
         hostgroup: "{{ hg_name_image }}"
-        name: "{{ lookup('ansible.builtin.vars','vm_name' , default=lookup('community.general.random_pet')) + (vm_name is defined and num_instances | length >1 )|ternary(item, '') + '.' + domain_name }}"
+        name: "{{ lookup('ansible.builtin.vars','vm_name' , default=lookup('community.general.random_pet')) + (vm_name is defined and num_instances | int > 1 )|ternary(item, '') + '.' + domain_name }}"
         state: present
         compute_resource: "RHV"
         compute_profile: "{{ compute_profile }}"
