@@ -1,6 +1,6 @@
 ---
 controller_templates:
-- name: "pinguozzo-satellite: host delete"
+- name: "pinguozzo-satellite_operations: host delete"
   description:
   credentials: "pinguozzo: vault"  
   job_type: run
