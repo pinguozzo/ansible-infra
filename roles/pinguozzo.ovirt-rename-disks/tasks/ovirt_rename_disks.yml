@@ -18,7 +18,7 @@
     auth: "{{ ovirt_auth }}"
     id: "{{ item.ovirt_vms[0].disk_attachments[0].id }}"
     storage_domain: Ceph_iSCSI
-    name: "{{ item.ovirt_vms[0].fqdn }}_Disk1"
-    vm_name: "{{ item.ovirt_vms[0].fqdn }}"
+    name: "{{ item.ovirt_vms[0].name }}_Disk1"
+    vm_name: "{{ item.ovirt_vms[0].name }}"
   loop: 
     - "{{ vm_info }}"
