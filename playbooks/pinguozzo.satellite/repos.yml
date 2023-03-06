@@ -30,6 +30,11 @@
          #    - rhel-8-for-x86_64-appstream-kickstart
          #    - rhel-8-for-x86_64-baseos-kickstart
          #
+
+          - name: "Red Hat Satellite"
+            repository_sets:
+              - name: Red Hat Satellite 6.12 for RHEL 8 x86_64 (RPMs)
+
           - name: Red Hat Satellite Capsule
             repository_sets:
               - name: Red Hat Satellite Capsule 6.12 for RHEL 8 x86_64 (RPMs)
@@ -149,7 +154,6 @@
           - name: Red Hat Enterprise Linux Advanced Virtualization
             repository_sets:
               - name: Advanced Virtualization for RHEL 8 x86_64 (RPMs)
-                basearch: noarch
 
           - name: Cinderlib
             repository_sets:
