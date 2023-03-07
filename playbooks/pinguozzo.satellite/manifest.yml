@@ -1,0 +1,35 @@
+---
+- hosts: "{{ targeted_host| default('localhost') }}"
+  become: True
+
+  module_defaults:
+    redhat.satellite.redhat_manifest:
+      username: "{{ satellite_rhsm_username }}"
+      password: "{{ satellite_rhsm_password }}"
+    
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }-vault.yml"
+
+  pre_tasks:
+    - name: check that required variables are defined
+      ansible.builtin.assert:
+        that: 
+          - manifest_name is defined
+          - pool_id is defined
+          - quantity is defined
+          - path is defined
+        fail_msg: "manifest_name, pool_id, quantity, path must be defined"
+
+    - name: create satellite manifest and add 100 sub
+      redhat.satellite.redhat_manifest:
+        name: "{{ manifest_name }}"
+        content_access_mode: org_environment
+        pool_id: 8a85f99c7d76f2fd017d96c343f40655
+        quantity: 100
+        path: /root/manifest.zip
+ 
+  roles:
+    - role: redhat.satellite.manifest
+      vars:
+        satellite_manifest_path: "~/manifest.zip"
+        satellite_manifest_download: False

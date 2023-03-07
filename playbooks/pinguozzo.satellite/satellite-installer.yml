@@ -1,0 +1,79 @@
+---
+- name: satellite ansible installer
+  hosts: "{{ targeted_host| default('localhost') }}"
+  become: True
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+  
+  vars:
+    satellite_repos:
+      - rhel-8-for-x86_64-baseos-rpms
+      - rhel-8-for-x86_64-appstream-rpms
+      - satellite-6.12-for-rhel-8-x86_64-rpms
+      - satellite-maintenance-6.12-for-rhel-8-x86_64-rpms
+
+    satellite_installer_scenario: satellite
+    satellite_firewall_zone: public
+
+  pre_tasks:
+    - community.general.redhat_subscription:
+        state: present
+        activationkey: "{{ activation_key }}"
+        org_id: "{{ satellite_organization }}"
+        force_register: true
+        syspurpose:
+          usage: "Development"
+          role: "Red Hat Enterprise Linux Server"
+          service_level_agreement: "Self-Support"
+          sync: true
+
+    - name: enable red hat satellite required repos
+      community.general.rhsm_repository:
+        name: "{{ item }}"
+      loop: "{{ satellite_repos|flatten(levels=1) }}"
+      when: satellite_installer_scenario == 'satellite'
+
+    - name: reset satellite module stream
+      command: >
+        dnf -y module reset
+        satellite:el{{ ansible_facts.distribution_major_version }} postgresql:12 ruby:2.7
+      when: not fresh_install
+
+    - name: enable satellite module stream
+      command: >
+        dnf -y module enable
+        satellite:el{{ ansible_facts.distribution_major_version }} postgresql:12 ruby:2.7
+
+    - name: install satellite packages
+      yum:
+        name:
+          - firewalld
+          - glibc-langpack-en
+          - insights-client
+          - rhc
+          - rhc-worker-playbook
+          - satellite
+          - sos
+        state: present
+    
+    - name: enable firewalld service
+      service:
+        name: firewalld
+        enabled: true
+    
+    - name: start firewalld service
+      service:
+        name: firewalld
+        state: started
+    
+    - name: configure Satellite firewall
+      ansible.posix.firewalld:
+        zone: "{{ satellite_firewall_zone }}"
+        service: RH-Satellite-6
+        permanent: true
+        immediate: true
+        state: enabled
+         
+  roles:
+    - role: redhat.satellite_operations.installer
