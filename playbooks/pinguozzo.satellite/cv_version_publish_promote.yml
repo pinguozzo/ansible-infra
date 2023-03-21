@@ -14,10 +14,16 @@
       - cv-rhel9_soe
       - cv-rhel9_soe_extras
       - cv-capsules
+
+    satellite_infra_content_views:
+      satellite:
+        name: cv-capsules
+        lfe: INFRA
+
     lifecycle_paths:
       - - label: LAB
     lifecycle_environments: "{{ lifecycle_paths|flatten|map(attribute='label')|list }}"
-  
+
   roles:
     - role: redhat.satellite.content_view_publish
 
@@ -34,4 +40,18 @@
           organization: "{{ satellite_organization }}"
           lifecycle_environments: "{{ lifecycle_environments }}"
         loop: "{{ satellite_composite_content_views }}"
+      tags: promote
+
+    - name: "Promote infra content views"
+      block:
+      - name: "Promote infra content views"
+        redhat.satellite.content_view_version:
+          username: "{{ satellite_username | default(omit) }}"
+          password: "{{ satellite_password | default(omit) }}"
+          server_url: "{{ satellite_server_url | default(omit) }}"
+          validate_certs: "{{ satellite_validate_certs | default(omit) }}"
+          content_view: "{{ item.value.name }}"
+          organization: "{{ satellite_organization }}"
+          lifecycle_environments: "{{ item.value.lfe }}"
+        loop: "{{ satellite_infra_content_views }}"
       tags: promote
