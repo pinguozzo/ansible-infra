@@ -53,5 +53,5 @@
           content_view: "{{ item.value.name }}"
           organization: "{{ satellite_organization }}"
           lifecycle_environments: "{{ item.value.lfe }}"
-        loop: "{{ satellite_infra_content_views }}"
-      tags: promote
+        loop: "{{ lookup('ansible.builtin.dict', satellite_infra_content_views, wantlist=True) }}"
+      tags: promote,promote_infra
