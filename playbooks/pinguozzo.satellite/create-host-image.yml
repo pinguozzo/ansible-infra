@@ -40,10 +40,12 @@
         compute_profile: "{{ compute_profile }}"
         compute_attributes:
           start: "1"
+          cpus: "{{ vcpu | default(omit) }}"
+          memory_mb: "{{ memory | default(omit) }}"
         provision_method: "image"
         image: "{{ image_name }}"
         build: true
-      register: output      
+      register: output
       with_sequence: start=1 end="{{ num_instances|default(1) }}"
 
     - name: host fqdn
