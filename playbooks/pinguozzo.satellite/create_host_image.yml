@@ -52,6 +52,7 @@
     - name: set msg output
       set_fact:
         msg: "New VM: {{ output | community.general.json_query('results[*].entity.hosts[*].name') | join('')}}"
+      no_log: true
 
     - name: print new host(s) fqdn
       debug:
@@ -60,8 +61,12 @@
     - name: "notify via telegram"
       telegram:
         token: "{{ pinguobot_token }}"
-        chat_id: "{{ pinguobot_chatid }}"
-        msg: "{{ msg }}"
+        api_args:
+          chat_id: "{{ pinguobot_chatid }}"
+          text: "{{ msg }}"
+          parse_mode: "markdown"
+          disable_web_page_preview: true
+          disable_notification: true
       when: notify_via_telegram | bool
 
 
