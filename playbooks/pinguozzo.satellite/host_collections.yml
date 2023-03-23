@@ -1,11 +1,7 @@
 ---
 - name: create host collection and add host(s) to it
-  hosts: localhost
-  connection: local
+  hosts: "{{ targeted_host| default('localhost') }}"
   gather_facts: no
-
-  vars_files:
-    - "{{ playbook_dir }}/../../vaults/infra-vault.yml"
 
   vars:
     json_query_name: "json.results[*].name"
@@ -14,8 +10,8 @@
   tasks:
     - name: load pre-req
       block:
-        - name: include infra-vault
-          ansible.builtin.include_vars: "{{ playbook_dir }}/../../vaults/infra-vault.yml"
+        - name: include env vault
+          ansible.builtin.include_vars: "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
 
         - name: check that hc_name is set
           assert:

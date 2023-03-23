@@ -1,6 +1,6 @@
 ---
-- hosts: "{{ targeted_host| default('localhost') }}"
-  become: True
+- name: create and upload manifest to satellite host
+  hosts: "{{ targeted_host| default('localhost') }}"
 
   module_defaults:
     redhat.satellite.redhat_manifest:
@@ -8,7 +8,7 @@
       password: "{{ satellite_rhsm_password }}"
     
   vars_files:
-    - "{{ playbook_dir }}/../../vaults/{{ env }-vault.yml"
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
 
   pre_tasks:
     - name: check that required variables are defined

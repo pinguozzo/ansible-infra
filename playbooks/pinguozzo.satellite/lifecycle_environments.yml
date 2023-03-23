@@ -1,0 +1,33 @@
+---
+- hosts: "{{ targeted_host| default('localhost') }}"
+  become: True
+
+  module_defaults:
+    redhat.satellite.lifecycle_environment:
+      username: "{{ satellite_username }}"
+      password: "{{ satellite_password }}"
+      server_url: "{{ satellite_server_url }}"
+      organization: "{{ satellite_organization }}"
+      validate_certs: no
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+
+  pre_tasks:
+    - name: check that required variables are defined
+      ansible.builtin.assert:
+        that: 
+          - satellite_lifecycle_environments is defined
+        fail_msg: "satellite_lifecycle_environments must be defined"
+
+  roles:
+    - role: redhat.satellite.lifecycle_environments
+      vars:
+        satellite_lifecycle_environments:
+          - name: "INFRA"
+            prior: "Library"
+            description: infra lifecycle
+
+          - name: "LAB"
+            prior: "Library"
+            description: lab lifecycle

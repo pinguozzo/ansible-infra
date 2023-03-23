@@ -6,7 +6,7 @@ controller_templates:
   job_type: run
   inventory: 5
   project: 16
-  playbook: playbooks/pinguozzo.satellite/delete-host.yml
+  playbook: playbooks/pinguozzo.satellite/delete_host.yml
   scm_branch: 
   forks: 0
   limit: 

@@ -1,9 +1,9 @@
 ---
-- name: Manage Content Views
-  hosts: localhost
+- name: manage content views
+  hosts: "{{ targeted_host| default('localhost') }}"
 
   vars_files:
-    - "{{ playbook_dir }}/../../vaults/infra-vault.yml"
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
 
 - name: Include cv_version_create.yml 
   ansible.builtin.import_playbook: cv_version_create.yml

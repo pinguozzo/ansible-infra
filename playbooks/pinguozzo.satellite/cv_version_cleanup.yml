@@ -1,8 +1,8 @@
 - name: Clean old and unused cvs and ccvs
-  hosts: localhost
+  hosts: "{{ targeted_host| default('localhost') }}"
 
   vars_files:
-    - "{{ playbook_dir }}/../../vaults/infra-vault.yml"
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
 
   roles:
     - role: redhat.satellite.content_view_version_cleanup

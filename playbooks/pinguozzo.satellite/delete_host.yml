@@ -1,5 +1,6 @@
 ---
-- hosts: localhost
+- name: delete hosts
+  hosts: "{{ targeted_host| default('localhost') }}"
   connection: local
 
   module_defaults:
@@ -9,9 +10,8 @@
       server_url: "{{ satellite_server_url }}"
       validate_certs: no
 
-
   vars_files:
-    - "{{ playbook_dir }}/../../vaults/infra-vault.yml"
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
 
   pre_tasks:
     - name: check that required variables are defined
@@ -21,7 +21,7 @@
         fail_msg: "hostname(s) must be defined"
 
   tasks:
-    - name: Delete  VM
+    - name: delete vm(s)
       block:
         - name: "Delete {% if vm_name |length > 1 %}hosts{% else %}host{% endif %}{{':'}} {{ vm_name }}"
           redhat.satellite.host:

@@ -1,12 +1,12 @@
 ---
-- name: Manage Content Views
-  hosts: localhost
+- name: satellite main post-install/configuration
+  hosts: "{{ targeted_host| default('localhost') }}"
 
   tasks:
     - name: load pre-req
       block:
-        - name: include infra-vault
-          ansible.builtin.include_vars: "{{ playbook_dir }}/../../vaults/infra-vault.yml"
+        - name: include env vault
+          ansible.builtin.include_vars: "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
       tags: always
     
 - name: Include cv_manage.yml

@@ -1,7 +1,9 @@
-- hosts: localhost
+---
+- name: search repos
+  hosts: "{{ targeted_host| default('localhost') }}"
 
   vars_files:
-    - "{{ playbook_dir }}/../../vaults/infra-vault.yml"
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml
   
   vars:
     search: label=rhel-8-for-x86_64-appstream-kickstart
