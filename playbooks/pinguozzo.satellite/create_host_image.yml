@@ -49,9 +49,21 @@
       register: output
       with_sequence: start=1 end="{{ num_instances|default(1) }}"
 
-    - name: host fqdn
-      debug:
+    - name: set msg output
+      set_fact:
         msg: "New VM: {{ output | community.general.json_query('results[*].entity.hosts[*].name') | join('')}}"
+
+    - name: print new host(s) fqdn
+      debug:
+        var: msg
+
+    - name: "notify via telegram"
+      telegram:
+        token: "{{ pinguobot_token }}"
+        chat_id: "{{ pinguobot_chatid }}"
+        msg: "{{ msg }}"
+      when: notify_via_telegram | bool
+
 
 # ansible-playbook playbooks/pinguozzo.satellite/create-host-image.yml -e num_instances=2 # it will create 2 instances with random names 
 # ansible-playbook playbooks/pinguozzo.satellite/create-host-image.yml -e num_instances=2 -e vm_name=node # it will create 2 instances with hostname: node1, node2
