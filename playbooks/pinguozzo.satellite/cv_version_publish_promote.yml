@@ -19,6 +19,9 @@
       satellite:
         name: cv-capsules
         lfe: INFRA
+      rhv:
+        name: cv-rhvh
+        lfe: LAB
 
     lifecycle_paths:
       - - label: LAB
