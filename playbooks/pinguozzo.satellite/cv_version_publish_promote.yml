@@ -14,6 +14,7 @@
       - cv-rhel9_soe
       - cv-rhel9_soe_extras
       - cv-capsules
+      - cv-rhvh
 
     satellite_infra_content_views:
       satellite:
