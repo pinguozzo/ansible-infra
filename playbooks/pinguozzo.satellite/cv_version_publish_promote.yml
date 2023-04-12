@@ -1,4 +1,5 @@
-- name: Publish cvs
+---
+- name: publish cvs
   hosts: localhost
 
   vars_files:
