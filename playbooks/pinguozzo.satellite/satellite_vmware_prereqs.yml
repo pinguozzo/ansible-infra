@@ -1,0 +1,33 @@
+---
+- name: configure vmware compute resource
+  hosts: "{{ targeted_host| default('localhost') }}"
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+    - "{{ playbook_dir }}/../../vars/vmware_compute_resource.yml"
+    - "{{ playbook_dir }}/../../vars/vmware_compute_profiles.yml"
+    - "{{ playbook_dir }}/../../vars/operating_systems.yml"
+    - "{{ playbook_dir }}/../../vars/hostgroups.yml"
+
+  roles:
+    - role: redhat.satellite.compute_resources
+      no_log: true
+
+    - role: redhat.satellite.compute_profiles
+      no_log: true
+
+    - role: redhat.satellite.domains
+      when: satellite_domains is defined
+      no_log: true
+
+    - role: redhat.satellite.subnets
+      when: satellite_subnets is defined  
+      no_log: true
+
+    - role: redhat.satellite.operatingsystems
+      when: satellite_operatingsystems is defined
+      no_log: true
+
+    - role: redhat.satellite.hostgroups
+      when: satellite_hostgroups is defined
+      no_log: false

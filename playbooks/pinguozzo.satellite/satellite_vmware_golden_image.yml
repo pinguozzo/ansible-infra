@@ -1,0 +1,113 @@
+---
+- name: create vmware golden image
+  hosts: "{{ targeted_host| default('localhost') }}"
+  gather_facts: no
+
+  module_defaults:
+    redhat.satellite.host:
+      username: "{{ satellite_username }}"
+      password: "{{ satellite_password }}"
+      server_url: "{{ satellite_server_url }}"
+      location: "{{ satellite_location }}"
+      organization: "{{ satellite_organization }}"
+      validate_certs: no
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+
+  vars: 
+
+  tasks:
+  - name: remove golden image satellite record
+    redhat.satellite.host:
+      name: "{{ golden_image_fqdn }}"
+      state: absent
+    no_log: true
+
+  - name: check if goldenimage vm exists
+    vmware.vmware_rest.vcenter_vm_info:
+      vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+      vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+      vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+      vcenter_validate_certs: false
+      filter_names:
+      - "{{ golden_image_fqdn }}"
+    register: search_result
+
+  - name: power off golden image from vCenter (if exists)
+    vmware.vmware_rest.vcenter_vm_power:
+      vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+      vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+      vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+      vcenter_validate_certs: false
+      vm: "{{ search_result.value[0].vm }}"
+      state: stop
+    when:
+    - search_result.value[0].vm is defined
+
+  - name: wait until golden image vm is off
+    vmware.vmware_rest.vcenter_vm_info:
+      vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+      vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+      vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+      vcenter_validate_certs: false
+      vm: '{{ search_result.value[0].vm }}'
+    register: vm_info
+    until:
+    - vm_info is not failed
+    - vm_info.value.power_state == "POWERED_OFF"
+    retries: 60
+    delay: 5
+    when:
+    - search_result.value[0].vm is defined
+
+  - name: remove golden image from vCenter (if exists)
+    vmware.vmware_rest.vcenter_vm:
+      vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+      vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+      vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+      vcenter_validate_certs: false
+      name: "{{ golden_image_fqdn }}"
+      vm: "{{ search_result.value[0].vm }}"
+      state: absent
+    when:
+    - search_result.value[0].vm is defined
+
+  - name: create golden image server in vSphere
+    redhat.satellite.host:
+      name: "{{ golden_image_fqdn }}"
+      state: present
+      build: true
+      hostgroup: "{{ satellite_hostgroups_parent }}/ESX RHEL8 NET_apps"
+      compute_resource: "VMware"
+      compute_profile: "2-Medium IMAGE RHEL8 ESX NET_apps"
+      operatingsystem: RedHat 8.6
+      ptable: 'Kickstart default'
+      provision_method: bootdisk
+      subnet: "{{ golden_image_subnet }}"
+      ip: "{{ golden_image_ip }}"
+      #no_log: true
+
+# Power on the VM on vSphere so provisioning starts.
+  - name: get vm identifier
+    vmware.vmware_rest.vcenter_vm_info:
+      vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+      vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+      vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+      vcenter_validate_certs: false
+      filter_names:
+      - "{{ golden_image_fqdn }}"
+    register: search_result
+
+
+  - name: power on golden image from vCenter
+    vmware.vmware_rest.vcenter_vm_power:
+      vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+      vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+      vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+      vcenter_validate_certs: false
+      vm: "{{ search_result.value[0].vm }}"
+      state: start
+    #when:
+    # It must exist, if it doesn't something went wrong.
+    #- search_result.value[0].vm is defined

@@ -1,0 +1,40 @@
+satellite_hostgroups:
+- name: "ESX RHEL8 NET_apps"
+  parent: "{{ satellite_hostgroups_parent }}"
+  architecture: "x86_64"
+  operatingsystem: "GoldenImageRHEL 8.6"
+  lifecycle_environment: LAB
+  content_view: "ccv-rhel8_soe"
+  activation_keys: "ak-rhel8"
+  compute_resource: VMware
+  compute_profile: "2-Medium IMAGE RHEL8 ESX NET_apps"
+  #provisioning_method: bootdisk
+  ptable: "Kickstart default"
+  pxe_loader: "PXELinux UEFI"
+  content_source: "{{ satellite_capsule }}"
+  openscap_proxy: "{{ satellite_server }}"
+  kickstart_repository: "Red Hat Enterprise Linux 8 for x86_64 - BaseOS Kickstart 8.6"
+  domain: "{{ satellite_domain }}"
+  locations: "{{ satellite_location }}"
+  organization: "{{ satellite_organization }}"
+  subnet: "APPS"
+
+- name: "ESX RHEL9 NET_apps"
+  parent: "{{ satellite_hostgroups_parent }}"
+  architecture: "x86_64"
+  operatingsystem: "GoldenImageRHEL 9.0"
+  lifecycle_environment: LAB
+  content_view: "ccv-rhel9_soe"
+  activation_keys: "ak-rhel9"
+  compute_resource: VMware
+  compute_profile: "2-Medium IMAGE RHEL9 ESX NET_apps"
+  #provisioning_method: bootdisk
+  ptable: "Kickstart default"
+  pxe_loader: "PXELinux UEFI"
+  content_source: "{{ satellite_capsule }}"
+  openscap_proxy: "{{ satellite_server }}"
+  kickstart_repository: "Red Hat Enterprise Linux 9 for x86_64 - BaseOS Kickstart 9.0"
+  domain: "{{ satellite_domain }}"
+  locations: "{{ satellite_location }}"
+  organization: "{{ satellite_organization }}"
+  subnet: "APPS"

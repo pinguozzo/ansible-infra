@@ -1,0 +1,16 @@
+---
+satellite_operatingsystems:
+  - name: "GoldenImageRHEL"
+    major: "8"
+    minor: "6"
+    os_family: "Redhat"
+    password_hash: "SHA256"
+    architectures: "x86_64"
+
+  - name: "GoldenImageRHEL"
+    major: "9"
+    minor: "0"
+    os_family: "Redhat"
+    password_hash: "SHA256"
+    architectures: "x86_64"
+

@@ -1,0 +1,37 @@
+---
+- name: "golden_image_post: configure" 
+  hosts: "{{ golden_image_fqdn }}"
+  gather_facts: no
+  become: True
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+    - "{{ playbook_dir }}/../../vars/golden_image_packages.yml"
+  
+  vars:
+
+  tasks:
+  - name: clean up ssh known hosts
+    ansible.builtin.lineinfile:
+      path: "/root/.ssh/known_hosts"
+      regexp: "{{ golden_image_fqdn }}"
+      state: absent
+
+# If ansible.cfg disables ssh fingerprint checking, this is not required.
+  # - name: Add new ssh fingerprint
+  #   shell: "ssh-keyscan -H {{ inventory_hostname }} >> ~/.ssh/known_hosts"
+  #   delegate_to: localhost
+
+  - name: wait for SSH connection
+    ansible.builtin.wait_for_connection:
+      delay: 3
+      timeout: 3600
+
+  # Gather facts   
+  - name: gather facts
+    ansible.builtin.setup:
+
+  - name: install required packages
+    ansible.builtin.dnf:
+      state: installed
+      name: "{{ required_packages }}"

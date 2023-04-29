@@ -1,0 +1,64 @@
+---
+- name: get info about esx
+  hosts: "{{ targeted_host| default('localhost') }}"
+  gather_facts: no
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+
+  vars: 
+
+  tasks:
+    - name: Check if goldenimage VM exists
+      vmware.vmware_rest.vcenter_vm_info:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        filter_names:
+        - "{{ golden_image_fqdn }}"
+      register: search_result
+
+    - debug: var=search_result
+
+    - name: collect a list of the datacenters
+      vmware.vmware_rest.vcenter_datacenter_info:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+      register: my_datacenters
+    
+    - debug: var=my_datacenters
+    
+    - name: Build a list of all the datastores
+      vmware.vmware_rest.vcenter_datastore_info:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+      register: all_the_datastores
+    
+    - debug: var=all_the_datastores
+    
+    - name: Build a list of all the clusters
+      vmware.vmware_rest.vcenter_cluster_info:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+      register: all_the_clusters
+    
+    - debug: var=all_the_clusters
+    
+    - name: Retrieve details about the first cluster
+      vmware.vmware_rest.vcenter_cluster_info:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        cluster: '{{ all_the_clusters.value[0].cluster }}'
+      register: my_cluster_info
+    
+    - debug: var=my_cluster_info
+

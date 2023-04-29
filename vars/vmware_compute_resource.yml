@@ -1,0 +1,11 @@
+---
+satellite_compute_resources:
+  - name: "{{ lookup('ansible.builtin.vars', 'satellite_compute_resource', default='')}}"
+    organizations:
+      - "{{ lookup('ansible.builtin.vars', 'satellite_organization', default='')}}"
+    provider: "vmware"
+    provider_params:
+      url: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname', default='')}}"
+      user: "{{ lookup('ansible.builtin.vars', 'vcenter_username', default='')}}"
+      password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='')}}"
+      datacenter: Datacenter
