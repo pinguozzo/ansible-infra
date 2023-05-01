@@ -8,4 +8,4 @@ satellite_compute_resources:
       url: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname', default='')}}"
       user: "{{ lookup('ansible.builtin.vars', 'vcenter_username', default='')}}"
       password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='')}}"
-      datacenter: Datacenter
+      datacenter: DC1

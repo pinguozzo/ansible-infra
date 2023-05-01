@@ -24,9 +24,9 @@
       when: satellite_subnets is defined  
       no_log: true
 
-    - role: redhat.satellite.operatingsystems
-      when: satellite_operatingsystems is defined
-      no_log: true
+        #    - role: redhat.satellite.operatingsystems
+        #      when: satellite_operatingsystems is defined
+        #      no_log: true
 
     - role: redhat.satellite.hostgroups
       when: satellite_hostgroups is defined

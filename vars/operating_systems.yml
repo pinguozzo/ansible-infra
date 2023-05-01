@@ -6,6 +6,7 @@ satellite_operatingsystems:
     os_family: "Redhat"
     password_hash: "SHA256"
     architectures: "x86_64"
+    state: present_with_defaults
 
   - name: "GoldenImageRHEL"
     major: "9"
@@ -13,4 +14,4 @@ satellite_operatingsystems:
     os_family: "Redhat"
     password_hash: "SHA256"
     architectures: "x86_64"
-
+    state: present_with_defaults

@@ -1,0 +1,73 @@
+---
+# Remove configuration and prepare for template creation
+- hosts: all
+  gather_facts: no
+
+  tasks:
+    - name: deconfigure instance | set hostname
+      ansible.builtin.hostname:
+        name: localhost.localdomain
+
+    - name: deconfigure instance | stop logging
+      ansible.builtin.systemd:
+        name: rsyslog
+        state: stopped
+
+    - name: deconfigure instance | remove files
+      ansible.builtin.file:
+        path: "{{ file }}"
+        state: absent
+      loop_control:
+        loop_var: file
+      loop:
+        - /var/log/*-????????
+        - /var/log/*.gz
+        - /var/log/dmesg.old
+        - /var/log/anaconda
+        - /etc/udev/rules.d/70*
+        - /etc/sysconfig/network-scripts/ifcfg-*
+        - /etc/ssh/ssh_host*
+        - /root/.bash_history
+        - /root/.ssh/known_hosts
+        - /root/.ssh/authorized_keys
+
+    - name: deconfigure instance | zero out files
+      ansible.builtin.shell:
+        cmd: cat /dev/null > "{{ file }}"
+      loop_control:
+        loop_var: file
+      loop:
+        - /var/log/audit/audit.log
+        - /var/log/wtmp
+        - /var/log/lastlog
+        - /var/log/grubby
+
+    - name: deconfigure instance | shut system down
+      community.general.shutdown:
+
+    - name: deconfigure instance | 15 second pause for shutdown
+      ansible.builtin.pause:
+        seconds: 15
+
+    # - name: remove NIC from VM
+    #   community.vmware.vmware_guest_network:
+    #     vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+    #     vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+    #     vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='')}}"
+    #     vcenter_validate_certs: false
+    #     name: "{{ golden_image_fqdn }}"
+    #     mac_address: "{{ ansible_facts.ansible_default_ipv4.macaddress }}"
+    #     state: absent
+    #   delegate_to: localhost
+
+    # - name: create template from virtual machine
+    #   community.vmware.vmware_guest:
+    #     vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+    #     vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+    #     vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='')}}"
+    #     vcenter_validate_certs: false
+    #     name: "{{ golden_image_fqdn }}"
+    #     is_template: yes
+    #   delegate_to: localhost
+    #   tags:
+    #     - template

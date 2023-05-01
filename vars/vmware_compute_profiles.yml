@@ -1,11 +1,12 @@
 ---
 satellite_compute_profiles:
-  - name: "2-Medium IMAGE RHEL9 ESX NET_apps"
+  - name: "VMware Medium RHEL9 ESX NET_apps"
     compute_attributes:
       - compute_resource: "{{ lookup('ansible.builtin.vars', 'satellite_compute_resource', default='')}}"
         vm_attrs:
           cluster: "{{ lookup('ansible.builtin.vars', 'vcenter_cluster', default='')}}"
-          path: /Datacenter/vm/
+            #path: /Datacenter/vm/
+          path: /Datacenters/DC1/vm/
           scsi_controllers:
           - type: ParaVirtualSCSIController  
           memoryHotAddEnabled: true
@@ -22,14 +23,15 @@ satellite_compute_profiles:
           interfaces_attributes:
             0:
               type: "VirtualVmxnet3"
-              network: "VLAN5"
+              network: "VLAN 5"
 
-  - name: "2-Medium IMAGE RHEL8 ESX NET_apps"
+  - name: "VMware Medium RHEL8 ESX NET_apps"
     compute_attributes:
       - compute_resource: "{{ lookup('ansible.builtin.vars', 'satellite_compute_resource', default='')}}"
         vm_attrs:
           cluster: "{{ lookup('ansible.builtin.vars', 'vcenter_cluster', default='')}}"
-          path: /Datacenter/vm/
+            #path: /Datacenter/vm/
+          path: /Datacenters/DC1/vm/
           scsi_controllers:
           - type: ParaVirtualSCSIController  
           memoryHotAddEnabled: true
@@ -46,4 +48,5 @@ satellite_compute_profiles:
           interfaces_attributes:
             0:
               type: "VirtualVmxnet3"
-              network: "VLAN5"
+              network: "VLAN 5"
+

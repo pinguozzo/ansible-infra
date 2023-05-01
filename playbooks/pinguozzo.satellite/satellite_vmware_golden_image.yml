@@ -78,10 +78,10 @@
       name: "{{ golden_image_fqdn }}"
       state: present
       build: true
-      hostgroup: "{{ satellite_hostgroups_parent }}/ESX RHEL8 NET_apps"
+      hostgroup: "ESX RHEL8 NET_apps"
       compute_resource: "VMware"
-      compute_profile: "2-Medium IMAGE RHEL8 ESX NET_apps"
-      operatingsystem: RedHat 8.6
+      compute_profile: "VMware Medium RHEL8 ESX NET_apps"
+      operatingsystem: "RedHat 8.6"
       ptable: 'Kickstart default'
       provision_method: bootdisk
       subnet: "{{ golden_image_subnet }}"
