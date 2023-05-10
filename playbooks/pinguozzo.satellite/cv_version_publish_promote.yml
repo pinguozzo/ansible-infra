@@ -16,8 +16,12 @@
       - cv-rhel9_soe_extras
       - cv-capsules
       - cv-rhvh
+      - cv-leapp
 
     satellite_infra_content_views:
+      leapp:
+        name: cv-leapp
+        lfe: LAB
       satellite:
         name: cv-capsules
         lfe: INFRA
