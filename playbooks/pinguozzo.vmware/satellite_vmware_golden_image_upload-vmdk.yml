@@ -1,0 +1,50 @@
+---
+- name: create golden image vm template
+  hosts: "{{ targeted_host| default('localhost') }}"
+  gather_facts: no
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+    - "{{ playbook_dir }}/../../vars/parameters.yml"
+
+  vars:
+
+  tasks: 
+
+    - name: set connection info
+      ansible.builtin.set_fact:
+        connection_args:
+            vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+            vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+            vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+      tags: always
+
+    - name: copy golden image vmdk file to datastore
+      community.vmware.vsphere_copy:
+        hostname: '{{ vcenter_hostname }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        src: "{{ playbook_dir }}/../..//{{ os_major }}-builder.vmdk"
+        validate_certs: false
+        datacenter: DC1
+        datastore: datastore1
+        path: "my_vmdk/{{ os_major }}-golden.vmdk"
+      tags: vmdk
+
+    - name: ensure converted image for {{ os_major }} is not present
+      community.vmware.vsphere_file:
+        host: '{{ vcenter_hostname }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        validate_certs: false
+        datacenter: DC1
+        datastore: datastore1
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "my_vmdk/{{ os_major }}-golden-converted.vmdk"
+        - "my_vmdk/{{ os_major }}-golden-converted-flat.vmdk"
+
+    - name: convert the image in an up to date VMDK format
+      ansible.builtin.command: "vmkfstools -i /vmfs/volumes/datastore1/my_vmdk/{{ os_major }}-golden.vmdk  /vmfs/volumes/datastore1/my_vmdk/{{ os_major }}-golden-converted.vmdk -d thin"
+      delegate_to: "{{ esxi_host }}"
