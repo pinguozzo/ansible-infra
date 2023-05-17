@@ -10,7 +10,7 @@ satellite_hostgroups:
   #provisioning_method: bootdisk
   ptable: "Kickstart default"
   pxe_loader: "PXELinux BIOS"
-  content_source: "{{ satellite_capsule }}"
+  content_source: "{{ capsule_server }}"
   openscap_proxy: "{{ satellite_server }}"
   kickstart_repository: "Red Hat Enterprise Linux 8 for x86_64 - BaseOS Kickstart 8.6"
   domain: "{{ satellite_domain }}"
@@ -58,7 +58,7 @@ satellite_hostgroups:
   #provisioning_method: bootdisk
   ptable: "Kickstart default"
   pxe_loader: "PXELinux BIOS"
-  content_source: "{{ satellite_capsule }}"
+  content_source: "{{ capsule_server }}"
   openscap_proxy: "{{ satellite_server }}"
   kickstart_repository: "Red Hat Enterprise Linux 9 for x86_64 - BaseOS Kickstart 9.0"
   domain: "{{ satellite_domain }}"

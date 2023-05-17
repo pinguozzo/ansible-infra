@@ -1,0 +1,53 @@
+---
+- name: register vm to satellite
+  hosts: to_register
+  become: true
+  gather_facts: yes
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+
+  vars:
+    rhc_organization: "{{ satellite_organization }}"
+    rhc_server:
+      hostname: "{{ capsule_server }}"
+      port: 443
+      prefix: /rhsm
+      insecure: true
+    rhc_baseurl: "https://{{ capsule_server }}/pulp/content/"
+    rhc_state: present
+
+  pre_tasks:
+
+    - name: wait for vm to become reachable
+      ansible.builtin.wait_for_connection:
+        timeout: 900
+
+    - name: check connectivity to "{{ ansible_play_hosts }}"
+      ping:
+
+    - name: Install Katello RPM for Satellite Server
+      ansible.builtin.dnf:
+        name: https://{{ satellite_server }}/pub/katello-ca-consumer-latest.noarch.rpm
+        validate_certs: false
+        disable_gpg_check: true
+        state: present
+
+    - name: Set platform/version specific variables
+      include_vars: "{{ __vars_file }}"
+      loop:
+        - "{{ ansible_facts['os_family'] }}.yml"
+        - "{{ ansible_facts['distribution'] }}.yml"
+        - >-
+          {{ ansible_facts['distribution'] ~ '_' ~
+          ansible_facts['distribution_major_version'] }}.yml
+        - >-
+          {{ ansible_facts['distribution'] ~ '_' ~
+          ansible_facts['distribution_version'] }}.yml
+      vars:
+        __vars_file: "{{ playbook_dir }}/../../vars/{{ item }}"
+      when: __vars_file is file
+
+  roles:
+    - role: redhat.rhel_system_roles.rhc
+

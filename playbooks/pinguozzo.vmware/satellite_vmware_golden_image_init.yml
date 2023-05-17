@@ -1,0 +1,34 @@
+---
+- name: init
+  hosts: all
+  gather_facts: no
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+    - "{{ playbook_dir }}/../../vars/parameters.yml"
+
+  vars:
+
+- name: Include satellite_vmware_golden_image_upload-vmdk.yml
+  import_playbook: satellite_vmware_golden_image_upload-vmdk.yml 
+  tags: upload_vmdk,convert
+
+- name: Include satellite_vmware_golden_image_template_create.yml
+  import_playbook: satellite_vmware_golden_image_template_create.yml
+  tags: template
+
+- name: Include satellite_vmware_golden_image_create_vm.yml
+  import_playbook: satellite_vmware_golden_image_create_vm.yml
+  tags: create
+
+- name: Include satellite_vmware_golden_image_add_host_inventory.yml
+  import_playbook: satellite_vmware_golden_image_add_host_inventory.yml
+  tags: add_host
+
+- name: Include satellite_vmware_golden_image_register.yml
+  import_playbook: satellite_vmware_golden_image_register.yml
+  tags: register
+
+- name: Include satellite_vmware_golden_image_add_swap.yml
+  ansible.builtin.import_playbook: satellite_vmware_golden_image_add_swap.yml
+  tags: add_swap

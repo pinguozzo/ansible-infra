@@ -1,0 +1,5 @@
+---
+rhc_auth:
+  activation_keys:
+    keys:
+      - "ak-rhel8"

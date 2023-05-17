@@ -1,0 +1,20 @@
+---
+vm_data:
+  #name: '{{ vm_name }}'
+  interfaces:
+    - adapter:
+        ipv4:
+          type: STATIC
+          gateways:
+            - '{{ gateway_ip|default(''192.168.5.1'') }}'
+          ip_address: '{{ vm_ip | default('''', true) }}'
+          prefix: 24
+
+infra:
+  domain: "{{ apps_domain }}"
+  time_zone: 'Europe\Zurich'
+  dns:
+    dns_servers: 
+      - '{{ dns_server | default(''192.168.5.30'') }}'
+    dns_suffix_list:
+      - '{{ apps_domain }}'

@@ -1,6 +1,6 @@
 ---
-- name: create golden image vm template
-  hosts: "{{ targeted_host| default('localhost') }}"
+- name: copy and convert image
+  hosts: localhost
   gather_facts: no
 
   vars_files:
@@ -10,14 +10,12 @@
   vars:
 
   tasks: 
-
     - name: set connection info
       ansible.builtin.set_fact:
         connection_args:
             vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
             vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
             vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
-      tags: always
 
     - name: copy golden image vmdk file to datastore
       community.vmware.vsphere_copy:
@@ -48,3 +46,4 @@
     - name: convert the image in an up to date VMDK format
       ansible.builtin.command: "vmkfstools -i /vmfs/volumes/datastore1/my_vmdk/{{ os_major }}-golden.vmdk  /vmfs/volumes/datastore1/my_vmdk/{{ os_major }}-golden-converted.vmdk -d thin"
       delegate_to: "{{ esxi_host }}"
+      tags: convert
