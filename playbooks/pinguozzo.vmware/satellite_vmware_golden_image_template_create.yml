@@ -30,7 +30,8 @@
           folder: "{{ lookup('vmware.vmware_rest.folder_moid', '/DC1/vm', **connection_args) }}"
           resource_pool: "{{ lookup('vmware.vmware_rest.resource_pool_moid', '/DC1/host/KNA/Resources', **connection_args) }}"
         name: "{{ os_major }}-builder-vm"
-        guest_OS: RHEL_9_64
+        guest_OS: "{% if os_major == 'rhel9' %}RHEL_9_64{% else %}RHEL_8_64{% endif %}"
+          #guest_OS: RHEL_9_64
         hardware_version: VMX_19
         memory:
           hot_add_enabled: true

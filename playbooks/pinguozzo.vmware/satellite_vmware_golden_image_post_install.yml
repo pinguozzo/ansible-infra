@@ -1,5 +1,5 @@
 ---
-- name: register vm to satellite
+- name: post-install tasks
   hosts: to_register
   become: true
   gather_facts: yes
@@ -8,14 +8,6 @@
     - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
 
   vars:
-    rhc_organization: "{{ satellite_organization }}"
-    rhc_server:
-      hostname: "{{ capsule_server }}"
-      port: 443
-      prefix: /rhsm
-      insecure: true
-    rhc_baseurl: "https://{{ capsule_server }}/pulp/content/"
-    rhc_state: present
 
   pre_tasks:
 
@@ -49,7 +41,7 @@
       when: __vars_file is file
 
   tasks:
-    - name: Install RHEL/Fedora Web Console (Cockpit)
+    - name: install RHEL/Fedora web console (cockpit)
       include_role:
         name: redhat.rhel_system_roles.cockpit
       vars:
@@ -57,7 +49,7 @@
         #cockpit_packages: minimal
         #cockpit_packages: full
 
-    - name: Configure Firewall for Web Console
+    - name: configure firewall for web console
       include_role:
         name: redhat.rhel_system_roles.firewall
       vars:
@@ -65,7 +57,15 @@
           service: cockpit
           state: enabled
 
-
-  roles:
-    - role: redhat.rhel_system_roles.rhc
-
+    - name: register host to satellite
+      include_role:
+        name: redhat.rhel_system_roles.rhc
+      vars:
+        rhc_organization: "{{ satellite_organization }}"
+        rhc_server:
+          hostname: "{{ capsule_server }}"
+          port: 443
+          prefix: /rhsm
+          insecure: true
+        rhc_baseurl: "https://{{ capsule_server }}/pulp/content/"
+        rhc_state: present
