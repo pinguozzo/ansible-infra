@@ -48,6 +48,24 @@
         __vars_file: "{{ playbook_dir }}/../../vars/{{ item }}"
       when: __vars_file is file
 
+  tasks:
+    - name: Install RHEL/Fedora Web Console (Cockpit)
+      include_role:
+        name: redhat.rhel_system_roles.cockpit
+      vars:
+        cockpit_packages: default
+        #cockpit_packages: minimal
+        #cockpit_packages: full
+
+    - name: Configure Firewall for Web Console
+      include_role:
+        name: redhat.rhel_system_roles.firewall
+      vars:
+        firewall:
+          service: cockpit
+          state: enabled
+
+
   roles:
     - role: redhat.rhel_system_roles.rhc
 
