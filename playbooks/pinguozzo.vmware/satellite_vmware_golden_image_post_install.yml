@@ -41,6 +41,19 @@
       when: __vars_file is file
 
   tasks:
+    - name: register host to satellite
+      include_role:
+        name: redhat.rhel_system_roles.rhc
+      vars:
+        rhc_organization: "{{ satellite_organization }}"
+        rhc_server:
+          hostname: "{{ capsule_server }}"
+          port: 443
+          prefix: /rhsm
+          insecure: true
+        rhc_baseurl: "https://{{ capsule_server }}/pulp/content/"
+        rhc_state: present
+
     - name: install RHEL/Fedora web console (cockpit)
       include_role:
         name: redhat.rhel_system_roles.cockpit
@@ -57,15 +70,3 @@
           service: cockpit
           state: enabled
 
-    - name: register host to satellite
-      include_role:
-        name: redhat.rhel_system_roles.rhc
-      vars:
-        rhc_organization: "{{ satellite_organization }}"
-        rhc_server:
-          hostname: "{{ capsule_server }}"
-          port: 443
-          prefix: /rhsm
-          insecure: true
-        rhc_baseurl: "https://{{ capsule_server }}/pulp/content/"
-        rhc_state: present

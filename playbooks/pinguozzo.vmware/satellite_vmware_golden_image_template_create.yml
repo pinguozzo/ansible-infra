@@ -26,7 +26,7 @@
         vcenter_validate_certs: false
         placement:
           cluster: "{{ lookup('vmware.vmware_rest.cluster_moid', '/DC1/host/KNA', **connection_args) }}"
-          datastore: "{{ lookup('vmware.vmware_rest.datastore_moid', '/DC1/datastore/datastore1', **connection_args) }}"
+          datastore: "{{ lookup('vmware.vmware_rest.datastore_moid', '/DC1/datastore/ssd', **connection_args) }}"
           folder: "{{ lookup('vmware.vmware_rest.folder_moid', '/DC1/vm', **connection_args) }}"
           resource_pool: "{{ lookup('vmware.vmware_rest.resource_pool_moid', '/DC1/host/KNA/Resources', **connection_args) }}"
         name: "{{ os_major }}-builder-vm"
@@ -40,7 +40,7 @@
           - type: SATA
             backing:
               type: VMDK_FILE
-              vmdk_file: "[datastore1] my_vmdk/{{ os_major }}-golden-converted.vmdk"
+              vmdk_file: "[ssd] my_vmdk/{{ os_major }}-golden-converted.vmdk"
         cdroms:
           - type: SATA
             sata:
@@ -88,7 +88,7 @@
           published: true
           authentication_method: NONE
         storage_backings:
-        - datastore_id: "{{ lookup('vmware.vmware_rest.datastore_moid', '/DC1/datastore/datastore1', **connection_args) }}"
+        - datastore_id: "{{ lookup('vmware.vmware_rest.datastore_moid', '/DC1/datastore/ssd', **connection_args) }}"
           type: DATASTORE
         state: present
       register: local_lib

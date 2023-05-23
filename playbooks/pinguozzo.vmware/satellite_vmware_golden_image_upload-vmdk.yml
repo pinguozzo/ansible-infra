@@ -25,7 +25,7 @@
         src: "{{ playbook_dir }}/../..//{{ os_major }}-builder.vmdk"
         validate_certs: false
         datacenter: DC1
-        datastore: datastore1
+        datastore: ssd
         path: "my_vmdk/{{ os_major }}-golden.vmdk"
       tags: vmdk
 
@@ -36,7 +36,7 @@
         password: '{{ vcenter_password }}'
         validate_certs: false
         datacenter: DC1
-        datastore: datastore1
+        datastore: ssd
         path: "{{ item }}"
         state: absent
       loop:
@@ -44,6 +44,6 @@
         - "my_vmdk/{{ os_major }}-golden-converted-flat.vmdk"
 
     - name: convert the image in an up to date VMDK format
-      ansible.builtin.command: "vmkfstools -i /vmfs/volumes/datastore1/my_vmdk/{{ os_major }}-golden.vmdk  /vmfs/volumes/datastore1/my_vmdk/{{ os_major }}-golden-converted.vmdk -d thin"
+      ansible.builtin.command: "vmkfstools -i /vmfs/volumes/ssd/my_vmdk/{{ os_major }}-golden.vmdk  /vmfs/volumes/ssd/my_vmdk/{{ os_major }}-golden-converted.vmdk -d thin"
       delegate_to: "{{ esxi_host }}"
       tags: convert
