@@ -26,7 +26,10 @@
 
     - name: create initial /etc/lvm/devices/system.devices file if not exists
       ansible.builtin.command: vgimportdevices --all
-      when: st.stat.exists == false
+      when:
+        - st.stat.exists == false
+        - >-
+          ansible_facts['distribution_major_version'] | int >= 9
 
   roles:
     - name: redhat.rhel_system_roles.storage
