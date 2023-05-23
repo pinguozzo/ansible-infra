@@ -1,5 +1,3 @@
 ---
 collections:
-  - name: ovirt.ovirt
-  - name: community.general  
-  - name: redhat.satellite
+  - name: community.vmware
