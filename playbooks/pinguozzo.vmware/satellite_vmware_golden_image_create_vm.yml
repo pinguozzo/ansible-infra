@@ -66,6 +66,12 @@
           cluster: "{{ lookup('vmware.vmware_rest.cluster_moid', '/DC1/host/KNA', **connection_args) }}"
           folder: "{{ lookup('vmware.vmware_rest.folder_moid', '/DC1/vm', **connection_args) }}"
           resource_pool: "{{ lookup('vmware.vmware_rest.resource_pool_moid', '/DC1/host/KNA/Resources', **connection_args) }}"
+        hardware_customization:
+          cpu_update: 
+            num_cpus: "{{ cpu_count | default(2) }}"
+            num_cores_per_socket: "{{ cores_per_socket | default(1) }}"
+          memory_update:
+            memory: "{{ mem_size | default(1024) }}"
         state: deploy
       register: vmware_vm
       with_sequence: start=1 end="{{ num_instances| default('1', true) }}"

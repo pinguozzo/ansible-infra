@@ -33,9 +33,14 @@
         guest_OS: "{% if os_major == 'rhel9' %}RHEL_9_64{% else %}RHEL_8_64{% endif %}"
           #guest_OS: RHEL_9_64
         hardware_version: VMX_19
+        cpu:
+          count: "{{ cpu_count | default(2) }}"
+          cores_per_socket: "{{ cores_per_socket | default(1) }}"
+          hot_add_enabled: yes
+          hot_remove_enabled: yes
         memory:
           hot_add_enabled: true
-          size_MiB: 1024
+          size_MiB: "{{ mem_size | default(1024) }}"
         disks:
           - type: SATA
             backing:
