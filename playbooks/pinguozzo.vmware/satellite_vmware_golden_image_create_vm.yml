@@ -56,7 +56,7 @@
 
     - name: set vm_name
       set_fact:
-        vm_name: "{{ vm_name | default(lookup('community.general.random_pet'), true) }}"
+        vm_name: "{{ static_name | default(lookup('community.general.random_pet'), true) }}"
 
     - name: "deploy a new vm with {{ os_major }} based on the template"
       vmware.vmware_rest.vcenter_vmtemplate_libraryitems:
