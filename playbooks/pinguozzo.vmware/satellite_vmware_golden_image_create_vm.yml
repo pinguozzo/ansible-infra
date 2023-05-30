@@ -8,7 +8,7 @@
     - "{{ playbook_dir }}/../../vars/parameters.yml"
 
   vars:
-    static_ip: no
+    ip_mode: "{{ ( ip_mode == 'dhcp') | ternary('dhcp', 'static') }}"
 
   tasks: 
 
@@ -115,7 +115,7 @@
           dns_suffix_list: []
           dns_servers: []
       register: customization_result
-      when: not static_ip
+      when: ip_mode == "dhcp"
 
     - name: "customize the vm {{ vmware_vm.value[0].name }} with static_ip"
       vmware.vmware_rest.vcenter_vm_guest_customization:
@@ -133,7 +133,7 @@
         interfaces: "{{ vm_data.interfaces }}"
         global_DNS_settings: "{{ infra.dns }}"
       register: customization_result
-      when: static_ip | bool
+      when: ip_mode == "static"
 
     - name: collect information about a specific VM
       vmware.vmware_rest.vcenter_vm_info:
