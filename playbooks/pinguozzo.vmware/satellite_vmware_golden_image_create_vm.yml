@@ -8,6 +8,7 @@
     - "{{ playbook_dir }}/../../vars/parameters.yml"
 
   vars:
+    static_ip: no
 
   tasks: 
 
@@ -27,11 +28,11 @@
         vcenter_validate_certs: false
       register: all_content_libraries
     
-    - name: Use the name to identify the right Content Library
+    - name: use the name to identify the right content library
       set_fact:
         local_lib: "{{ all_content_libraries.value | selectattr('name', 'equalto', 'local')|first }}"
     
-    - name: Get the list of items of the Local library
+    - name: get the list of items of the local library
       vmware.vmware_rest.content_library_item_info:
         vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
         vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
@@ -40,7 +41,7 @@
         library_id: '{{ local_lib.id }}'
       register: lib_items
 
-    - name: Get the list of items of the local library
+    - name: get the list of items of the local library
       vmware.vmware_rest.content_library_item_info:
         vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
         vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
@@ -49,11 +50,12 @@
         library_id: '{{ local_lib.id }}'
       register: lib_items
 
-    - name: Use the name to identify the item
+    - name: use the name to identify the item
       set_fact:
         my_template_item: "{{ lib_items.value | selectattr('name', 'equalto', ( os_major ) + '-template')|first }}"
 
     - name: set vm_name
+      set_fact:
         vm_name: "{{ vm_name | default(lookup('community.general.random_pet'), true) }}"
 
     - name: "deploy a new vm with {{ os_major }} based on the template"
@@ -77,13 +79,13 @@
             memory: "{{ mem_size | default(1024) }}"
         state: deploy
       register: vmware_vm
-      with_sequence: start=1 end="{{ num_instances| default('1', true) }}"
+      # with_sequence: start=1 end="{{ num_instances| default('1', true) }}"
 
     - name: "report the vm"
       debug:
         var: vmware_vm
 
-    - name: "Get the VM"
+    - name: "get the vm"
       vmware.vmware_rest.vcenter_vm_info:
         vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
         vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
@@ -105,9 +107,33 @@
             hostname:
               fixed_name: '{{ vm_name }}'
               type: FIXED
+        interfaces:
+        - adapter:
+            ipv4:
+              type: DHCP
+        global_DNS_settings:
+          dns_suffix_list: []
+          dns_servers: []
+      register: customization_result
+      when: not static_ip
+
+    - name: "customize the vm {{ vmware_vm.value[0].name }} with static_ip"
+      vmware.vmware_rest.vcenter_vm_guest_customization:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        vm: '{{ vmware_vm.value[0].vm }}'
+        configuration_spec:
+          linux_config:
+            domain: "{{ infra.domain }}"
+            hostname:
+              fixed_name: '{{ vm_name }}'
+              type: FIXED
         interfaces: "{{ vm_data.interfaces }}"
         global_DNS_settings: "{{ infra.dns }}"
       register: customization_result
+      when: static_ip | bool
 
     - name: collect information about a specific VM
       vmware.vmware_rest.vcenter_vm_info:
