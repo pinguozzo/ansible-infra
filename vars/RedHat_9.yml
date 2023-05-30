@@ -2,4 +2,4 @@
 rhc_auth:
   activation_keys:
     keys:
-      - "ak-rhel9"
+      - "ak-rhel9-vmware"
