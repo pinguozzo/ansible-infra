@@ -53,14 +53,16 @@
       set_fact:
         my_template_item: "{{ lib_items.value | selectattr('name', 'equalto', ( os_major ) + '-template')|first }}"
 
+    - name: set vm_name
+        vm_name: "{{ vm_name | default(lookup('community.general.random_pet'), true) }}"
+
     - name: "deploy a new vm with {{ os_major }} based on the template"
       vmware.vmware_rest.vcenter_vmtemplate_libraryitems:
         vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
         vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
         vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
         vcenter_validate_certs: false
-          #name: "{{ vm_name ~ '.' ~ infra.domain }}"
-        name: "{{ vm_name | default(lookup('community.general.random_pet'), true) ~ '.' ~ infra.domain }}"
+        name: "{{ vm_name ~ '.' ~ infra.domain }}"
         library: "{{ local_lib.id }}"
         template_library_item: "{{ my_template_item.id }}"
         placement:
