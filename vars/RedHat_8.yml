@@ -1,5 +1,6 @@
 ---
 rhc_auth:
+  hostgroup: "ESX RHEL8 NET_apps"
   activation_keys:
     keys:
       - "ak-rhel8-vmware"
