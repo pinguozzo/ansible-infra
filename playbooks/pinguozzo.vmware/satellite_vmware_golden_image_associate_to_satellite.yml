@@ -1,0 +1,94 @@
+---
+- name: associate vm to compute resource
+  hosts: to_register
+  gather_facts: no
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+
+  vars:
+    json_query_name: "json.results[*].name"
+
+  tasks:
+    - name: associate to cr 
+      block:
+      - name: get host compute resource list
+        uri:
+          url: "{{ satellite_server_url }}/api/compute_resources/"
+          user: "{{ satellite_username }}"
+          password: "{{ satellite_password }}"
+          method: GET
+          return_content: yes
+          force_basic_auth: yes
+          validate_certs: no
+          status_code: [200,201,202]
+        no_log: True 
+        register: cr_result
+        tags: cr_search
+
+      - name: set_fact cr_list
+        set_fact:
+          cr_list: "{{ cr_result | community.general.json_query(json_query_name) | join(', ') }}"
+        tags: cr_search
+
+      - name: get cr names and id
+        set_fact:
+          cr_vmware_id: "{{ item.id }}"
+          #cr_vmware_id: "{{ cr|default({}) | combine ( {item.name : item.id } ) }}"
+        with_items: "{{ cr_result| community.general.json_query('json.results[*]')}}" 
+        when: 
+          - not item.provider | regex_search('^VMware*')
+        no_log: True
+        tags: cr_search
+
+      - name: show cr, id{{':'}}
+        debug: var=cr_vmware_id
+        tags: cr_search
+
+      - name: get VMware compute resource vms list
+        uri:
+          url: "{{ satellite_server_url }}/api/compute_resources/{{ cr_vmware_id }}/available_virtual_machines"
+          user: "{{ satellite_username }}"
+          password: "{{ satellite_password }}"
+          method: GET
+          return_content: yes
+          force_basic_auth: yes
+          validate_certs: no
+          status_code: [200,201,202]
+        no_log: True
+        register: cr_vms_result
+        tags: cr_search
+
+      - name: get vms id(s)
+        set_fact:
+          vms: "{{ vms|default({}) | combine ( {item.name : item.id } ) }}"
+        loop: "{{ cr_vms_result| community.general.json_query('json[*]')}}"
+        #when: not item.provider | regex_search('^VMware*')
+        when: 
+          #- item.name is not match('^VMware')
+          - item.name == inventory_hostname
+        no_log: True
+        tags: cr_search
+
+      - name: show vms 
+        debug: var=vms
+        tags: cr_search
+
+      - name: assign vms to compute resource 
+        uri:
+          url: "{{ satellite_server_url }}/api/compute_resources/{{cr_vmware_id }}/associate/{{ item.id }}"
+          user: "{{ satellite_username }}"
+          password: "{{ satellite_password }}"
+          method: PUT
+          return_content: yes
+          force_basic_auth: yes
+          validate_certs: no
+          status_code: [200,201,422]
+          body_format: json
+        loop: "{{ cr_vms_result| community.general.json_query('json[*]')}}"
+        when:
+          #- item.name is not match('^VMware')
+          - item.name == inventory_hostname
+        no_log: True
+        tags: cr_search
+      delegate_to: localhost

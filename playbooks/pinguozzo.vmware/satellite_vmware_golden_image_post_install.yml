@@ -18,7 +18,7 @@
     - name: check connectivity to "{{ ansible_play_hosts }}"
       ping:
 
-    - name: Install Katello RPM for Satellite Server
+    - name: install katello rpm for satellite server
       ansible.builtin.dnf:
         name: https://{{ satellite_server }}/pub/katello-ca-consumer-latest.noarch.rpm
         validate_certs: false

@@ -29,6 +29,10 @@
   import_playbook: satellite_vmware_golden_image_post_install.yml
   tags: post_install
 
+- name: Include satellite_vmware_golden_image_associate_to_satellite.yml
+  import_playbook: satellite_vmware_golden_image_associate_to_satellite.yml
+  tags: post_install
+
 - name: Include satellite_vmware_golden_image_add_swap.yml
   ansible.builtin.import_playbook: satellite_vmware_golden_image_add_swap.yml
   tags: add_swap
