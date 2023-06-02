@@ -1,6 +1,6 @@
 ---
 - name: configure swap 
-  hosts: all:to_register
+  hosts: to_register
   become: true
 
   vars_files:
