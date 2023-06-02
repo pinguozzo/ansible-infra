@@ -1,35 +1,44 @@
 ---
 - name: configure swap 
-  hosts: to_register
+  hosts: all:to_register
   become: true
 
   vars_files:
     - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
 
   vars:
-    storage_pools:
-    - name: swapvg
-      disks:
-        - /dev/sdb
-      volumes:
-        - name: swap
-          size: 80%
-          fs_type: swap
-          state: present
 
   pre_tasks:
+    - name: pre-check and device identification
+      block:
+        - name: check if /etc/lvm/devices/system.devices file exists
+          ansible.builtin.stat:
+            path: /etc/lvm/devices/system.devices 
+          register: st
 
-    - name: check if /etc/lvm/devices/system.devices file exists
-      ansible.builtin.stat:
-        path: /etc/lvm/devices/system.devices 
-      register: st
+        - name: create initial /etc/lvm/devices/system.devices file if not exists
+          ansible.builtin.command: vgimportdevices --all
+          when:
+            - st.stat.exists == false
+            - >-
+              ansible_facts['distribution_major_version'] | int >= 9
 
-    - name: create initial /etc/lvm/devices/system.devices file if not exists
-      ansible.builtin.command: vgimportdevices --all
-      when:
-        - st.stat.exists == false
-        - >-
-          ansible_facts['distribution_major_version'] | int >= 9
+        - name: identity swap disks
+          set_fact:
+            swap_disks: "{{ ansible_devices | dict2items | selectattr('key', 'match', '^sd.*') | rejectattr('key', 'match', '^sda$') | map(attribute='key') | list }}"
+
+        - name: show value of swap_disks
+          ansible.builtin.debug:
+            var: swap_disks
 
   roles:
     - name: redhat.rhel_system_roles.storage
+      vars:
+        storage_pools:
+        - name: swapvg
+          disks: "{{ swap_disks }}"
+          volumes:
+            - name: swap
+              size: 80%
+              fs_type: swap
+              state: present
