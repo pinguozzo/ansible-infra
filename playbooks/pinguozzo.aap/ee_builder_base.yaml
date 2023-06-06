@@ -22,7 +22,7 @@
       loop: "{{ groups['builder'] }}"
 
 - name: create custom EE
-  hosts: "{{ builder | default('localhost') }}"
+  hosts: "{{ builder }}"
   gather_facts: false
   collections:
     - infra.ee_utilities
