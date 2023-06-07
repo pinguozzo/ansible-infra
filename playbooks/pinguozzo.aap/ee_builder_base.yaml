@@ -10,7 +10,7 @@
     - name: add targeted_host to group
       ansible.builtin.add_host:
         hostname: "{{ builder_host }}"
-        groups: builder 
+        groups: builder
  
     - name: show builder host
       debug: var=groups['builder']
@@ -22,7 +22,7 @@
       loop: "{{ groups['builder'] }}"
 
 - name: create custom EE
-  hosts: "{{ builder }}"
+  hosts: builder
   gather_facts: false
   collections:
     - infra.ee_utilities
