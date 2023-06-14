@@ -54,7 +54,7 @@
 
         - name: set msg output
           set_fact:
-            msg: "New VM: {{ output | community.general.json_query('results[*].entity.hosts[*].name') | join('')}} deploy on RHV"
+            msg: "New VM: {{ output | community.general.json_query('results[*].entity.hosts[*].name') | join('')}} deployed on RHV"
           no_log: true
 
         - name: print new host(s) fqdn
