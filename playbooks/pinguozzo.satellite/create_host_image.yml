@@ -1,5 +1,5 @@
 ---
-- name: create image based host 
+- name: create image based  host on vmware or rhv
   hosts: "{{ targeted_host| default('localhost') }}"
 
   module_defaults:
@@ -26,52 +26,104 @@
       ansible.builtin.assert:
         that: 
           - domain_name is defined
-          - hg_name_image is defined
+          - hg_name is defined
           - compute_profile is defined
           - image_name is defined
-        fail_msg: "domain, hg_name, compute_profile and image_name must be defined"
+          - deploy_on_rhv
+          - deploy_on_vmware
+        fail_msg: "domain, hg_name, compute_profile, image_name, deploy_on_rhv or deploy_on_vmware must be defined"
 
   tasks:
     - name: create host(s)
-      redhat.satellite.host:
-        hostgroup: "{{ hg_name_image }}"
-        name: "{{ vm_name | default(lookup('community.general.random_pet'), true) ~ (vm_name is defined and num_instances | int > 1 )|ternary(item, '') ~ '.' ~ domain_name }}"
-        state: present
-        compute_resource: "RHV"
-        compute_profile: "{{ compute_profile }}"
-        compute_attributes:
-          start: "1"
-          cpus: "{{ vcpu | default(omit) }}"
-          memory_mb: "{{ memory | default(omit) }}"
-        provision_method: "image"
-        image: "{{ image_name }}"
-        build: true
-      register: output
-      with_sequence: start=1 end="{{ num_instances|default(1) }}"
+      block:
+        - name: create image based host in RHV
+          redhat.satellite.host:
+            hostgroup: "{{ hg_name }}"
+            name: "{{ vm_name | default(lookup('community.general.random_pet'), true) ~ (vm_name is defined and num_instances | int > 1 )|ternary(item, '') ~ '.' ~ domain_name }}"
+            state: present
+            compute_resource: "RHV"
+            compute_profile: "{{ compute_profile }}"
+            compute_attributes:
+              start: "1"
+              cpus: "{{ vcpu | default(omit) }}"
+              memory_mb: "{{ memory | default(omit) }}"
+            provision_method: "image"
+            image: "{{ image_name }}"
+            build: true
+          register: output
+          with_sequence: start=1 end="{{ num_instances|default(1) }}"
 
-    - name: set msg output
-      set_fact:
-        msg: "New VM: {{ output | community.general.json_query('results[*].entity.hosts[*].name') | join('')}}"
-      no_log: true
+        - name: set msg output
+          set_fact:
+            msg: "New VM: {{ output | community.general.json_query('results[*].entity.hosts[*].name') | join('')}} deploy on RHV"
+          no_log: true
 
-    - name: print new host(s) fqdn
-      debug:
-        var: msg
+        - name: print new host(s) fqdn
+          debug:
+            var: msg
 
-    - name: "notify via telegram"
-      telegram:
-        token: "{{ pinguobot_token }}"
-        api_args:
-          chat_id: "{{ pinguobot_chatid }}"
-          text: "{{ msg }}"
-          parse_mode: "markdown"
-          disable_web_page_preview: true
-          disable_notification: false
-      when: notify_via_telegram | bool
+        - name: "notify via telegram"
+          telegram:
+            token: "{{ pinguobot_token }}"
+            api_args:
+              chat_id: "{{ pinguobot_chatid }}"
+              text: "{{ msg }}"
+              parse_mode: "markdown"
+              disable_web_page_preview: true
+              disable_notification: false
+          when: notify_via_telegram | bool
+      when:
+      - deploy_on_rhv is defined
+      - deploy_on_rhv | bool
 
+    - name: create host(s)
+      block:
+        - name: create host(s) in vSphere
+          redhat.satellite.host:
+            name: "{{ vm_name | default(lookup('community.general.random_pet'), true) ~ (vm_name is defined and num_instances | int > 1 )|ternary(item, '') ~ '.' ~ domain_name }}"
+            state: present
+            build: true
+            hostgroup: "{{ hg_name }}"
+              #hostgroup: "ESX RHEL8 NET_apps"
+            compute_resource: "VMware"
+            compute_profile: "{{ compute_profile }}"
+              #compute_profile: "VMware Medium RHEL8 ESX NET_apps"
+              #operatingsystem: "RedHat 8.6"
+            compute_attributes:
+              start: "1"
+            ptable: 'Kickstart default'
+            provision_method: bootdisk
+            subnet: "APPS"
+            #no_log: true
+          register: output
+          with_sequence: start=1 end="{{ num_instances|default(1) }}"
+
+        - name: set msg output
+          set_fact:
+            msg: "New VM: {{ output | community.general.json_query('results[*].entity.hosts[*].name') | join('')}} deployed on VMware"
+
+        - name: print new host(s) fqdn
+          debug:
+            var: msg
+
+        - name: "notify via telegram"
+          telegram:
+            token: "{{ pinguobot_token }}"
+            api_args:
+              chat_id: "{{ pinguobot_chatid }}"
+              text: "{{ msg }}"
+              parse_mode: "markdown"
+              disable_web_page_preview: true
+              disable_notification: false
+          when: notify_via_telegram | bool
+      when:
+      - deploy_on_vmware is defined
+      - deploy_on_vmware | bool
 
 # ansible-playbook playbooks/pinguozzo.satellite/create-host-image.yml -e num_instances=2 # it will create 2 instances with random names 
 # ansible-playbook playbooks/pinguozzo.satellite/create-host-image.yml -e num_instances=2 -e vm_name=node # it will create 2 instances with hostname: node1, node2
+# ansible-playbook playbooks/pinguozzo.satellite/create_host_image.yml -e deploy_on_vmware=true -e env=... -e num_instances=1 -e notify_via_telegram=true
 # name: "{{ lookup('ansible.builtin.vars','vm_name' , default=lookup('community.general.random_pet')) + (vm_name is defined and num_instances | int > 1 )|ternary(item, '') + '.' + domain_name, true }}"
 # name: "{{ vm_name | default(lookup('community.general.random_pet') + (vm_name is defined and num_instances | int > 1 )|ternary(item, '') + '.' + domain_name, true) }}"
 # name: "{{ vm_name | default(lookup('community.general.random_pet') ~ (vm_name is defined and num_instances | int > 1 )|ternary(item, '') ~ '.' ~ domain_name, true) }}"
+#
