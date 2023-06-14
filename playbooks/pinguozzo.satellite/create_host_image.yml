@@ -29,9 +29,8 @@
           - hg_name is defined
           - compute_profile is defined
           - image_name is defined
-          - deploy_on_rhv
-          - deploy_on_vmware
-        fail_msg: "domain, hg_name, compute_profile, image_name, deploy_on_rhv or deploy_on_vmware must be defined"
+          - (deploy_on_rhv is defined) or (deploy_on_vmware is defined )
+        fail_msg: "domain, hg_name, compute_profile, image_name must be defined"
 
   tasks:
     - name: create host(s)
