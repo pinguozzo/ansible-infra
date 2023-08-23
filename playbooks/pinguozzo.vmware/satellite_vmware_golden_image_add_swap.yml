@@ -1,10 +1,11 @@
 ---
 - name: configure swap 
-  hosts: to_register
+  hosts: "{{ to_register | default('all') }}"
   become: true
 
   vars_files:
     - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+    - "{{ playbook_dir }}/../../vars/parameters.yml"
 
   vars:
 
@@ -23,20 +24,21 @@
             - >-
               ansible_facts['distribution_major_version'] | int >= 9
 
-        - name: identity swap disks
+        - name: identify disks that are {{ swap_size }} GB for swap_vg
           set_fact:
-            swap_disks: "{{ ansible_devices | dict2items | selectattr('key', 'match', '^sd.*') | rejectattr('key', 'match', '^sda$') | map(attribute='key') | list }}"
+            swap_vg_disks: "{{ ansible_devices | dict2items | selectattr('key', 'match', '^sd.*') | rejectattr('key', 'match', '^sda$') | selectattr('value.size', 'match', '^' ~ swap_size ) | map(attribute='key') | list }}"
+            ignore_errors: yes   
 
-        - name: show value of swap_disks
+        - name: show value of {{ swap_size }} swap_vg_disks
           ansible.builtin.debug:
-            var: swap_disks
+            var: swap_vg_disks
 
   roles:
     - name: redhat.rhel_system_roles.storage
       vars:
         storage_pools:
         - name: swapvg
-          disks: "{{ swap_disks }}"
+          disks: "{{ swap_vg_disks }}"
           volumes:
             - name: swap
               size: 80%
