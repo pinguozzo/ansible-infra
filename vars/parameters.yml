@@ -18,3 +18,5 @@ infra:
       - '{{ dns_server | default(''192.168.5.30'') }}'
     dns_suffix_list:
       - '{{ apps_domain }}'
+
+swap_disk_size: "10.00 GB"
