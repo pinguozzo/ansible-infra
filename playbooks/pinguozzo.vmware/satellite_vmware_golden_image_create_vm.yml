@@ -41,15 +41,6 @@
         library_id: '{{ local_lib.id }}'
       register: lib_items
 
-    - name: get the list of items of the local library
-      vmware.vmware_rest.content_library_item_info:
-        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
-        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
-        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
-        vcenter_validate_certs: false
-        library_id: '{{ local_lib.id }}'
-      register: lib_items
-
     - name: use the name to identify the item
       set_fact:
         my_template_item: "{{ lib_items.value | selectattr('name', 'equalto', ( os_major ) + '-template')|first }}"
@@ -144,7 +135,7 @@
         vm: '{{ vmware_vm.value[0].vm }}'
       register: test_vm1_info
    
-    - name: create a new disk
+    - name: create a swap disk
       vmware.vmware_rest.vcenter_vm_hardware_disk:
         vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
         vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
@@ -153,8 +144,20 @@
         vm: '{{ vmware_vm.value[0].vm }}'
         type: SATA
         new_vmdk:
-          capacity: "{{ disk_size | default(2147483648) }}"
-      register: my_new_disk
+            capacity: "{{ swap_disk_size_in_bytes | default(10737418240) }}"
+      register: my_swap_disk
+
+    - name: create a data disk
+      vmware.vmware_rest.vcenter_vm_hardware_disk:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        vm: '{{ vmware_vm.value[0].vm }}'
+        type: SATA
+        new_vmdk:
+          capacity: "{{ disk_size | default(32212254720) }}"
+      register: my_data_disk
 
     - name: start the vm 
       vmware.vmware_rest.vcenter_vm_power:

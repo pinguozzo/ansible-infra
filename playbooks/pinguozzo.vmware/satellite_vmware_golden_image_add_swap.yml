@@ -1,6 +1,6 @@
 ---
 - name: configure swap 
-  hosts: "{{ to_register | default('all') }}"
+  hosts: to_register
   become: true
 
   vars_files:
@@ -12,24 +12,25 @@
   pre_tasks:
     - name: pre-check and device identification
       block:
-        - name: check if /etc/lvm/devices/system.devices file exists
-          ansible.builtin.stat:
-            path: /etc/lvm/devices/system.devices 
-          register: st
+        # - name: check if /etc/lvm/devices/system.devices file exists
+        #   ansible.builtin.stat:
+        #     path: /etc/lvm/devices/system.devices 
+        #   register: st
 
         - name: create initial /etc/lvm/devices/system.devices file if not exists
-          ansible.builtin.command: vgimportdevices --all
+          ansible.builtin.command: 
+            cmd: vgimportdevices --all
+            creates: /etc/lvm/devices/system.devices 
           when:
-            - st.stat.exists == false
+            #    - st.stat.exists == false
             - >-
               ansible_facts['distribution_major_version'] | int >= 9
 
         - name: identify disks that are {{ swap_size }} GB for swap_vg
           set_fact:
-            swap_vg_disks: "{{ ansible_devices | dict2items | selectattr('key', 'match', '^sd.*') | rejectattr('key', 'match', '^sda$') | selectattr('value.size', 'match', '^' ~ swap_size ) | map(attribute='key') | list }}"
-            ignore_errors: yes   
+            swap_vg_disks: "{{ ansible_devices | dict2items | selectattr('key', 'match', '^sd.*') | rejectattr('key', 'match', '^sda$') | selectattr('value.size', 'match', '^' ~ swap_disk_size ) | map(attribute='key') | list }}"
 
-        - name: show value of {{ swap_size }} swap_vg_disks
+        - name: show value of {{ swap_disk_size }} swap_vg_disks
           ansible.builtin.debug:
             var: swap_vg_disks
 
@@ -41,6 +42,6 @@
           disks: "{{ swap_vg_disks }}"
           volumes:
             - name: swap
-              size: 80%
+              size: 40%
               fs_type: swap
               state: present
