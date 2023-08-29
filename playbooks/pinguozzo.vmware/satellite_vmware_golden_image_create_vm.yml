@@ -145,7 +145,7 @@
         type: SATA
         new_vmdk:
             capacity: "{{ swap_disk_size_in_bytes | default(10737418240) }}"
-      when: add_swap
+      when: add_swap | bool
       register: my_swap_disk
 
     - name: create a data disk
@@ -158,7 +158,7 @@
         type: SATA
         new_vmdk:
           capacity: "{{ disk_size | default(32212254720) }}"
-      when: add_data_disk
+      when: add_data_disk | bool
       register: my_data_disk
 
     - name: start the vm 
