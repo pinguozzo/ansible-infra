@@ -35,4 +35,5 @@
 
 - name: Include satellite_vmware_golden_image_add_swap.yml
   ansible.builtin.import_playbook: satellite_vmware_golden_image_add_swap.yml
+  when: add_swap | bool
   tags: add_swap
