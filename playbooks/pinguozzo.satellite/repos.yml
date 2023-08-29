@@ -8,6 +8,10 @@
     - role: redhat.satellite.repositories
       vars:
         satellite_products:
+          - name: Red Hat Ansible Engine
+            repository_sets:
+              - name: Red Hat Ansible Engine 2 for RHEL 8 x86_64 (RPMs)
+
           - name: Red Hat Enterprise Linux Server
             repository_sets:
               - name: Red Hat Enterprise Linux 7 Server (RPMs)
@@ -118,7 +122,7 @@
                 releasever: 9.1
               - name: Red Hat Enterprise Linux 9 for x86_64 - AppStream (Kickstart)
                 releasever: 9.2
-                  
+
           - name: Red Hat Enterprise Linux for x86_64
             repository_sets:
               - name: Red Hat Satellite Utils 6.11 for RHEL 8 x86_64 (RPMs)
@@ -126,6 +130,7 @@
               - name: Red Hat Satellite Client 6 for RHEL 9 x86_64 (RPMs) 
               - name: Red Hat Satellite Maintenance 6.12 for RHEL 8 x86_64 (RPMs) 
               - name: Red Hat Satellite Maintenance 6.13 for RHEL 8 x86_64 (RPMs) 
+              - name: Red Hat Ceph Storage Tools 4 for RHEL 8 x86_64 (RPMs)
 
           - name: Red Hat Enterprise Linux Fast Datapath         
             repository_sets:
@@ -175,15 +180,13 @@
             repository_sets:
               - name: Red Hat OpenStack Platform 16.2 Cinderlib for RHEL 8 x86_64 (RPMs)
 
-          - name: Red Hat Ceph Storage
-            repository_sets:
-              - name: Red Hat Ceph Storage Tools 4 for RHEL 8 x86_64 (RPMs)
-
           - name: Red Hat Ansible Automation Platform
             repository_sets:
               - name: Red Hat Ansible Automation Platform 2.2 for RHEL 9 x86_64 (RPMs)
               - name: Red Hat Ansible Automation Platform 2.3 for RHEL 9 x86_64 (RPMs)
+              - name: Red Hat Ansible Automation Platform 2.4 for RHEL 9 x86_64 (RPMs)
               - name: Red Hat Ansible Automation Platform 2.2 for RHEL 8 x86_64 (RPMs)
               - name: Red Hat Ansible Automation Platform 2.3 for RHEL 8 x86_64 (RPMs)
+              - name: Red Hat Ansible Automation Platform 2.4 for RHEL 8 x86_64 (RPMs)
               - name: Red Hat Automation Hub 4.2 for RHEL 8 x86_64 (RPMs)
 

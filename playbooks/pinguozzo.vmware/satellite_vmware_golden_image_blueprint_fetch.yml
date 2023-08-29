@@ -1,0 +1,83 @@
+---
+- name: copy and convert image
+  hosts: localhost
+  gather_facts: no
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+    - "{{ playbook_dir }}/../../vars/parameters.yml"
+
+  vars:
+    json_query_id: "result[1].body.finished[?blueprint=='rhel92'].id"
+
+  tasks: 
+    - name: set connection info
+      ansible.builtin.set_fact:
+        connection_args:
+            vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+            vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+            vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+
+    - name: get blueprints image uuid
+      command: composer-cli compose list --json
+      register: build_uuid
+      delegate_to: "{{ builder_host }}"
+        
+    - name: get json
+      set_fact:
+        result: "{{ (build_uuid['stdout'] | from_json) }}"
+
+    - set_fact:
+        blueprints: "{{ result[1].body.finished }}"
+      no_log: true
+
+    - debug:
+        msg: "blueprint id for {{ os_major }} is: {{ item.id }}"
+      loop: "{{ blueprints }}"
+      when: item.blueprint == os_major
+
+    - name: set blueprint id to download
+      set_fact: 
+        blueprint_id: "{{ item.id }}"
+      loop: "{{ blueprints }}"
+      when: item.blueprint == os_major
+
+    - name: "download {{ os_major }} blueprint with id {{ blueprint_id }}"
+      command: composer-cli compose image "{{ blueprint_id }}" --filename /tmp/"{{ os_major }}"-builder.vmdk
+      register: build_downloaded
+      delegate_to: "{{ builder_host }}"
+
+    - debug: var=build_downloaded
+
+    - pause:
+
+    - name: copy golden image vmdk file to datastore
+      community.vmware.vsphere_copy:
+        hostname: '{{ vcenter_hostname }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        src: "{{ playbook_dir }}/../..//{{ os_major }}-builder.vmdk"
+        validate_certs: false
+        datacenter: DC1
+        datastore: ssd
+        path: "my_vmdk/{{ os_major }}-golden.vmdk"
+      tags: vmdk
+
+    - name: ensure converted image for {{ os_major }} is not present
+      community.vmware.vsphere_file:
+        host: '{{ vcenter_hostname }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        validate_certs: false
+        datacenter: DC1
+        datastore: ssd
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "my_vmdk/{{ os_major }}-golden-converted.vmdk"
+        - "my_vmdk/{{ os_major }}-golden-converted-flat.vmdk"
+
+    - name: convert the image in an up to date VMDK format
+      ansible.builtin.command: "vmkfstools -i /vmfs/volumes/ssd/my_vmdk/{{ os_major }}-golden.vmdk  /vmfs/volumes/ssd/my_vmdk/{{ os_major }}-golden-converted.vmdk -d thin"
+      delegate_to: "{{ esxi_host }}"
+      tags: convert

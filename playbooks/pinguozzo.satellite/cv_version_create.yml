@@ -49,7 +49,7 @@
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS RPMs 8', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS Kickstart 8.4', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS RPMs 8.4', product: 'Red Hat Enterprise Linux for x86_64' }
-              - { name: 'Red Hat Ansible Engine 2.9 for RHEL 8 x86_64 RPMs', product: 'Red Hat Ansible Engine' }
+              - { name: 'Red Hat Ansible Engine 2 for RHEL 8 x86_64 RPMs', product: 'Red Hat Ansible Engine' }
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS RPMs 8.5', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream RPMs 8.5', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS RPMs 8.7', product: 'Red Hat Enterprise Linux for x86_64' }
@@ -75,6 +75,7 @@
               - { name: 'Red Hat Enterprise Linux 9 for x86_64 - High Availability RPMs 9', product: 'Red Hat Enterprise Linux High Availability for x86_64' }
               - { name: 'Red Hat Ansible Automation Platform 2.2 for RHEL 9 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
               - { name: 'Red Hat Ansible Automation Platform 2.3 for RHEL 9 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
+              - { name: 'Red Hat Ansible Automation Platform 2.4 for RHEL 9 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
 
           - name: cv-rhel8_soe
             description: "RHEL 8 SOE Content"
@@ -101,7 +102,7 @@
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS RPMs 8.5', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS RPMs 8.6', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS RPMs 8.7', product: 'Red Hat Enterprise Linux for x86_64' }
-              - { name: 'Red Hat Ansible Engine 2.9 for RHEL 8 x86_64 RPMs', product: 'Red Hat Ansible Engine' }
+              - { name: 'Red Hat Ansible Engine 2 for RHEL 8 x86_64 RPMs', product: 'Red Hat Ansible Engine' }
               - { name: 'Fast Datapath for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux Fast Datapath' }
               - { name: 'Red Hat Satellite Utils 6.11 for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat Satellite Client 6 for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
@@ -128,7 +129,7 @@
               - { name: 'Red Hat Virtualization 4 Management Agents for RHEL 8 x86_64 RPMs', product: 'Red Hat Virtualization' }
               - { name: 'Advanced Virtualization for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux Advanced Virtualization' }
               - { name: 'Red Hat OpenStack Platform 16.2 Cinderlib for RHEL 8 x86_64 RPMs', product: 'Cinderlib' }
-              - { name: 'Red Hat Ceph Storage Tools 4 for RHEL 8 x86_64 RPMs', product: 'Red Hat Ceph Storage' }
+              - { name: 'Red Hat Ceph Storage Tools 4 for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
 
           - name: ccv-rhel8_soe
             description: "CCV RHEL8 SOE"
