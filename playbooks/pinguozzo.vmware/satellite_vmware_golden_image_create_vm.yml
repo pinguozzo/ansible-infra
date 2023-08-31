@@ -161,6 +161,21 @@
       when: add_data_disk | bool
       register: my_data_disk
 
+    - name: set network interface
+      community.vmware.vmware_guest_network:
+        hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        datacenter: DC1
+        validate_certs: false
+        name: '{{ vmware_vm.value[0].vm }}'
+        state: present
+        network_name: "{{ item.network_name | default(omit) }}"
+        connected: "{{ item.connected | default(omit) }}"
+      loop:
+        - network_name: "{{ vm_network }}"
+          connected: true
+
     - name: start the vm 
       vmware.vmware_rest.vcenter_vm_power:
         vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
