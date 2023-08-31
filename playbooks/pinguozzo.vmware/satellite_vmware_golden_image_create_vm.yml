@@ -141,6 +141,7 @@
         username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
         password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
         vm_name: '{{ vmware_vm.value[0].vm }}'
+        validate_certs: false 
       register: vm_info
 
     - debug: msg="{{ vm_info }}"
