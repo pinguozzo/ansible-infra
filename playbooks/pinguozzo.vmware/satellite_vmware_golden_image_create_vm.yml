@@ -168,7 +168,7 @@
         password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
         datacenter: DC1
         validate_certs: false
-        name: '{{ vmware_vm.value[0].vm }}'
+        name: "{{ vm_name ~ '.' ~ infra.domain }}"
         state: present
         network_name: "{{ item.network_name | default(omit) }}"
         connected: "{{ item.connected | default(omit) }}"
