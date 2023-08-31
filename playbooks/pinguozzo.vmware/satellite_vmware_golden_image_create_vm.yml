@@ -137,7 +137,7 @@
 
     - name: show vm info
       debug:
-        msg='{{ vmware_vm.value[0] }}'
+        msg='{{ vm_info }}'
         #  ['vm_info']['value']['nics']['4000']['mac_address']
    
     - name: create a swap disk
