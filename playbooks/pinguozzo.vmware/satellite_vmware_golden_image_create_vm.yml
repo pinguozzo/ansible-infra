@@ -133,7 +133,11 @@
         vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
         vcenter_validate_certs: false
         vm: '{{ vmware_vm.value[0].vm }}'
-      register: test_vm1_info
+      register: vm_info
+
+    - name: show vm info
+      debug:
+        var=vm_info
    
     - name: create a swap disk
       vmware.vmware_rest.vcenter_vm_hardware_disk:
