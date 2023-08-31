@@ -169,6 +169,22 @@
         datacenter: DC1
         validate_certs: false
         name: "{{ vm_name ~ '.' ~ infra.domain }}"
+        state: absent
+        network_name: "{{ item.network_name | default(omit) }}"
+        connected: "{{ item.connected | default(omit) }}"
+      loop:
+        - network_name: "{{ default_vm_network }}"
+          connected: true
+      when: vm_network != "VLAN 5"
+
+    - name: set network interface
+      community.vmware.vmware_guest_network:
+        hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        datacenter: DC1
+        validate_certs: false
+        name: "{{ vm_name ~ '.' ~ infra.domain }}"
         state: present
         network_name: "{{ item.network_name | default(omit) }}"
         connected: "{{ item.connected | default(omit) }}"
