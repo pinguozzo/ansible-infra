@@ -140,7 +140,7 @@
         hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
         username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
         password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
-        vm_name: '{{ vmware_vm.value[0].vm }}'
+        vm_name: "{{ vm_name ~ '.' ~ infra.domain }}"
         validate_certs: false 
       register: vm_info
 
