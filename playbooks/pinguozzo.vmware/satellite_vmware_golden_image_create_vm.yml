@@ -135,9 +135,16 @@
         vm: '{{ vmware_vm.value[0].vm }}'
       register: vm_info
 
-    - name: show vm info
-      debug:
-        msg='{{ vm_info }}'
+    - name: gather VM info
+      community.vmware.vmware_vm_info:
+        hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vm_name: '{{ vmware_vm.value[0].vm }}'
+      register: vm_info
+
+    - debug: msg="{{ vm_info }}"
+
         #  ['vm_info']['value']['nics']['4000']['mac_address']
    
     - name: create a swap disk
