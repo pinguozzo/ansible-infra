@@ -137,7 +137,7 @@
 
     - name: show vm info
       debug:
-        var=vm_info
+        var=vm_info.value[0].nics.mac_address
    
     - name: create a swap disk
       vmware.vmware_rest.vcenter_vm_hardware_disk:
