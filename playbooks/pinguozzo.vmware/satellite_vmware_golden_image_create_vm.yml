@@ -85,14 +85,14 @@
         names: "{{ vm_name ~ '.' ~ infra.domain }}"
       register: vmware_vm
 
-    - name: gather VM info
-      community.vmware.vmware_vm_info:
-        hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
-        username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
-        password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
-        vm_name: "{{ vm_name ~ '.' ~ infra.domain }}"
-        validate_certs: false 
-      register: vmware_vm_info
+        #    - name: gather VM info
+        #      community.vmware.vmware_vm_info:
+        #        hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        #        username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        #        password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        #        vm_name: "{{ vm_name ~ '.' ~ infra.domain }}"
+        #        validate_certs: false 
+        #      register: vmware_vm_info
 
     - name: collect information about a specific VM
       vmware.vmware_rest.vcenter_vm_info:
