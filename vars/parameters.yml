@@ -15,7 +15,7 @@ infra:
   time_zone: 'Europe\Zurich'
   dns:
     dns_servers: 
-      - '{{ dns_server | default(''''), true }}'
+      - '{{ dns_server }}'
     dns_suffix_list:
       - '{{ network_domain }}'
 
