@@ -92,3 +92,15 @@
         no_log: True
         tags: cr_search
       delegate_to: localhost
+
+    - name: ensure cloud-init is disabled
+      ansible.builtin.file:
+        path: /etc/cloud/cloud-init.disabled
+        state: touch
+        owner: root
+        group: root
+        mode: u=rw,g=r,o=r
+      when: ip_mode == "static"
+
+    - name: reboot vm
+      ansible.builtin.reboot:
