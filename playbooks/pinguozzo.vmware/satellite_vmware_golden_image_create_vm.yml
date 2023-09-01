@@ -138,6 +138,15 @@
         - network_name: "{{ network_name }}"
           connected: true
 
+    - name: "get the vm"
+      vmware.vmware_rest.vcenter_vm_info:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        names: "{{ vm_name ~ '.' ~ infra.domain }}"
+      register: vmware_vm
+
     - name: "customize the vm {{ vmware_vm.value[0].name }}"
       vmware.vmware_rest.vcenter_vm_guest_customization:
         vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
