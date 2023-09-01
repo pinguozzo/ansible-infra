@@ -11,6 +11,14 @@
       ansible.builtin.add_host:
         hostname: "{{ vm_name ~ '.' ~ network_domain }}"
         groups: to_register
+      when: ip_mode == "dhcp" 
+
+    - name: "add targeted_host (static-ip) to to_register group"
+      ansible.builtin.add_host:
+        hostname: "{{ vm_name ~ '.' ~ network_domain }}"
+        ansible_ssh_host: "{{ vm_ip }}"
+        groups: to_register
+      when: ip_mode == "static" 
  
     - name: show host to register
       debug: var=groups['to_register']
