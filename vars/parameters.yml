@@ -6,8 +6,8 @@ vm_data:
         ipv4:
           type: STATIC
           gateways:
-            - '{{ gateway_ip|default('''', true) }}'
-          ip_address: '{{ vm_ip | default('''', true) }}'
+            - '{{ gateway_ip }}'
+          ip_address: '{{ vm_ip }}'
           prefix: 24
 
 infra:
