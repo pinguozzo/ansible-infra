@@ -104,7 +104,7 @@
       register: vcenter_vm_info
 
     - debug: 
-        msg="VLAN 5 mac_address is {{ item.value.mac_address }}"
+        msg="mac_address is {{ item.value.mac_address }}"
       loop: "{{ lookup('ansible.builtin.dict', vcenter_vm_info.value.nics, wantlist=True) }}"
       when: item.value.backing.network_name == "VLAN 5"
 
@@ -120,8 +120,8 @@
         network_name: "{{ item.value.backing.network_name | default(omit) }}"
         mac_address: "{{ item.value.mac_address }}"
       loop: "{{ lookup('ansible.builtin.dict', vcenter_vm_info.value.nics, wantlist=True) }}"
-      when: item.value.backing.network_name == "VLAN 5"
-
+      when: item.value.backing.network_name !~ "VLAN 5"
+    
     - name: set network interface
       community.vmware.vmware_guest_network:
         hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
@@ -142,7 +142,7 @@
         vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
         vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
         vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
-        vcenter_validate_certs: false
+        vcentr_validate_certs: false
         vm: '{{ vmware_vm.value[0].vm }}'
         configuration_spec:
           linux_config:
@@ -203,7 +203,6 @@
           capacity: "{{ disk_size | default(32212254720) }}"
       when: add_data_disk | bool
       register: my_data_disk
-
 
     - name: start the vm 
       vmware.vmware_rest.vcenter_vm_power:
