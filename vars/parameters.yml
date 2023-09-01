@@ -11,12 +11,12 @@ vm_data:
           prefix: 24
 
 infra:
-  domain: "{{ apps_domain }}"
+  domain: "{{ network_domain }}"
   time_zone: 'Europe\Zurich'
   dns:
     dns_servers: 
       - '{{ dns_server | default(''192.168.5.30'') }}'
     dns_suffix_list:
-      - '{{ apps_domain }}'
+      - '{{ network_domain }}'
 
 swap_disk_size: "10.00 GB"

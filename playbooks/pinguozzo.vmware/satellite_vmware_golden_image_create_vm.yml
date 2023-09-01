@@ -85,6 +85,58 @@
         names: "{{ vm_name ~ '.' ~ infra.domain }}"
       register: vmware_vm
 
+    - name: gather VM info
+      community.vmware.vmware_vm_info:
+        hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vm_name: "{{ vm_name ~ '.' ~ infra.domain }}"
+        validate_certs: false 
+      register: vmware_vm_info
+
+    - name: collect information about a specific VM
+      vmware.vmware_rest.vcenter_vm_info:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        vm: '{{ vmware_vm.value[0].vm }}'
+      register: vcenter_vm_info
+
+    - debug: 
+        msg="VLAN 5 mac_address is {{ item.value.mac_address }}"
+      loop: "{{ lookup('ansible.builtin.dict', vcenter_vm_info.value.nics, wantlist=True) }}"
+      when: item.value.backing.network_name == "VLAN 5"
+
+    - name: set network interface
+      community.vmware.vmware_guest_network:
+        hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        datacenter: DC1
+        validate_certs: false
+        name: "{{ vm_name ~ '.' ~ infra.domain }}"
+        state: absent
+        network_name: "{{ item.value.backing.network_name | default(omit) }}"
+        mac_address: "{{ item.value.mac_address }}"
+      loop: "{{ lookup('ansible.builtin.dict', vcenter_vm_info.value.nics, wantlist=True) }}"
+      when: item.value.backing.network_name == "VLAN 5"
+
+    - name: set network interface
+      community.vmware.vmware_guest_network:
+        hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        datacenter: DC1
+        validate_certs: false
+        name: "{{ vm_name ~ '.' ~ infra.domain }}"
+        state: present
+        network_name: "{{ item.network_name | default(omit) }}"
+        connected: "{{ item.connected | default(omit) }}"
+      loop:
+        - network_name: "{{ network_name }}"
+          connected: true
+
     - name: "customize the vm {{ vmware_vm.value[0].name }}"
       vmware.vmware_rest.vcenter_vm_guest_customization:
         vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
@@ -126,28 +178,6 @@
       register: customization_result
       when: ip_mode == "static"
 
-    - name: collect information about a specific VM
-      vmware.vmware_rest.vcenter_vm_info:
-        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
-        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
-        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
-        vcenter_validate_certs: false
-        vm: '{{ vmware_vm.value[0].vm }}'
-      register: vm_info
-
-    - name: gather VM info
-      community.vmware.vmware_vm_info:
-        hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
-        username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
-        password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
-        vm_name: "{{ vm_name ~ '.' ~ infra.domain }}"
-        validate_certs: false 
-      register: vm_info
-
-    - debug: msg="{{ vm_info }}"
-
-        #  ['vm_info']['value']['nics']['4000']['mac_address']
-   
     - name: create a swap disk
       vmware.vmware_rest.vcenter_vm_hardware_disk:
         vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
@@ -174,36 +204,6 @@
       when: add_data_disk | bool
       register: my_data_disk
 
-    - name: set network interface
-      community.vmware.vmware_guest_network:
-        hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
-        username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
-        password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
-        datacenter: DC1
-        validate_certs: false
-        name: "{{ vm_name ~ '.' ~ infra.domain }}"
-        state: absent
-        network_name: "{{ item.network_name | default(omit) }}"
-        connected: "{{ item.connected | default(omit) }}"
-      loop:
-        - network_name: "{{ default_vm_network }}"
-          connected: true
-      when: vm_network != "VLAN 5"
-
-    - name: set network interface
-      community.vmware.vmware_guest_network:
-        hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
-        username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
-        password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
-        datacenter: DC1
-        validate_certs: false
-        name: "{{ vm_name ~ '.' ~ infra.domain }}"
-        state: present
-        network_name: "{{ item.network_name | default(omit) }}"
-        connected: "{{ item.connected | default(omit) }}"
-      loop:
-        - network_name: "{{ vm_network }}"
-          connected: true
 
     - name: start the vm 
       vmware.vmware_rest.vcenter_vm_power:
