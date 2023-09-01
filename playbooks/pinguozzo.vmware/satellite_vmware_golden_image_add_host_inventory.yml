@@ -9,7 +9,7 @@
   tasks:
     - name: add targeted_host to to_register group
       ansible.builtin.add_host:
-        hostname: "{{ vm_name ~ '.' ~ apps_domain }}"
+        hostname: "{{ vm_name ~ '.' ~ network_domain }}"
         groups: to_register
  
     - name: show host to register
