@@ -104,4 +104,5 @@
 
     - name: reboot vm
       ansible.builtin.reboot:
-      delegate_to: localhost
+      delegate_to: "{{ item }}"
+      loop: "{{ groups['to_register'] }}"
