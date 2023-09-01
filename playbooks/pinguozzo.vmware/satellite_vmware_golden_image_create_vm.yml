@@ -121,7 +121,7 @@
         mac_address: "{{ item.value.mac_address }}"
       loop: "{{ lookup('ansible.builtin.dict', vcenter_vm_info.value.nics, wantlist=True) }}"
       when: 
-        - "item.value.backing.network_name !~ 'VLAN 5'"
+        - "{{ item.value.backing.network_name != 'VLAN 5' }}"
     
     - name: set network interface
       community.vmware.vmware_guest_network:
@@ -143,7 +143,7 @@
         vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
         vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
         vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
-        vcentr_validate_certs: false
+        vcenter_validate_certs: false
         vm: '{{ vmware_vm.value[0].vm }}'
         configuration_spec:
           linux_config:
