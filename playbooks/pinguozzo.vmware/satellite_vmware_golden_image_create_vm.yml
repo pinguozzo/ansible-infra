@@ -121,7 +121,7 @@
         mac_address: "{{ item.value.mac_address }}"
       loop: "{{ lookup('ansible.builtin.dict', vcenter_vm_info.value.nics, wantlist=True) }}"
       when: 
-        - item.value.backing.network_name !~ 'VLAN 5'
+        - "item.value.backing.network_name !~ 'VLAN 5'"
     
     - name: set network interface
       community.vmware.vmware_guest_network:
