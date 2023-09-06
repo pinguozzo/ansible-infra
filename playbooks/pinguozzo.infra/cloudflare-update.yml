@@ -1,0 +1,39 @@
+---
+- name: check ip update
+  hosts: "{{ targeted_host| default('all') }}"
+  gather_facts: no
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+
+  vars:
+
+  tasks:
+    - name: update public ipv4 ddns
+      block:
+        - name: wait for vm to become reachable
+          ping:
+
+        - name: get public ipv4
+          ansible.builtin.uri:
+            url: http://ifconfig.co/json
+            return_content: true
+          no_log: true
+          register: public_ipv4
+  
+        - debug: 
+            msg: "public ip {{ public_ipv4.json.ip }}"
+
+        - name: terlicium.pinguozzo.com A record to point to "{{ public_ipv4.json.ip }}"
+          community.general.cloudflare_dns:
+            zone: "{{ cloudflare_zone }}"
+            record: "{{ cloudflare_record }}"
+            type: A
+            value: "{{ public_ipv4.json.ip }}"
+            api_token: "{{ cloudflare_api_token }}"
+          register: record
+          delegate_to: localhost
+        
+        - name: show dns record created
+          debug: var=record
+      when: inventory_hostname in groups["ddns"]
