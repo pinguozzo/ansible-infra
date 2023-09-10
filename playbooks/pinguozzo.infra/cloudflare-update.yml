@@ -14,17 +14,24 @@
         - name: wait for vm to become reachable
           ping:
 
-        - name: get public ipv4
+        - name: get existing A record
+          set_fact:
+            current: "{{ lookup('community.general.dig', cloudflare_fqdn_record , '@1.1.1.1'  )}}"
+
+        - debug: 
+            msg: "current A record for {{ cloudflare_fqdn_record }} points to {{ current }}"
+
+        - name: get current public ipv4
           ansible.builtin.uri:
             url: http://ifconfig.co/json
             return_content: true
           no_log: true
           register: public_ipv4
   
-        - debug: 
-            msg: "public ip {{ public_ipv4.json.ip }}"
+        - debug:
+            msg: "public ip to update {{ public_ipv4.json.ip }}"
 
-        - name: terlicium.pinguozzo.com A record to point to "{{ public_ipv4.json.ip }}"
+        - name: update A record to {{ public_ipv4.json.ip }}
           community.general.cloudflare_dns:
             zone: "{{ cloudflare_zone }}"
             record: "{{ cloudflare_record }}"
@@ -35,7 +42,11 @@
             state: present
           register: record
           delegate_to: localhost
+          when: 
+            - public_ipv4.json.ip != current
         
         - name: show dns record created
           debug: var=record
+          when: 
+            - record.changed | bool 
       when: inventory_hostname in groups["ddns"]
