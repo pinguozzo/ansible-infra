@@ -1,0 +1,13 @@
+---
+- name: check ip update
+  hosts: "{{ targeted_host| default('all') }}"
+  gather_facts: no
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+
+  vars:
+
+  tasks:
+    - name: check connectivity
+      ping:
