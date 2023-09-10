@@ -31,6 +31,8 @@
             type: A
             value: "{{ public_ipv4.json.ip }}"
             api_token: "{{ cloudflare_api_token }}"
+            solo: true
+            state: present
           register: record
           delegate_to: localhost
         
