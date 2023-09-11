@@ -67,8 +67,7 @@
         vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
         vcenter_validate_certs: false
         state: start
-          #vm: "{{ lookup('vmware.vmware_rest.vm_moid', 'vcenter_folder/{{ os_major }}-builder-vm', **connection_args) }}"
-        vm: "{{ lookup('vmware.vmware_rest.vm_moid', '/DC1/vm/{{ os_major }}-builder-vm', **connection_args) }}"
+        vm: "{{ lookup('vmware.vmware_rest.vm_moid', vcenter_folder ~ '/' ~ os_major ~ '-builder-vm' , **connection_args) }}"
     
     - name: wait until my vm is ready
       vmware.vmware_rest.vcenter_vm_tools_info:
