@@ -59,9 +59,9 @@
         library: "{{ local_lib.id }}"
         template_library_item: "{{ my_template_item.id }}"
         placement:
-          cluster: "{{ lookup('vmware.vmware_rest.cluster_moid', '/DC1/host/KNA', **connection_args) }}"
-          folder: "{{ lookup('vmware.vmware_rest.folder_moid', '/DC1/vm', **connection_args) }}"
-          resource_pool: "{{ lookup('vmware.vmware_rest.resource_pool_moid', '/DC1/host/KNA/Resources', **connection_args) }}"
+          cluster: "{{ lookup('vmware.vmware_rest.cluster_moid', vcenter_cluster , **connection_args) }}"
+          folder: "{{ lookup('vmware.vmware_rest.folder_moid', vcenter_folder , **connection_args) }}"
+          resource_pool: "{{ lookup('vmware.vmware_rest.resource_pool_moid', vcenter_resource_pool , **connection_args) }}"
         hardware_customization:
           cpu_update: 
             num_cpus: "{{ cpu_count | default(2) }}"
