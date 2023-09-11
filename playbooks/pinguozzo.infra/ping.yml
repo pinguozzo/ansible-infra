@@ -8,6 +8,8 @@
 
   vars:
 
+  pre_tasks:
+
   tasks:
     - name: check connectivity
       ping:

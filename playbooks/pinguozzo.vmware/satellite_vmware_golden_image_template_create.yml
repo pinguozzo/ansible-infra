@@ -25,10 +25,10 @@
         vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
         vcenter_validate_certs: false
         placement:
-          cluster: "{{ lookup('vmware.vmware_rest.cluster_moid', '/DC1/host/KNA', **connection_args) }}"
-          datastore: "{{ lookup('vmware.vmware_rest.datastore_moid', '/DC1/datastore/ssd', **connection_args) }}"
-          folder: "{{ lookup('vmware.vmware_rest.folder_moid', '/DC1/vm', **connection_args) }}"
-          resource_pool: "{{ lookup('vmware.vmware_rest.resource_pool_moid', '/DC1/host/KNA/Resources', **connection_args) }}"
+          cluster: "{{ lookup('vmware.vmware_rest.cluster_moid', vcenter_cluster, **connection_args) }}"
+          datastore: "{{ lookup('vmware.vmware_rest.datastore_moid', vcenter_datastore, **connection_args) }}"
+          folder: "{{ lookup('vmware.vmware_rest.folder_moid', vcenter_folder, **connection_args) }}"
+          resource_pool: "{{ lookup('vmware.vmware_rest.resource_pool_moid', vcenter_resource_pool, **connection_args) }}"
         name: "{{ os_major }}-builder-vm"
         guest_OS: "{% if os_major == 'rhel9' %}RHEL_9_64{% else %}RHEL_8_64{% endif %}"
           #guest_OS: RHEL_9_64
@@ -54,9 +54,11 @@
         nics:
           - backing:
               type: STANDARD_PORTGROUP
-              network: "{{ lookup('vmware.vmware_rest.network_moid', '/DC1/network/VLAN 5', **connection_args) }}"
+              network: "{{ lookup('vmware.vmware_rest.network_moid', vcenter_network, **connection_args) }}"
             start_connected: yes
       register: deploy_vm 
+
+    - debug: var=deploy_vm
 
     - name: ensure vm is turned on
       vmware.vmware_rest.vcenter_vm_power:
@@ -65,6 +67,7 @@
         vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
         vcenter_validate_certs: false
         state: start
+          #vm: "{{ lookup('vmware.vmware_rest.vm_moid', 'vcenter_folder/{{ os_major }}-builder-vm', **connection_args) }}"
         vm: "{{ lookup('vmware.vmware_rest.vm_moid', '/DC1/vm/{{ os_major }}-builder-vm', **connection_args) }}"
     
     - name: wait until my vm is ready
@@ -93,7 +96,7 @@
           published: true
           authentication_method: NONE
         storage_backings:
-        - datastore_id: "{{ lookup('vmware.vmware_rest.datastore_moid', '/DC1/datastore/ssd', **connection_args) }}"
+        - datastore_id: "{{ lookup('vmware.vmware_rest.datastore_moid', vcenter_datastore, **connection_args) }}"
           type: DATASTORE
         state: present
       register: local_lib
@@ -129,12 +132,13 @@
         library: "{{ local_lib.id }}"
         source_vm: "{{ deploy_vm.id }}"
         placement:
-          cluster: "{{ lookup('vmware.vmware_rest.cluster_moid', '/DC1/host/KNA', **connection_args) }}"
-          folder: "{{ lookup('vmware.vmware_rest.folder_moid', '/DC1/vm', **connection_args) }}"
-          resource_pool: "{{ lookup('vmware.vmware_rest.resource_pool_moid', '/DC1/host/KNA/Resources', **connection_args) }}"
+          cluster: "{{ lookup('vmware.vmware_rest.cluster_moid', vcenter_cluster, **connection_args) }}"
+          folder: "{{ lookup('vmware.vmware_rest.folder_moid', vcenter_folder, **connection_args) }}"
+          resource_pool: "{{ lookup('vmware.vmware_rest.resource_pool_moid', vcenter_resource_pool, **connection_args) }}"
 
     - name: "lookup MoID of {{ os_major }}-builder vm" 
-      ansible.builtin.debug: msg="{{ os_major }}-builder-vm_id = {{ lookup('vmware.vmware_rest.vm_moid', '/DC1/vm/{{ os_major }}-builder-vm', **connection_args) }}"
+      #ansible.builtin.debug: msg="{{ os_major }}-builder-vm_id = {{ lookup('vmware.vmware_rest.vm_moid', '/DC1/vm/{{ os_major }}-builder-vm', **connection_args) }}"
+      ansible.builtin.debug: msg="{{ os_major }}-builder-vm_id = {{ lookup('vmware.vmware_rest.vm_moid', 'vcenter_folder/{{ os_major }}-builder-vm', **connection_args) }}"
 
     - name: "ensure {{ os_major }}-builder vm is turned off" 
       vmware.vmware_rest.vcenter_vm_power:
@@ -142,5 +146,5 @@
         vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
         vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
         vcenter_validate_certs: false
-        vm: "{{ lookup('vmware.vmware_rest.vm_moid', '/DC1/vm/{{ os_major }}-builder-vm', **connection_args) }}"
+        vm: "{{ lookup('vmware.vmware_rest.vm_moid', vcenter_folder ~ '/' ~ os_major ~ '-builder-vm' , **connection_args) }}"
         state: stop
