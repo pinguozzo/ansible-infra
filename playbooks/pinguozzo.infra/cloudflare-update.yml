@@ -1,12 +1,68 @@
 ---
-- name: check ip update
+- name: dns A record update
   hosts: "{{ targeted_host| default('all') }}"
   gather_facts: no
 
   vars_files:
     - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+    - "{{ playbook_dir }}/../../vars/ddns.yml"
 
   vars:
+    dns_list: []
+
+  pre_tasks:
+    - name: check connectivity
+      ping: 
+
+    - name: show data
+      debug: 
+        msg: "update {{ item.0.dns_name }} via{{':'}} {{ item.1.name }}" 
+      with_subelements:
+        - "{{ ddns | selectattr('target', 'defined') | list }}"
+        - target
+      when:
+        - item.0.dns_name in item.1.name
+        - inventory_hostname in item.1.name
+
+    - name: show current ip_real
+      ansible.builtin.debug: msg="ip_real {{ lookup('ansible.builtin.url', 'http://ifconfig.co') }}"
+
+    - pause:
+
+    - name: get existing A record
+      set_fact:
+        dns_list: "{{ dns_list +
+                     [{ 'dns_name': item.0.dns_name,
+                        'ip_current': lookup('community.general.dig', item.0.dns_name  , '@1.1.1.1'),
+                        'ip_real': lookup('ansible.builtin.url', 'http://ifconfig.co'),
+                        'target': item.1.name }] }}"
+      delegate_to: "{{ item.1.name }}"
+      loop: "{{ ddns | subelements('target') | unique }}"
+      register: output
+      when:
+        - item.0.dns_name in item.1.name
+        - inventory_hostname in item.1.name
+
+    - debug: var=output
+
+    - pause:
+
+    - name: show dns_list fact
+      debug: 
+        msg: "updating {{ item.dns_name }} with ip{{':'}} {{ item.ip_current }} to {{ item.ip_real }} via {{ item.target }}"
+      loop: "{{ dns_list| flatten(levels=1) }}"
+      delegate_to: "{{ item.target }}"
+      when:
+        - inventory_hostname in item.target
+
+
+          #    - name: show set_fact dns_list information
+          #      debug:
+          #        var: output
+          #      delegate_to: localhost
+          #      run_once: True
+
+    - pause:
 
   tasks:
     - name: update public ipv4 ddns
@@ -29,7 +85,9 @@
           register: public_ipv4
   
         - debug:
-            msg: "public ip to update {{ public_ipv4.json.ip }}"
+            msg: "public ip for {{ cloudflare_fqdn_record }} needs update to {{ public_ipv4.json.ip }}"
+          when: 
+            - public_ipv4.json.ip != current
 
         - name: update A record to {{ public_ipv4.json.ip }}
           community.general.cloudflare_dns:
@@ -50,3 +108,49 @@
           when: 
             - record.changed | bool 
       when: inventory_hostname in groups["ddns"]
+
+#dns_list: "{{ dns_list + [lookup('community.general.dig', item.0.dns_name  , '@1.1.1.1')] }}"
+#
+#    - name: update public ipv4 ddns
+#      block:
+#        - name: wait for vm to become reachable
+#          ping:
+#
+#        - name: get existing A record
+#          set_fact:
+#            current: "{{ lookup('community.general.dig', cloudflare_fqdn_record , '@1.1.1.1'  )}}"
+#
+#        - debug: 
+#            msg: "current A record for {{ cloudflare_fqdn_record }} points to {{ current }}"
+#
+#        - name: get current public ipv4
+#          ansible.builtin.uri:
+#            url: http://ifconfig.co/json
+#            return_content: true
+#          no_log: true
+#          register: public_ipv4
+#  
+#        - debug:
+#            msg: "public ip for {{ cloudflare_fqdn_record }} needs update to {{ public_ipv4.json.ip }}"
+#          when: 
+#            - public_ipv4.json.ip != current
+#
+#        - name: update A record to {{ public_ipv4.json.ip }}
+#          community.general.cloudflare_dns:
+#            zone: "{{ cloudflare_zone }}"
+#            record: "{{ cloudflare_record }}"
+#            type: A
+#            value: "{{ public_ipv4.json.ip }}"
+#            api_token: "{{ cloudflare_api_token }}"
+#            solo: true
+#            state: present
+#          register: record
+#          delegate_to: localhost
+#          when: 
+#            - public_ipv4.json.ip != current
+#        
+#        - name: show dns record created
+#          debug: var=record
+#          when: 
+#            - record.changed | bool 
+#      when: inventory_hostname in groups["ddns"]
