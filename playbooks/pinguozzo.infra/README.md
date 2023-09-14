@@ -1,3 +1,6 @@
+# yaml inventory example
+
+```yaml
 ---
 dietpi:
   vars:
@@ -18,3 +21,4 @@ dietpi:
       children:
         group1:
         group2:
+```
