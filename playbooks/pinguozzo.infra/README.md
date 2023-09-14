@@ -24,7 +24,7 @@ dietpi:
 ```
 
 
-### datasource
+### datasource ddns.yml
 ```yaml
 ddns:
   - dns_name: dietpi1
