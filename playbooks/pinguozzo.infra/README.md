@@ -1,4 +1,4 @@
-# yaml inventory example
+### yaml inventory example
 
 ```yaml
 ---
@@ -21,4 +21,18 @@ dietpi:
       children:
         group1:
         group2:
+```
+
+
+### datasource
+```yaml
+ddns:
+  - dns_name: dietpi1
+    domain: example.com
+    target:
+      - name: dietpi1.example.com
+  - dns_name: dietpi2
+    domain: example.com
+    target:
+      - name: dietpi2.example.com
 ```
