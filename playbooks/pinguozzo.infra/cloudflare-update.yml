@@ -1,6 +1,7 @@
 ---
 - name: dns A record update
   hosts: "{{ targeted_host| default('all') }}"
+  serial: true
   gather_facts: no
 
   vars_files:
@@ -67,28 +68,27 @@
       when: 
         - inventory_hostname in groups["ddns"]
 
-    - pause:
-
   tasks:
     - name: update public ipv4 ddns
       block:
-        - name: update A record to {{ public_ipv4.json.ip }}
+        - name: update DNS A record
           community.general.cloudflare_dns:
             zone: "{{ cloudflare_zone }}"
-            record: "{{ cloudflare_record }}"
+            record: "{{ item.dns_name }}"
             type: A
-            value: "{{ public_ipv4.json.ip }}"
+            value: "{{ item.ip_real }}"
             api_token: "{{ cloudflare_api_token }}"
             solo: true
             state: present
           register: record
           delegate_to: localhost
           loop: "{{ dns_list| flatten(levels=1) }}"
-        
-        - name: show dns record created
-          debug: var=record
-          when: 
-            - record.changed | bool 
       when: 
+        - inventory_hostname in item.target
         - inventory_hostname in groups["ddns"]
         - item.ip_current != item.ip_real 
+        
+    - name: show dns record created
+      debug: var=record
+      when: 
+        - record.changed | bool 
