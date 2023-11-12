@@ -12,6 +12,13 @@
             repository_sets:
               - name: Red Hat Ansible Engine 2 for RHEL 8 x86_64 (RPMs)
 
+          - name: Red Hat CodeReady Linux Builder for x86_64 
+            repository_sets:
+              - name: Red Hat CodeReady Linux Builder for RHEL 8 x86_64 (RPMs)
+                releasever: 8
+              - name: Red Hat CodeReady Linux Builder for RHEL 9 x86_64 (RPMs)
+                releasever: 9
+
           - name: Red Hat Enterprise Linux Server
             repository_sets:
               - name: Red Hat Enterprise Linux 7 Server (RPMs)
@@ -40,6 +47,7 @@
             repository_sets:
               - name: Red Hat Satellite 6.12 for RHEL 8 x86_64 (RPMs)
               - name: Red Hat Satellite 6.13 for RHEL 8 x86_64 (RPMs)
+              - name: Red Hat Satellite 6.14 for RHEL 8 x86_64 (RPMs)
 
           - name: Red Hat Satellite Capsule
             repository_sets:
@@ -126,10 +134,14 @@
           - name: Red Hat Enterprise Linux for x86_64
             repository_sets:
               - name: Red Hat Satellite Utils 6.11 for RHEL 8 x86_64 (RPMs)
+              - name: Red Hat Satellite Utils 6.12 for RHEL 8 x86_64 (RPMs)
+              - name: Red Hat Satellite Utils 6.13 for RHEL 8 x86_64 (RPMs)
+              - name: Red Hat Satellite Utils 6.14 for RHEL 8 x86_64 (RPMs)
               - name: Red Hat Satellite Client 6 for RHEL 8 x86_64 (RPMs) 
               - name: Red Hat Satellite Client 6 for RHEL 9 x86_64 (RPMs) 
               - name: Red Hat Satellite Maintenance 6.12 for RHEL 8 x86_64 (RPMs) 
               - name: Red Hat Satellite Maintenance 6.13 for RHEL 8 x86_64 (RPMs) 
+              - name: Red Hat Satellite Maintenance 6.14 for RHEL 8 x86_64 (RPMs)
               - name: Red Hat Ceph Storage Tools 4 for RHEL 8 x86_64 (RPMs)
 
           - name: Red Hat Enterprise Linux Fast Datapath         
