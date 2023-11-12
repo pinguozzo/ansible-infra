@@ -80,6 +80,7 @@
               - { name: 'Red Hat Ansible Automation Platform 2.2 for RHEL 9 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
               - { name: 'Red Hat Ansible Automation Platform 2.3 for RHEL 9 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
               - { name: 'Red Hat Ansible Automation Platform 2.4 for RHEL 9 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
+              - { name: 'Red Hat CodeReady Linux Builder for RHEL 9 x86_64 RPMs 9', product: 'Red Hat CodeReady Linux Builder for x86_64' }
 
           - name: cv-rhel8_soe
             description: "RHEL 8 SOE Content"
@@ -134,6 +135,7 @@
               - { name: 'Advanced Virtualization for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux Advanced Virtualization' }
               - { name: 'Red Hat OpenStack Platform 16.2 Cinderlib for RHEL 8 x86_64 RPMs', product: 'Cinderlib' }
               - { name: 'Red Hat Ceph Storage Tools 4 for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
+              - { name: 'Red Hat CodeReady Linux Builder for RHEL 8 x86_64 RPMs 8', product: 'Red Hat CodeReady Linux Builder for x86_64' }
 
           - name: ccv-rhel8_soe
             description: "CCV RHEL8 SOE"
