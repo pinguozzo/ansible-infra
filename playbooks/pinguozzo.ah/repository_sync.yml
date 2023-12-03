@@ -1,0 +1,26 @@
+---
+- name: update host list in job_template host-delete
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  collections:
+    - infra.ah_configuration
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+
+  vars:
+    ah_configuration_collection_repository_sync_async_retries: 1200
+    ah_collection_repositories:
+      - name: rh-certified
+        wait: true
+        timeout: 1200
+      - name: community
+        wait: true
+        timeout: 1200
+    
+  pre_tasks:
+
+  roles:
+    - {role: collection_repository_sync }
+...
