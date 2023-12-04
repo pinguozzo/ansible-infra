@@ -1,5 +1,5 @@
 ---
-- name: update host list in job_template host-delete
+- name: sync pah repositories
   hosts: localhost
   connection: local
   gather_facts: no
