@@ -138,12 +138,16 @@
                 releasever: 9.1
               - name: Red Hat Enterprise Linux 9 for x86_64 - BaseOS (Kickstart)
                 releasever: 9.2
+              - name: Red Hat Enterprise Linux 9 for x86_64 - BaseOS (Kickstart)
+                releasever: 9.3
               - name: Red Hat Enterprise Linux 9 for x86_64 - AppStream (Kickstart)
                 releasever: 9.0
               - name: Red Hat Enterprise Linux 9 for x86_64 - AppStream (Kickstart)
                 releasever: 9.1
               - name: Red Hat Enterprise Linux 9 for x86_64 - AppStream (Kickstart)
                 releasever: 9.2
+              - name: Red Hat Enterprise Linux 9 for x86_64 - AppStream (Kickstart)
+                releasever: 9.3
 
           - name: Red Hat Enterprise Linux Fast Datapath         
             repository_sets:
