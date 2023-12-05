@@ -1,7 +1,10 @@
 ---
-- hosts: all
+- name: create missing users 
+  hosts: all
   become: yes
   gather_facts: true
+
+  vars:
 
   roles:
     - name: pinguozzo.create_users
