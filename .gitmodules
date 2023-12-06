@@ -1,0 +1,3 @@
+[submodule "roles/pinguozzo.create-users"]
+	path = roles/pinguozzo.create-users
+	url = https://github.com/ryandaniels/ansible-role-create-users.git
