@@ -9,6 +9,18 @@
   vars: 
 
   tasks:
+    - name: set connection info
+      ansible.builtin.set_fact:
+        connection_args:
+            vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+            vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+            vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+
+    - name: lookup MoID of the object inside the path
+      ansible.builtin.debug: msg="{{ lookup('vmware.vmware_rest.vm_moid', '/DC1/vm/', **connection_args) }}"
+
+    - pause:
+
     - name: Check if goldenimage VM exists
       vmware.vmware_rest.vcenter_vm_info:
         vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
@@ -62,3 +74,59 @@
     
     - debug: var=my_cluster_info
 
+    - name: Build a list of all the folders with the type VIRTUAL_MACHINE and called vm
+      vmware.vmware_rest.vcenter_folder_info:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+      register: my_folders
+
+    - debug: var=my_folders
+
+    - name: Get network information
+      vmware.vmware_rest.vcenter_network_info:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+      register: my_networking
+
+    - debug: var=my_networking
+
+    - name: List all Local Content Library
+      vmware.vmware_rest.content_locallibrary_info:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+      register: all_content_libraries
+
+    - debug: var=all_content_libraries
+        
+    - name: List all Local Content Library
+      vmware.vmware_rest.content_locallibrary_info:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+      register: all_content_libraries
+    
+    - name: Use the name to identify the right Content Library
+      set_fact:
+        nfs_lib: "{{ all_content_libraries.value | selectattr('name', 'equalto', 'nfs_lib')|first }}"
+
+    - name: Get the list of items of the NFS library
+      vmware.vmware_rest.content_library_item_info:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        library_id: '{{ nfs_lib.id }}'
+      register: lib_items
+
+    - name: Define a new fact with the golden image ID
+      ansible.builtin.set_fact:
+        golden_image_rhel8_id: '{{ (lib_items.value|selectattr("name", "equalto", "golden_image_rhel8")|first).id }}'
+
+    - debug: var=golden_image_rhel8_id
