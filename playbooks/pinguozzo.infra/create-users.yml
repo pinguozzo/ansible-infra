@@ -1,10 +1,11 @@
 ---
 - name: create missing users 
-  hosts: all
+  hosts: "{{ targeted_host| default('all') }}"
   become: yes
   gather_facts: true
 
-  vars:
-
+  vars_file:
+    - "{{ playbook_dir }}/../../vars/rex-user.yml"
+      
   roles:
     - name: pinguozzo.create-users
