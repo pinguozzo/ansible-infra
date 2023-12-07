@@ -1,11 +1,12 @@
 ---
-- name: create missing users 
-  hosts: "{{ targeted_host| default('all') }}"
-  become: yes
+- name: check
+  hosts: all
+  become: no
   gather_facts: true
 
-  vars_file:
-    - "{{ playbook_dir }}/../../vars/rex-user.yml"
+  tasks:
+    - name: include rex-users vars
+      ansible.builtin.include_vars: "{{ playbook_dir }}/../../vars/rex-user.yml"
       
-  roles:
-    - name: pinguozzo.create-users
+  roles: 
+    - "{{ playbook_dir }}/../../roles/pinguozzo.create-users"
