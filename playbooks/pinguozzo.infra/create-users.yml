@@ -4,7 +4,7 @@
   become: no
   gather_facts: true
 
-  tasks:
+  pre_tasks:
     - name: include rex-users vars
       ansible.builtin.include_vars: "{{ playbook_dir }}/../../vars/rex-user.yml"
       
