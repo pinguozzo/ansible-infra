@@ -1,0 +1,20 @@
+---
+- name: show satellite variables
+  hosts: "{{ targeted_hosts }}"
+  gather_facts: true
+  ignore_unreachable: yes
+  ignore_errors: true
+
+  tasks:
+  - name: show subscription_status
+    debug:
+      msg: >-
+        Subscription Status: {{ foreman.subscription_status_label }}
+
+  - name: show errata counts
+    debug:
+      msg: >-
+        Bug fixes: {{ foreman.content_attributes.errata_counts.bugfix }},
+        Security: {{ foreman.content_attributes.errata_counts.security }},
+        Enhancement: {{ foreman.content_attributes.errata_counts.enhancement }},
+        Total: {{ foreman.content_attributes.errata_counts.total }}
