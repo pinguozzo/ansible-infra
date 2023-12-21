@@ -12,7 +12,6 @@
     ee_build_arg_defaults:
       ANSIBLE_GALAXY_CLI_COLLECTION_OPTS: '-vv -c'
     ee_builder_dir_clean: true
-    builder_dir: "."
     ee_update_base_images: false
     ah_host: "{{ vaulted_ah_host }}"
     ah_token: "{{ vaulted_ah_token }}"
