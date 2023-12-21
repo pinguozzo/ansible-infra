@@ -13,7 +13,8 @@
         server_url: "{{ satellite_server_url }}"
         validate_certs: "{{ satellite_validate_certs }}"
         organization: "{{ satellite_organization }}"
-        search: 'label = "codeready-builder-for-rhel-8-x86_64-rpms"'
+        search: 'label = "rh-sso-7.4-for-rhel-8-x86_64-rpms"'
+        # search: 'label = "codeready-builder-for-rhel-8-x86_64-rpms"'
         # search: 'label = "ansible-2-for-rhel-9-x86_64-rpms"'
       register: repos
 

@@ -1,0 +1,28 @@
+---
+- name: sync pah ee registry
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  collections:
+    - infra.ah_configuration
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+
+  vars:
+    ah_host: "{{ vaulted_ah_host }}"
+    ah_username: "{{ vaulted_ee_base_registry_username }}"
+    ah_password: "{{ vaulted_ee_base_registry_password }}"
+    ah_validate_certs: false 
+    ah_configuration_async_retries: 1200
+    ah_configuration_async_delay: 10
+    ah_ee_registries:
+      - name: "Red Hat Registry"
+        wait: false
+        sync: true
+    
+  pre_tasks:
+
+  roles:
+    - {role: ee_registry_sync }
+...
