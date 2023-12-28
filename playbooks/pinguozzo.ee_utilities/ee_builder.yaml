@@ -23,7 +23,7 @@
 
     ee_list:
       - name: custom-build-24
-        tag: "{{ {{ '%Y-%m-%d' | strftime }}"
+        tag: "{{ lookup('pipe', 'date +%Y%m%d-%H%M') }}"
         build_files:
         # - src: "{{ playbook_dir }}/../../build_files/pip.conf"
         #   dest: configs
