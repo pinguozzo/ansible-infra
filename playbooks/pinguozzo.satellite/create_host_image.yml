@@ -30,7 +30,8 @@
           - compute_profile is defined
           - image_name is defined
           - (deploy_on_rhv is defined) or (deploy_on_vmware is defined )
-        fail_msg: "domain, hg_name, compute_profile, image_name must be defined"
+          - subnet_name is defined
+        fail_msg: "domain, hg_name, compute_profile, image_name, deploy_on, subnet_name must be defined"
 
   tasks:
     - name: create host(s)
@@ -48,6 +49,7 @@
               memory_mb: "{{ memory | default(omit) }}"
             provision_method: "image"
             image: "{{ image_name }}"
+            subnet: "{{ subnet_name }}"
             build: true
           register: output
           with_sequence: start=1 end="{{ num_instances|default(1) }}"
