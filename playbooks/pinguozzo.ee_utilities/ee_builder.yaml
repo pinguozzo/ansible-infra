@@ -18,13 +18,13 @@
     ee_base_registry_username:  "{{ vaulted_ee_base_registry_username }}"
     ee_base_registry_password: "{{ vaulted_ee_base_registry_password }}"
     ee_base_image: "{{ vaulted_ee_base_image }}"
-    ee_builder_image: "{{ vaulted_ee_builder_image }}"
+    # ee_builder_image: "{{ vaulted_ee_builder_image }}" # builder image not needed anymore as per version 3
     ee_verbosity: 2
 
     ee_list:
       - name: custom-build-24
         # tag: "{{ lookup('pipe', 'date +%Y%m%d-%H%M') }}"
-        build_files:
+        # build_files:
         # - src: "{{ playbook_dir }}/../../build_files/pip.conf"
         #   dest: configs
         # - src: "{{ playbook_dir }}/../../build_files/bit_proxy_root_2021.crt"
@@ -69,7 +69,7 @@
             # - ARG https_proxy="http://webproxy:8080"
             # - ARG no_proxy="localhost,127.0.0.*,.domain.com"
           prepend_base:
-            - ADD _build/configs/pip.conf /etc/pip.conf
+            # - ADD _build/configs/pip.conf /etc/pip.conf
             # - ADD _build/configs/my-cert.crt /etc/pki/ca-trust/source/anchors/my-cert.crt
             - RUN update-ca-trust
             - RUN rm -f /etc/yum.repos.d/ubi.repo
@@ -83,7 +83,7 @@
             - RUN echo Build complete!
         images:
           base_image:
-            name: "{{ vaulted_ee_builder_image }}"
+            name: "{{ vaulted_ee_base_image }}"
 
   roles:
     - infra.ee_utilities.ee_builder
