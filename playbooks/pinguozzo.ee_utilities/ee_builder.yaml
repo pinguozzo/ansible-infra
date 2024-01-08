@@ -50,7 +50,6 @@
           galaxy:
             collections:
               - name: ansible.controller
-              - name: awx.awx
               - name: community.general
               - name: containers.podman
               - name: infra.controller_configuration
