@@ -47,6 +47,7 @@
             - jmespath
             - requests
             - lxml
+            - dnspython
           galaxy:
             collections:
               - name: ansible.controller
