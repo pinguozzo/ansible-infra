@@ -1,6 +1,6 @@
 ---
 - name: check
-  hosts: "{{ targeted_host| default('all') }}"
+  hosts: all
   become: no
   gather_facts: true
 
