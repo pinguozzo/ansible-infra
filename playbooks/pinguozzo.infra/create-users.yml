@@ -1,12 +1,33 @@
 ---
-- name: check
-  hosts: all
+- name: add targeted_host to in-memory inventory
+  hosts: localhost
   become: no
+  gather_facts: false
+
+  tasks:
+    - name: add targeted_host to group
+      ansible.builtin.add_host:
+        hostname: "{{ item }}"
+        groups: init
+      loop:
+        - "{{ targeted_host }}"
+
+    - name: show builder host
+      debug: var=groups['init']
+
+    - name: wait for vm to become reachable
+      ansible.builtin.wait_for_connection:
+        timeout: 900
+      delegate_to: "{{ item }}"
+      loop: "{{ groups['init'] }}"
+
+- name: create missing users
+  hosts: init
   gather_facts: true
 
   pre_tasks:
     - name: include rex-users vars
       ansible.builtin.include_vars: "{{ playbook_dir }}/../../vars/rex-user.yml"
-      
+
   roles: 
     - "{{ playbook_dir }}/../../roles/pinguozzo.create-users"
