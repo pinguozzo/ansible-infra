@@ -19,9 +19,7 @@
       ansible.builtin.wait_for_connection:
         timeout: 900
       delegate_to: "{{ item }}"
-      loop: "{{ groups['init']|flatten(levels=1) }}"
-
-    - pause:
+      loop: "{{ groups['init'] }}"
 
 - name: create missing users
   hosts: init
