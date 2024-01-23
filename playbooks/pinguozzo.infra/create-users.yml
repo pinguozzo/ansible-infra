@@ -9,17 +9,19 @@
       ansible.builtin.add_host:
         hostname: "{{ item }}"
         groups: init
-      loop:
+      loop: 
         - "{{ targeted_host }}"
 
-    - name: show builder host
+    - name: show hosts
       debug: var=groups['init']
 
     - name: wait for vm to become reachable
       ansible.builtin.wait_for_connection:
         timeout: 900
       delegate_to: "{{ item }}"
-      loop: "{{ groups['init'] }}"
+      loop: "{{ groups['init']|flatten(levels=1) }}"
+
+    - pause:
 
 - name: create missing users
   hosts: init
