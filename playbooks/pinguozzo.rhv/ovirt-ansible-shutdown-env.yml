@@ -1,0 +1,15 @@
+---
+- name: oVirt shutdown environment
+  hosts: "{{ hosted_engine }}"
+  collections:
+    - redhat.rhv
+  gather_facts: true
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/engine_vars.yml"
+
+  vars:
+
+  roles:
+    - role: shutdown_env
+
