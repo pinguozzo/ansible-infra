@@ -1,5 +1,5 @@
 ---
-- name: check ip update
+- name: create in-memory inventory
   hosts: "{{ targeted_host| default('localhost') }}"
   gather_facts: yes 
 
@@ -19,7 +19,7 @@
         hostname: "{{ controller_hostname }}"
         groups: aap
  
-    - name: show builder host
+    - name: show controller host
       debug: var=groups['aap']
 
     - name: wait for vm to become reachable
@@ -29,7 +29,7 @@
       loop: "{{ groups['aap'] }}"
 
 
-- name: play 2 
+- name: get images and push to EEs
   hosts: aap
   gather_facts: yes 
 
@@ -42,9 +42,20 @@
 
   tasks:
 
-    - name: print hosts information
-      ansible.builtin.debug:
-        msg: System {{ inventory_hostname }} has hostname {{ ansible_hostname }}
-      delegate_to: "{{ item }}"
-      loop: "{{ groups['aap'] }}"
+    - name: get images list
+      shell: podman images -n --format "table {{ '{{' }} .Repository {{ '}}' ' ' '{{' }} .Tag {{ '}}' }}"|tr -s ' '|sed "s/ /:/g"
+      become: true
+      become_user: awx
+      register: images
 
+    - name: show images to sync
+      debug:
+        msg="{{ images.stdout_lines }}"
+
+    - name: push images to execution nodes
+      debug:
+        msg: "podman image scp {{ item }} {{ HOSTNAME }}::"
+      loop: "{{ images.stdout_lines }}"
+      become: true
+      become_user: awx
+      register: images
