@@ -13,7 +13,23 @@
     - name: check connectivity
       ping:
 
+    - name: add targeted_host to group
+      ansible.builtin.add_host:
+        hostname: "{{ controller_hostname }}"
+        groups: aap
+ 
+    - name: show builder host
+      debug: var=groups['aap']
+
+    - name: wait for vm to become reachable
+      ansible.builtin.wait_for_connection:
+        timeout: 900
+      delegate_to: "{{ item }}"
+      loop: "{{ groups['aap'] }}"
+
     - name: print hosts information
       ansible.builtin.debug:
-        msg: System {{ inventory_hostname }} has hostname {{  ansible_hostname }}
+        msg: System {{ inventory_hostname }} has hostname {{ ansible_hostname }}
+      delegate_to: "{{ item }}"
+      loop: "{{ groups['aap'] }}"
 
