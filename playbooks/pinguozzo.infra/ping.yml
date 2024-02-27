@@ -28,6 +28,20 @@
       delegate_to: "{{ item }}"
       loop: "{{ groups['aap'] }}"
 
+
+- name: play 2 
+  hosts: aap
+  gather_facts: yes 
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+
+  vars:
+
+  pre_tasks:
+
+  tasks:
+
     - name: print hosts information
       ansible.builtin.debug:
         msg: System {{ inventory_hostname }} has hostname {{ ansible_hostname }}
