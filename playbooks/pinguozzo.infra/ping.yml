@@ -1,0 +1,15 @@
+---
+- name: create in-memory inventory
+  hosts: "{{ targeted_host| default('all') }}"
+  gather_facts: yes 
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+
+  vars:
+
+  pre_tasks:
+
+  tasks:
+    - name: check connectivity
+      ping:
