@@ -1,7 +1,7 @@
 ---
 - name: check ip update
   hosts: "{{ targeted_host| default('all') }}"
-  gather_facts: no
+  gather_facts: yes 
 
   vars_files:
     - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
@@ -13,3 +13,8 @@
   tasks:
     - name: check connectivity
       ping:
+
+    - name: print hosts information
+      ansible.builtin.debug:
+        msg: System {{ inventory_hostname }} has hostname {{  ansible_hostname }}
+
