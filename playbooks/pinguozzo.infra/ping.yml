@@ -1,6 +1,6 @@
 ---
 - name: check ip update
-  hosts: "{{ targeted_host| default('all') }}"
+  hosts: "{{ targeted_host| default('localhost') }}"
   gather_facts: yes 
 
   vars_files:
