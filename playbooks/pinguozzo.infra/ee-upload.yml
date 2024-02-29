@@ -1,20 +1,19 @@
 ---
-- name: create in-memory inventory
+- name: play1 create in-memory inventory
   hosts: "{{ targeted_host| default('localhost') }}"
-  gather_facts: yes 
+  gather_facts: yes
 
   vars_files:
     - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
 
   vars:
-
   pre_tasks:
 
   tasks:
     - name: check connectivity
       ping:
 
-    - name: add targeted_host to group
+    - name: add aap controller to group
       ansible.builtin.add_host:
         hostname: "{{ controller_hostname }}"
         groups: aap
@@ -28,20 +27,17 @@
       delegate_to: "{{ item }}"
       loop: "{{ groups['aap'] }}"
 
-
-- name: get images and push to EEs
+- name: play2 get images and push to execution nodes
   hosts: aap
-  gather_facts: yes 
+  gather_facts: yes
 
   vars_files:
     - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
 
   vars:
-
   pre_tasks:
 
   tasks:
-
     - name: get images list
       shell: podman images -n --format "table {{ '{{' }} .Repository {{ '}}' ' ' '{{' }} .Tag {{ '}}' }}"|tr -s ' '|sed "s/ /:/g"
       become: true
@@ -53,9 +49,20 @@
         msg="{{ images.stdout_lines }}"
 
     - name: push images to execution nodes
-      debug:
-        msg: "podman image scp {{ item }} {{ HOSTNAME }}::"
-      loop: "{{ images.stdout_lines }}"
+      command: "podman image scp {{ item.0.name }} {{ item.1.name }}::"
+      args:
+        chdir: $HOME
+      loop: "{{ ee_name | subelements('con_name') }}"
       become: true
       become_user: awx
-      register: images
+
+
+# example data structure ee_name:
+#
+# ee_name:
+#   - name:  localhost/ee-supported-rhel8:latest
+#     target:
+#       - name: aap-xnode2.example.com
+#     con_name:
+#       - name: XNODE2
+# setup podman system connection: https://www.redhat.com/sysadmin/podman-transfer-container-images-without-registry
