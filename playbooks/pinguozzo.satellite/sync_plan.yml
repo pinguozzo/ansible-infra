@@ -1,0 +1,34 @@
+---
+- hosts: "{{ targeted_host| default('localhost') }}"
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+  
+  roles:
+    - role: redhat.satellite.sync_plans
+      vars:
+        - satellite_sync_plans:
+            - name: Daily Sync SOE
+              interval: daily
+              sync_date: 2024-03-15 02:00:00 UTC
+              products:
+                - Red Hat Enterprise Linux Server
+                - Red Hat Enterprise Linux for x86_64
+                - Red Hat Ansible Automation Platform
+                - Red Hat Enterprise Linux Advanced Virtualization
+                - JBoss Enterprise Application Platform
+                - Red Hat Satellite
+                - Red Hat Satellite Capsule
+                - Red Hat Enterprise Linux High Availability for x86_64
+                - Red Hat CodeReady Linux Builder for x86_64
+                - Red Hat Virtualization
+                - Red Hat Ceph Storage OSD
+                - Red Hat Ceph Storage MON
+                - Red Hat Ansible Engine
+                - Red Hat Virtualization Host
+                - Red Hat Virtualization Manager
+                - Red Hat Software Collections (for RHEL Server)
+                - Red Hat Enterprise Linux for x86_64 - Extended Update Support
+                - Red Hat Enterprise Linux Fast Datapath
+                - Red Hat Single Sign-On
+                - Red Hat Enterprise Linux Server - Extended Life Cycle Support

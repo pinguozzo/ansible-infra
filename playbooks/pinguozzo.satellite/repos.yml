@@ -8,17 +8,50 @@
     - role: redhat.satellite.repositories
       vars:
         satellite_products:
+          - name: Red Hat Enterprise Linux Server
+            repository_sets:
+              - name: Red Hat Enterprise Linux 6 Server (RPMs)
+                basearch: x86_64
+                releasever: 6Server
+              - name: Red Hat Enterprise Linux 6 Server - Supplementary (RPMs)
+                basearch: x86_64
+                releasever: 6Server
+              - name: Red Hat Enterprise Linux 6 Server - RH Common (RPMs)
+                basearch: x86_64
+                releasever: 6Server
+              - name: Red Hat Enterprise Linux 6 Server - Optional (RPMs)
+                basearch: x86_64
+                releasever: 6Server
+              - name: Red Hat Enterprise Linux 6 Server - Extras (RPMs)
+                basearch: x86_64
+              - name: Red Hat Enterprise Linux 6 Server - Fastrack (RPMs)
+                basearch: x86_64
+              - name: Red Hat Enterprise Linux 6 Server - Optional Fastrack (RPMs)
+                basearch: x86_64
+
+          - name: Red Hat Enterprise Linux for x86_64 - Extended Update Support
+            repository_sets:
+              - name: Red Hat Enterprise Linux 6 Server - Extended Update Support (RPMs)
+                basearch: x86_64
+                releasever: 6.7
+              - name: Red Hat Enterprise Linux 6 Server - Extended Update Support - Supplementary (RPMs)
+                basearch: x86_64
+                releasever: 6.7
+              - name: Red Hat Enterprise Linux 6 Server - Extended Update Support - Optional (RPMs)
+                basearch: x86_64
+                releasever: 6.7
+
           - name: Red Hat Single Sign-On
             repository_sets:
-              - name: Single Sign-On 7.4 for RHEL 8 x86_64 (RPMs)               
+              - name: Single Sign-On 7.4 for RHEL 8 x86_64 (RPMs)
           - name: Red Hat Enterprise Linux for x86_64
             repository_sets:
               - name: Red Hat Satellite Utils 6.11 for RHEL 8 x86_64 (RPMs)
               - name: Red Hat Satellite Utils 6.12 for RHEL 8 x86_64 (RPMs)
               - name: Red Hat Satellite Utils 6.13 for RHEL 8 x86_64 (RPMs)
               - name: Red Hat Satellite Utils 6.14 for RHEL 8 x86_64 (RPMs)
-              - name: Red Hat Satellite Client 6 for RHEL 8 x86_64 (RPMs) 
-              - name: Red Hat Satellite Client 6 for RHEL 9 x86_64 (RPMs) 
+              - name: Red Hat Satellite Client 6 for RHEL 8 x86_64 (RPMs)
+              - name: Red Hat Satellite Client 6 for RHEL 9 x86_64 (RPMs)
               - name: Red Hat Satellite Maintenance 6.12 for RHEL 8 x86_64 (RPMs) 
               - name: Red Hat Satellite Maintenance 6.13 for RHEL 8 x86_64 (RPMs) 
               - name: Red Hat Satellite Maintenance 6.14 for RHEL 8 x86_64 (RPMs)
@@ -38,6 +71,8 @@
 
           - name: Red Hat Enterprise Linux Server
             repository_sets:
+              - name: Red Hat Satellite Client 6 (for RHEL 7 Server) (RPMs) 
+                basearch: x86_64
               - name: Red Hat Enterprise Linux 7 Server (RPMs)
                 basearch: x86_64
                 releasever: 7Server
