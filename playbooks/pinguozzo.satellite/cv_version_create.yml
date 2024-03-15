@@ -9,6 +9,7 @@
     - role: redhat.satellite.content_views
       vars:
         satellite_content_views:
+
           - name: cv-rhel6_soe
             description: "RHEL 6 SOE Content"
             repositories:
@@ -20,6 +21,7 @@
                 product: Red Hat Enterprise Linux Server - Extended Life Cycle Support
               - name: Red Hat Enterprise Linux 6 Server Kickstart x86_64 6.10
                 product: Red Hat Enterprise Linux Server
+
           - name: cv-leapp
             description: "Red Hat Leapp Upgrade"
             repositories:
@@ -78,53 +80,6 @@
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream RPMs 8.6', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream RPMs 8.7', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat Enterprise Linux 9 for x86_64 - AppStream RPMs 9', product: 'Red Hat Enterprise Linux for x86_64' }
-
-
-          - name: Red Hat Enterprise Linux Server
-            repository_sets:
-              - name: Red Hat Enterprise Linux 6 Server (RPMs)
-                basearch: x86_64
-                releasever: 6Server
-              - name: Red Hat Enterprise Linux 6 Server - Supplementary (RPMs)
-                basearch: x86_64
-                releasever: 6Server
-              - name: Red Hat Enterprise Linux 6 Server - RH Common (RPMs)
-                basearch: x86_64
-                releasever: 6Server
-              - name: Red Hat Enterprise Linux 6 Server - Optional (RPMs)
-                basearch: x86_64
-                releasever: 6Server
-              - name: Red Hat Enterprise Linux 6 Server - Extras (RPMs)
-                basearch: x86_64
-              - name: Red Hat Enterprise Linux 6 Server - Fastrack (RPMs)
-                basearch: x86_64
-              - name: Red Hat Enterprise Linux 6 Server - Optional Fastrack (RPMs)
-                basearch: x86_64
-
-          - name: Red Hat Enterprise Linux for x86_64 - Extended Update Support
-            repository_sets:
-              - name: Red Hat Enterprise Linux 6 Server - Extended Update Support (RPMs)
-                basearch: x86_64
-                releasever: 6.7
-              - name: Red Hat Enterprise Linux 6 Server - Extended Update Support - Supplementary (RPMs)
-                basearch: x86_64
-                releasever: 6.7
-              - name: Red Hat Enterprise Linux 6 Server - Extended Update Support - Optional (RPMs)
-                basearch: x86_64
-                releasever: 6.7
-
-
-
-
-
-
-
-
-
-
-
-
-
 
           - name: cv-rhel9_soe
             description: "RHEL 9 SOE Content"
