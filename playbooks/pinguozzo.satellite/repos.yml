@@ -8,6 +8,12 @@
     - role: redhat.satellite.repositories
       vars:
         satellite_products:
+          - name: Red Hat Software Collections (for RHEL Server)
+            repository_sets:
+              - name: Red Hat Software Collections RPMs for Red Hat Enterprise Linux 6 Server
+                basearch: x86_64
+                releasever: 6Server
+
           - name: Red Hat Enterprise Linux Server
             repository_sets:
               - name: Red Hat Enterprise Linux 6 Server (RPMs)

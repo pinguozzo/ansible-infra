@@ -10,6 +10,7 @@
       - name: ccv-rhel8_soe
       - name: ccv-rhel9_soe
     satellite_content_views:
+      - cv-rhel6_soe
       - cv-rhel8_soe
       - cv-rhel8_soe_extras
       - cv-rhel9_soe
