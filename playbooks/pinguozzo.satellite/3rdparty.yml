@@ -67,7 +67,7 @@
         name: "{{ item.name }}"
         content_type: "{{ item.content_type }}"
         content: "{{ item.content }}"
-      loop: "{{ satellite_content_credentials 
+      loop: "{{ satellite_content_credentials }}"
 
   tasks:
 
