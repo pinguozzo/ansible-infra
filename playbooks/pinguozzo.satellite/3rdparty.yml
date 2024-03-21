@@ -6,6 +6,10 @@
 
   vars:
     satellite_content_credentials:
+      - name: RPM-GPG-KEY-EPEL-6-SOE
+        content_type: gpg_key
+        content: "{{ lookup('url', 'https://fedora-archive.ip-connect.info/epel/RPM-GPG-KEY-EPEL', split_lines=False) }}"
+
       - name: RPM-GPG-KEY-EPEL-7-SOE
         content_type: gpg_key
         content: "{{ lookup('url', 'http://mirror.init7.net/fedora/epel/RPM-GPG-KEY-EPEL-7Server', split_lines=False) }}"
@@ -23,6 +27,13 @@
         sync_plan: Weekly SOE  
     
     additional_repos:
+      - name: "el6"
+        url: "https://fedora-archive.ip-connect.info/epel/6/x86_64/"
+        product: "EPEL SOE"
+        os_version: "rhel-6"
+        sync_plan: Weekly SOE
+        gpg_key: RPM-GPG-KEY-EPEL-6-SOE
+
       - name: "el7"
         url: "https://mirror.init7.net/fedora/epel/7Server/x86_64/"
         product: "EPEL SOE"
