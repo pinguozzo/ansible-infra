@@ -22,6 +22,12 @@
               - name: Red Hat Enterprise Linux 6 Server Kickstart x86_64 6.10
                 product: Red Hat Enterprise Linux Server
 
+          - name: cv-rhel6_soe_extras
+            description: "RHEL 6 SOE Content"
+            repositories:
+              - name: pinguozzo_EPEL_SOE_el6
+                product: EPEL SOE
+
           - name: cv-leapp
             description: "Red Hat Leapp Upgrade"
             repositories:
@@ -157,6 +163,14 @@
               - { name: 'Red Hat OpenStack Platform 16.2 Cinderlib for RHEL 8 x86_64 RPMs', product: 'Cinderlib' }
               - { name: 'Red Hat Ceph Storage Tools 4 for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat CodeReady Linux Builder for RHEL 8 x86_64 RPMs 8', product: 'Red Hat CodeReady Linux Builder for x86_64' }
+
+          - name: ccv-rhel6_soe
+            description: "CCV RHEL6 SOE"
+            components:
+              - content_view: cv-rhel6_soe
+                latest: true
+              - content_view: cv-rhel6_soe_extras
+                latest: true
 
           - name: ccv-rhel8_soe
             description: "CCV RHEL8 SOE"
