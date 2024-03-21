@@ -21,7 +21,7 @@
         sync_plan: Weekly SOE  
     
     additional_repos:
-      - name: "el8"
+      - name: "el7"
         url: "https://mirror.init7.net/fedora/epel/7Server/x86_64/"
         product: "EPEL SOE"
         os_version: "rhel-7"
@@ -54,7 +54,6 @@
         repository: "{{ item.name }}"
         product: "{{ item.product }}"
       loop: "{{ additional_repos }}"
-
 
   tasks:
     - name: Create Content Crendentials
