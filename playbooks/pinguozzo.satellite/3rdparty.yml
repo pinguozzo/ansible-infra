@@ -46,17 +46,6 @@
 
 
   pre_tasks:
-    - name: enable sync for products
-      redhat.satellite.repository_sync:
-        username: "{{ satellite_username | default(omit) }}"
-        password: "{{ satellite_password | default(omit) }}"
-        server_url: "{{ satellite_server_url | default(omit) }}"
-        validate_certs: "{{ satellite_validate_certs | default(omit) }}"
-        organization: "{{ satellite_organization }}"
-        repository: "{{ item.name }}"
-        product: "{{ item.product }}"
-      loop: "{{ additional_repos }}"
-
     - name: Create Content Crendentials
       redhat.satellite.content_credential:
         username: "{{ satellite_username | default(omit) }}"
@@ -104,3 +93,15 @@
         download_policy: "{{ item.download_policy|default(omit) }}"
       loop: "{{ additional_repos }}"
       tags: 3rd_party_repos
+
+    - name: enable sync for products
+      redhat.satellite.repository_sync:
+        username: "{{ satellite_username | default(omit) }}"
+        password: "{{ satellite_password | default(omit) }}"
+        server_url: "{{ satellite_server_url | default(omit) }}"
+        validate_certs: "{{ satellite_validate_certs | default(omit) }}"
+        organization: "{{ satellite_organization }}"
+        repository: "{{ item.name }}"
+        product: "{{ item.product }}"
+      loop: "{{ additional_repos }}"
+
