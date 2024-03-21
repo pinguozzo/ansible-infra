@@ -22,7 +22,7 @@
     
     additional_repos:
       - name: "el8"
-        url: "https://mirror.init7.net/fedora/epel/8/Everything/x86_64/"
+        url: "https://mirror.init7.net/fedora/epel/7Server/x86_64/"
         product: "EPEL SOE"
         os_version: "rhel-7"
         sync_plan: Weekly SOE  
