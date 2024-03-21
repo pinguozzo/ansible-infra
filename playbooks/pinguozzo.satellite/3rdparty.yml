@@ -22,6 +22,20 @@
         sync_plan: Weekly SOE  
         gpg_key: RPM-GPG-KEY-EPEL-8-SOE
 
+
+  pre_tasks:
+    - name: enable sync for products
+      redhat.satellite.repository_sync:
+        username: "{{ satellite_username | default(omit) }}"
+        password: "{{ satellite_password | default(omit) }}"
+        server_url: "{{ satellite_server_url | default(omit) }}"
+        validate_certs: "{{ satellite_validate_certs | default(omit) }}"
+        organization: "{{ satellite_organization }}"
+        repository: "{{ item.name }}"
+        product: "{{ item.product }}"
+      loop: "{{ additional_repos }}"
+
+
   tasks:
     - name: Create Content Crendentials
       redhat.satellite.content_credential:
@@ -55,7 +69,6 @@
         server_url: "{{ satellite_server_url | default(omit) }}"
         organization: "{{ satellite_organization }}"
         validate_certs: "{{ satellite_validate_certs | default(omit) }}"
-        name: "{{ item.name }}"
         name: "{{ item.name }}"
         content_type: "yum"
         url: "{{ item.url|default(omit) }}"
