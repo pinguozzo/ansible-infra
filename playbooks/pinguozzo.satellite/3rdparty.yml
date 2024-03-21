@@ -5,6 +5,7 @@
     - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
 
   vars:
+    sync_repos: false
     satellite_content_credentials:
       - name: RPM-GPG-KEY-EPEL-6-SOE
         content_type: gpg_key
@@ -115,4 +116,5 @@
         repository: "{{ item.name }}"
         product: "{{ item.product }}"
       loop: "{{ additional_repos }}"
+      when: sync_repos
 
