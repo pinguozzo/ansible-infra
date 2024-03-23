@@ -15,11 +15,17 @@
   vars_files:
     - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
 
-  vars:
-    domain_name: "{{ domain |default('apps.pinguozzo.com') }}"
-    hg_name: "{{ hg | default('ESX RHEL9 NET_apps') }}"
+  pre_tasks:
+    - name: Set platform/version specific variables
+      include_vars: "{{ __vars_file }}"
+      loop:
+        - "RedHat_{{ os_major }}.yml"
+      vars:
+        __vars_file: "{{ playbook_dir }}/../../vars/{{ item }}"
+      when: __vars_file is file
 
   tasks:
+
     - name: create host(s)
       block:
         - name: create host(s) in vSphere
@@ -34,8 +40,8 @@
               start: "1"
             ptable: 'Kickstart default'
             provision_method: bootdisk
-            operatingsystem: "{{ os | default('RedHat 9.0') }}"
-            kickstart_repository: "Red Hat Enterprise Linux 9 for x86_64 - BaseOS Kickstart 9.0"
+            operatingsystem: "{{ os }}"
+            kickstart_repository: "{{ ks }}"
             subnet: "APPS"
             content_source: "{{ satellite_server }}" 
           register: output
