@@ -1,0 +1,61 @@
+---
+- name: create vmware host with bootdisk
+  hosts: "{{ targeted_host| default('localhost') }}"
+  gather_facts: no
+
+  module_defaults:
+    redhat.satellite.host:
+      username: "{{ satellite_username }}"
+      password: "{{ satellite_password }}"
+      server_url: "{{ satellite_server_url }}"
+      location: "{{ satellite_location }}"
+      organization: "{{ satellite_organization }}"
+      validate_certs: no
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+
+  vars:
+    domain_name: "{{ domain |default('apps.pinguozzo.com') }}"
+    hg_name: "{{ hg | default('ESX RHEL9 NET_apps') }}"
+
+  tasks:
+    - name: create host(s)
+      block:
+        - name: create host(s) in vSphere
+          redhat.satellite.host:
+            name: "{{ vm_name | default(lookup('community.general.random_pet'), true) ~ (vm_name is defined and num_instances | int > 1 )|ternary(item, '') ~ '.' ~ domain_name }}"
+            state: present
+            build: true
+            hostgroup: "{{ hg_name }}"
+            compute_resource: "VMware"
+            compute_profile: "{{ compute_profile|default('2-Medium Generic') }}"
+            compute_attributes:
+              start: "1"
+            ptable: 'Kickstart default'
+            provision_method: bootdisk
+            operatingsystem: "{{ os | default('RedHat 9.0') }}"
+            kickstart_repository: "Red Hat Enterprise Linux 9 for x86_64 - BaseOS Kickstart 9.0"
+            subnet: "APPS"
+            content_source: "{{ satellite_server }}" 
+          register: output
+          with_sequence: start=1 end="{{ num_instances|default(1) }}"
+
+        - name: set msg output
+          set_fact:
+            msg: "New VM: {{ output | community.general.json_query('results[*].entity.hosts[*].name') | join('')}} deployed on VMware"
+
+        - name: print new host(s) fqdn
+          debug:
+            var: msg
+
+        - name: "notify via telegram"
+          telegram:
+            token: "{{ pinguobot_token }}"
+            api_args:
+              chat_id: "{{ pinguobot_chatid }}"
+              text: "{{ msg }}"
+              parse_mode: "markdown"
+              disable_web_page_preview: true
+              disable_notification: false
+          when: notify_via_telegram | bool
