@@ -3,10 +3,19 @@
   hosts: "{{ targeted_host| default('localhost') }}"
   gather_facts: no
 
-  pre_tasks:
-    - name: load vaulted vars
-      include_vars: "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+  module_defaults:
+    redhat.satellite.host:
+      username: "{{ satellite_username }}"
+      password: "{{ satellite_password }}"
+      server_url: "{{ satellite_server_url }}"
+      location: "{{ satellite_location }}"
+      organization: "{{ satellite_organization }}"
+      validate_certs: no
 
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+
+  pre_tasks:
     - name: set platform/version specific variables
       include_vars: "{{ __vars_file }}"
       loop:
