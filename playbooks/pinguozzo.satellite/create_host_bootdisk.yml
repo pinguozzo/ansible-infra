@@ -3,11 +3,11 @@
   hosts: "{{ targeted_host| default('localhost') }}"
   gather_facts: no
 
-  vars_files:
-    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
-
   pre_tasks:
-    - name: Set platform/version specific variables
+    - name: load vaulted vars
+      include_vars: "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+
+    - name: set platform/version specific variables
       include_vars: "{{ __vars_file }}"
       loop:
         - "RedHat_{{ os_major }}.yml"
@@ -16,7 +16,6 @@
       when: __vars_file is file
 
   tasks:
-
     - name: create host(s)
       block:
         - name: create host(s) in vSphere
@@ -24,8 +23,8 @@
             username: "{{ satellite_username | default(omit) }}"
             password: "{{ satellite_password | default(omit) }}"
             server_url: "{{ satellite_server_url | default(omit) }}"
-            organization: "{{ satellite_organization }}"
             location: "{{ satellite_location }}"  
+            organization: "{{ satellite_organization }}"
             validate_certs: "{{ satellite_validate_certs | default(omit) }}"
             name: "{{ vm_name | default(lookup('community.general.random_pet'), true) ~ (vm_name is defined and num_instances | int > 1 )|ternary(item, '') ~ '.' ~ domain_name }}"
             state: present
