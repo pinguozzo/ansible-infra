@@ -53,6 +53,7 @@
 
         - name: ensure required packages are present
           ansible.builtin.yum:
+            disable_excludes: all
             name: "{{ install_packages }}"
             exclude: "{{ exclude_packages }}"
             state: present
