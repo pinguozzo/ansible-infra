@@ -1,6 +1,29 @@
 ---
+- name: add host to in-memory inventory
+  hosts: localhost
+  gather_facts: true
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+
+  tasks:
+    - name: add targeted_host to to_register group
+      ansible.builtin.add_host:
+        hostname: "{{ item }}"
+        groups: post_install
+      loop: "{{ targeted_host }}"
+
+    - name: show host to register
+      debug: var=groups['post_install']
+
+    - name: wait for vm to become reachable
+      ansible.builtin.wait_for_connection:
+        timeout: 900
+      delegate_to: "{{ item }}"
+      loop: "{{ groups['post_install'] }}"
+
 - name: post-install playbook
-  hosts: "{{ targeted_host| default('all') }}"
+  hosts: "{{ post_install| default('all') }}"
   serial: true
   gather_facts: no
 
@@ -31,3 +54,4 @@
           state: present
     when:
       - ansible_os_family == "RedHat" and ansible_distribution_.major_version <= 6
+
