@@ -53,11 +53,6 @@
         __vars_file: "{{ playbook_dir }}/../../vars/{{ item }}"
       when: __vars_file is file
 
-
-
-
-
-
   tasks:
     - name: post-install for rhel6
       block:
@@ -71,5 +66,5 @@
             name: "{{ install_packages }}"
             state: present
       when:
-        - ansible_os_family == "RedHat" and ansible_distribution_.major_version <= 6
+        - ansible_os_family == "RedHat" and ansible_distribution_major_version <= 6
 
