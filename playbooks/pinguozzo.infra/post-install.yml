@@ -22,7 +22,7 @@
       loop: "{{ groups['post_install'] }}"
 
 - name: post-install playbook
-  hosts: "{{ post_install }}"
+  hosts: post_install
   serial: true
   gather_facts: true
 
