@@ -57,6 +57,14 @@
             name: "{{ install_packages }}"
             exclude: "{{ exclude_packages }}"
             state: present
+
+        - name: ensure excluded packages are saved
+          ansible.builtin.lineinfile:
+            path: /etc/yum.conf
+            line: exclude="{{ item.split() | join(' ')  }}"
+            backrefs: yes
+          loop: "{{ excluded_packages }}"
+
       when: (ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version'] == "6")
 
     - name: post-install for rhel7
