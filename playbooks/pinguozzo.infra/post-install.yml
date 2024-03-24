@@ -11,8 +11,7 @@
       ansible.builtin.add_host:
         hostname: "{{ item }}"
         groups: post_install
-      loop: 
-        - "{{ targeted_host }}"
+      loop: "{{ targeted_host }}"
 
     - name: show host to register
       debug: var=groups['post_install']
@@ -20,8 +19,7 @@
     - name: wait for vm to become reachable
       ansible.builtin.ping:
       delegate_to: "{{ item }}"
-      loop: 
-        - "{{ groups['post_install'] }}"
+      loop: "{{ groups['post_install'] }}"
 
 - name: post-install playbook
   hosts: "{{ post_install| default('all') }}"
