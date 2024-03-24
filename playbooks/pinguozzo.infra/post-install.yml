@@ -63,7 +63,7 @@
             path: /etc/yum.conf
             line: exclude="{{ item.split() | join(' ')  }}"
             backrefs: yes
-          loop: "{{ excluded_packages }}"
+          loop: "{{ exclude_packages }}"
 
       when: (ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version'] == "6")
 
