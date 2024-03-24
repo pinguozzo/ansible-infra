@@ -1,0 +1,33 @@
+---
+- name: post-install playbook
+  hosts: "{{ targeted_host| default('all') }}"
+  serial: true
+  gather_facts: no
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+
+  pre_tasks:
+    - name: set platform/version specific variables
+      include_vars: "{{ __vars_file }}"
+      loop:
+        - "RedHat_{{ os_major }}.yml"
+      vars:
+        __vars_file: "{{ playbook_dir }}/../../vars/{{ item }}"
+      when: __vars_file is file
+
+  pre_tasks:
+    
+  tasks:
+    block:
+      - name: ensure not required packages are absent
+        ansible.builtin.yum:
+          name: katello-host-tools
+          state: absent
+
+      - name: ensure required packages are present
+        ansible.builtin.yum:
+          name: "{{ install_packages }}"
+          state: present
+    when:
+      - ansible_os_family == "RedHat" and ansible_distribution_.major_version <= 6

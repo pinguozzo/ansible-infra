@@ -1,0 +1,15 @@
+---
+rhc_auth:
+  hostgroup: "ESX RHEL6 NET_apps"
+  activation_keys:
+    keys:
+      - "ak-rhel6-vmware"
+
+hg_name: "{{ hg | default('ESX RHEL6 NET_apps') }}"
+os: "{{ operatingsystem | default('RedHat 6.10') }}"
+ks: "Red Hat Enterprise Linux 6 Server Kickstart x86_64 6.10"
+content_source: "{{ satellite_server }}" 
+
+install_packages:
+  - katello-host-tools-fact-plugin.noarch
+  - katello-host-tools-3.5.7-3.el6sat.noarch
