@@ -13,3 +13,6 @@ content_source: "{{ satellite_server }}"
 install_packages:
   - katello-host-tools-fact-plugin.noarch
   - katello-host-tools-3.5.7-3.el6sat.noarch
+
+exclude_packages:
+  - katello-host-tools
