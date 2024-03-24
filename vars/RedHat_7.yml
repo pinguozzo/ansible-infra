@@ -1,10 +1,10 @@
 ---
 rhc_auth:
-  hostgroup: "ESX RHEL8 NET_apps"
+  hostgroup: "ESX RHEL7 NET_apps"
   activation_keys:
     keys:
-      - "ak-rhel8-vmware"
+      - "ak-rhel7-vmware"
 
-hg_name: "{{ hg | default('ESX RHEL8 NET_apps') }}"
-os: "{{ operatingsystem | default('RedHat 8.0') }}"
+hg_name: "{{ hg | default('ESX RHEL7 NET_apps') }}"
+os: "{{ operatingsystem | default('RedHat 7.9') }}"
 ks: "Red Hat Enterprise Linux 7 Server Kickstart x86_64 7.9"
