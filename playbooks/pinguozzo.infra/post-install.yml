@@ -46,11 +46,6 @@
   tasks:
     - name: post-install for rhel6
       block:
-        - name: ensure not required packages are absent
-          ansible.builtin.yum:
-            name: katello-host-tools
-            state: absent
-
         - name: ensure required packages are present
           ansible.builtin.yum:
             name: "{{ install_packages }}"
