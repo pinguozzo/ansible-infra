@@ -8,4 +8,3 @@ rhc_auth:
 hg_name: "{{ hg | default('ESX RHEL8 NET_apps') }}"
 os: "{{ operatingsystem | default('RedHat 8.0') }}"
 ks: "Red Hat Enterprise Linux 8 for x86_64 - BaseOS Kickstart 8.0"
-content_source: "{{ satellite_server }}" 
