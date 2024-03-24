@@ -24,7 +24,7 @@
 - name: post-install playbook
   hosts: "{{ post_install| default('all') }}"
   serial: true
-  gather_facts: no
+  gather_facts: true
 
   vars_files:
     - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
