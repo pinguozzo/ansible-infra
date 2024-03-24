@@ -16,4 +16,4 @@ install_packages:
   - libselinux-python  
 
 exclude_packages:
-  - katello-host-tools
+  - katello-host-tools-4.2.3-3.el6sat.noarch
