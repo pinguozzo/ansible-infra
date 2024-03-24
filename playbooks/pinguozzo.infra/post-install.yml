@@ -58,3 +58,44 @@
             state: present
       when: (ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version'] == "6")
 
+    - name: post-install for rhel7
+      block:
+        - name: ensure not required packages are absent
+          ansible.builtin.yum:
+            name: katello-host-tools
+            state: absent
+
+        - name: ensure required packages are present
+          ansible.builtin.yum:
+            name: "{{ install_packages }}"
+            exclude: "{{ exclude_packages }}"
+            state: present
+      when: (ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version'] == "7")
+
+    - name: post-install for rhel8
+      block:
+        - name: ensure not required packages are absent
+          ansible.builtin.yum:
+            name: katello-host-tools
+            state: absent
+
+        - name: ensure required packages are present
+          ansible.builtin.yum:
+            name: "{{ install_packages }}"
+            exclude: "{{ exclude_packages }}"
+            state: present
+      when: (ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version'] == "8")
+
+    - name: post-install for rhel9
+      block:
+        - name: ensure not required packages are absent
+          ansible.builtin.yum:
+            name: katello-host-tools
+            state: absent
+
+        - name: ensure required packages are present
+          ansible.builtin.yum:
+            name: "{{ install_packages }}"
+            exclude: "{{ exclude_packages }}"
+            state: present
+      when: (ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version'] == "9")
