@@ -11,14 +11,14 @@
       ansible.builtin.add_host:
         hostname: "{{ item }}"
         groups: post_install
-      loop: "{{ targeted_host }}"
+      loop: 
+        - "{{ targeted_host }}"
 
     - name: show host to register
       debug: var=groups['post_install']
 
     - name: wait for vm to become reachable
-      ansible.builtin.wait_for_connection:
-        timeout: 900
+      ansible.builtin.ping:
       delegate_to: "{{ item }}"
       loop: "{{ groups['post_install'] }}"
 
@@ -39,19 +39,18 @@
         __vars_file: "{{ playbook_dir }}/../../vars/{{ item }}"
       when: __vars_file is file
 
-  pre_tasks:
-    
   tasks:
-    block:
-      - name: ensure not required packages are absent
-        ansible.builtin.yum:
-          name: katello-host-tools
-          state: absent
+    - name: post-install for rhel6
+      block:
+        - name: ensure not required packages are absent
+          ansible.builtin.yum:
+            name: katello-host-tools
+            state: absent
 
-      - name: ensure required packages are present
-        ansible.builtin.yum:
-          name: "{{ install_packages }}"
-          state: present
-    when:
-      - ansible_os_family == "RedHat" and ansible_distribution_.major_version <= 6
+        - name: ensure required packages are present
+          ansible.builtin.yum:
+            name: "{{ install_packages }}"
+            state: present
+      when:
+        - ansible_os_family == "RedHat" and ansible_distribution_.major_version <= 6
 
