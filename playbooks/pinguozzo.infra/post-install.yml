@@ -78,6 +78,13 @@
             name: "{{ install_packages }}"
             exclude: "{{ exclude_packages }}"
             state: present
+
+        - name: ensure excluded packages are saved
+          ansible.builtin.lineinfile:
+            path: /etc/yum.conf
+            line: "exclude={{ item.split() | join(' ')  }}"
+          loop: "{{ exclude_packages }}"
+
       when: (ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version'] == "7")
 
     - name: post-install for rhel8
@@ -92,6 +99,13 @@
             name: "{{ install_packages }}"
             exclude: "{{ exclude_packages }}"
             state: present
+
+        - name: ensure excluded packages are saved
+          ansible.builtin.lineinfile:
+            path: /etc/dnf.conf
+            line: "exclude={{ item.split() | join(' ')  }}"
+          loop: "{{ exclude_packages }}"
+            
       when: (ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version'] == "8")
 
     - name: post-install for rhel9
@@ -106,4 +120,11 @@
             name: "{{ install_packages }}"
             exclude: "{{ exclude_packages }}"
             state: present
+
+        - name: ensure excluded packages are saved
+          ansible.builtin.lineinfile:
+            path: /etc/dnf.conf
+            line: "exclude={{ item.split() | join(' ')  }}"
+          loop: "{{ exclude_packages }}"
+
       when: (ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version'] == "9")
