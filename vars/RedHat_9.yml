@@ -8,3 +8,4 @@ rhc_auth:
 hg_name: "{{ hg | default('ESX RHEL9 NET_apps') }}"
 os: "{{ operatingsystem | default('RedHat 9.0') }}"
 ks: "Red Hat Enterprise Linux 9 for x86_64 - BaseOS Kickstart 9.0"
+cv: "ccv-rhel9_soe"

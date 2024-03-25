@@ -5,6 +5,7 @@ rhc_auth:
     keys:
       - "ak-rhel7-vmware"
 
-hg_name: "{{ hg | default('ESX RHEL7 NET_apps') }}"
-os: "{{ operatingsystem | default('RedHat 7.9') }}"
+hg_name: "ESX RHEL7 NET_apps"
+os: "RHEL 7.9"
 ks: "Red Hat Enterprise Linux 7 Server Kickstart x86_64 7.9"
+cv: "ccv-rhel7_soe"
