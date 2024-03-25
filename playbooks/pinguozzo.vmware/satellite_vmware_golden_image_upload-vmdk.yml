@@ -17,6 +17,10 @@
             vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
             vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
 
+    - name: show VMWARE_VALIDATE_CERTS
+      ansible.builtin.debug:
+        msg: "'{{ lookup('ansible.builtin.env', 'VMWARE_VALIDATE_CERTS') }}'" 
+
     - name: copy golden image vmdk file to datastore
       community.vmware.vsphere_copy:
         hostname: '{{ vcenter_hostname }}'
@@ -25,7 +29,7 @@
         src: "{{ playbook_dir }}/../..//{{ os_major }}-builder.vmdk"
         validate_certs: false
         datacenter: DC1
-        datastore: ssd
+        datastore: "{{ vcenter_datastore }}"
         path: "my_vmdk/{{ os_major }}-golden.vmdk"
       tags: vmdk
 
@@ -36,7 +40,7 @@
         password: '{{ vcenter_password }}'
         validate_certs: false
         datacenter: DC1
-        datastore: ssd
+        datastore: "{{ vcenter_datastore }}"
         path: "{{ item }}"
         state: absent
       loop:
