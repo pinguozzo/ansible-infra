@@ -1,0 +1,10 @@
+
+- name: "search repos "
+  hosts: "{{ targeted_host| default('localhost') }}"
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml
+
+  tasks:
+    - debug: 
+        var=vars

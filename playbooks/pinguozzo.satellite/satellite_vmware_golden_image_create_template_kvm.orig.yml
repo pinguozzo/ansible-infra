@@ -1,0 +1,271 @@
+---
+- name: create golden image vm template
+  hosts: "{{ targeted_host| default('localhost') }}"
+  gather_facts: no
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+
+  vars:
+    domain_name: "{{ satellite_domain }}"
+    notify_via_telegram: true
+
+  tasks: 
+    - name: copy golden image vmdk file to datastore
+      community.vmware.vsphere_copy:
+        hostname: '{{ vcenter_hostname }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        src: "{{ playbook_dir }}/../../rhel87-golden.vmdk"
+        validate_certs: false
+        datacenter: DC1
+        datastore: datastore1
+        path: my_vmdk/rhel87-golden.vmdk
+      tags: upload
+
+    - name: convert the image in an up to date VMDK format
+      ansible.builtin.command: "vmkfstools -i /vmfs/volumes/datastore1/my_vmdk/rhel87-golden.vmdk  /vmfs/volumes/datastore1/my_vmdk/rhel87-golden-converted.vmdk -d thin"
+      delegate_to: "{{ esxi_host }}"
+      vars:
+        ansible_user: root
+        ansible_python_interpreter: /bin/python3
+
+    - name: set connection info
+      ansible.builtin.set_fact:
+        connection_args:
+            vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+            vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+            vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+      tags: always
+    
+    - name: lookup MoID of the object
+      ansible.builtin.debug: msg="{{ lookup('vmware.vmware_rest.cluster_moid', '/DC1/host/KNA', **connection_args) }}"
+      tags: check
+    
+    - name: create a VM
+      vmware.vmware_rest.vcenter_vm:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        placement:
+          cluster: "{{ lookup('vmware.vmware_rest.cluster_moid', '/DC1/host/KNA', **connection_args) }}"
+          datastore: "{{ lookup('vmware.vmware_rest.datastore_moid', '/DC1/datastore/datastore1', **connection_args) }}"
+          folder: "{{ lookup('vmware.vmware_rest.folder_moid', '/DC1/vm', **connection_args) }}"
+          resource_pool: "{{ lookup('vmware.vmware_rest.resource_pool_moid', '/DC1/host/KNA/Resources', **connection_args) }}"
+        name: rhel8-builder-golden-vm
+        guest_OS: RHEL_8_64
+        hardware_version: VMX_19
+        memory:
+          hot_add_enabled: true
+          size_MiB: 1024
+        disks:
+          - type: SATA
+            backing:
+              type: VMDK_FILE
+              vmdk_file: "[datastore1] my_vmdk/rhel87-golden-converted.vmdk"
+        cdroms:
+          - type: SATA
+            sata:
+              bus: 0
+              unit: 2
+        nics:
+          - backing:
+              type: STANDARD_PORTGROUP
+              network: "{{ lookup('vmware.vmware_rest.network_moid', '/DC1/network/VLAN 5', **connection_args) }}"
+            start_connected: true
+      register: deploy_vm 
+
+    - debug: var=deploy_vm
+
+    - name: ensure vm is turned on
+      vmware.vmware_rest.vcenter_vm_power:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        state: start
+        vm: '{{ deploy_vm.id }}'
+          #vm: "{{ search_result.value[0].vm }}"
+          #when:
+          #- search_result.value[0].vm is defined
+    
+    - name: wait until my vm is ready
+      vmware.vmware_rest.vcenter_vm_tools_info:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        vm: '{{ deploy_vm.id }}'
+          #vm: "{{ search_result.value[0].vm }}"
+      register: vm_tools_info
+      until:
+      - vm_tools_info is not failed
+      - vm_tools_info.value.run_state == "RUNNING"
+      retries: 10
+      delay: 5
+
+    - name: create an instant clone of a VM
+      vmware.vmware_rest.vcenter_vm:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        placement:
+          datastore: "{{ lookup('vmware.vmware_rest.datastore_moid', '/DC1/datastore/qnap virt-images', **connection_args) }}"
+          folder: "{{ lookup('vmware.vmware_rest.folder_moid', '/DC1/vm', **connection_args) }}"
+          resource_pool: "{{ lookup('vmware.vmware_rest.resource_pool_moid', '/DC1/host/KNA/Resources', **connection_args) }}"
+        state: instant_clone
+        source: "{{ deploy_vm.id }}"
+        name: instant_clone_1
+
+    - name: create a content library on local disk
+      vmware.vmware_rest.content_locallibrary:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        name: local
+        description: automated
+        publish_info:
+          published: true
+          authentication_method: NONE
+        storage_backings:
+        - datastore_id: "{{ lookup('vmware.vmware_rest.datastore_moid', '/DC1/datastore/datastore1', **connection_args) }}"
+          type: DATASTORE
+        state: present
+      register: local_lib
+
+    - name: List all Local Content Library
+      vmware.vmware_rest.content_locallibrary_info:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+      register: all_content_libraries
+      tags: create
+    
+    - name: Use the name to identify the right Content Library
+      set_fact:
+        local_lib: "{{ all_content_libraries.value | selectattr('name', 'equalto', 'local')|first }}"
+      tags: create
+    
+    - name: Export the VM as an OVF on the library
+      vmware.vmware_rest.vcenter_ovf_libraryitem:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        session_timeout: 2900
+        source:
+          type: VirtualMachine
+          id: "{{ deploy_vm.id }}"
+        target:
+          library_id: "{{ local_lib.id }}"
+        create_spec:
+          name: golden_image_rhel8_ovf
+          description: an OVF example
+          flags: []
+        state: present
+
+    - name: Get the list of items of the Local library
+      vmware.vmware_rest.content_library_item_info:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        library_id: '{{ local_lib.id }}'
+      register: lib_items
+      tags: always
+
+    - name: Define a new fact with the golden image ID
+      ansible.builtin.set_fact:
+        golden_image_rhel8_id: '{{ (lib_items.value|selectattr("name", "equalto", "golden_image_rhel8_ovf")|first).id }}'
+
+    - name: Create a new VM based on the OVF
+      vmware.vmware_rest.vcenter_ovf_libraryitem:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        ovf_library_item_id: '{{ golden_image_rhel8_id }}'
+        state: deploy
+        target: 
+          resource_pool_id: "{{ lookup('vmware.vmware_rest.resource_pool_moid', '/DC1/host/KNA/Resources', **connection_args) }}"
+        deployment_spec:
+          name: rhel8_vm_from_ovf
+          accept_all_EULA: true
+          storage_provisioning: thin
+
+    - name: Create a VM template on the library
+      vmware.vmware_rest.vcenter_vmtemplate_libraryitems:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        name: golden-rhel8-template
+        library: "{{ local_lib.id }}"
+        source_vm: "{{ deploy_vm.id }}"
+        placement:
+          cluster: "{{ lookup('vmware.vmware_rest.cluster_moid', '/DC1/host/KNA', **connection_args) }}"
+          folder: "{{ lookup('vmware.vmware_rest.folder_moid', '/DC1/vm', **connection_args) }}"
+          resource_pool: "{{ lookup('vmware.vmware_rest.resource_pool_moid', '/DC1/host/KNA/Resources', **connection_args) }}"
+    
+            #- name: Get the list of items of the NFS library
+            #  vmware.vmware_rest.content_library_item_info:
+            #    vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+            #    vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+            #    vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+            #    vcenter_validate_certs: false
+            #    library_id: '{{ local_lib.id }}'
+            #  register: lib_items
+            #  tags: create
+    
+    - name: Use the name to identify the item
+      set_fact:
+        my_template_item: "{{ lib_items.value | selectattr('name', 'equalto', 'golden-rhel8-template')|first }}"
+      tags: create
+    
+    - name: Deploy a new VM based on the template
+      vmware.vmware_rest.vcenter_vmtemplate_libraryitems:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        name: "{{ vm_name | default(lookup('community.general.random_pet'), true) ~ (vm_name is defined and num_instances | int > 1 )|ternary(item, '') ~ '.' ~ domain_name }}"
+        library: "{{ local_lib.id }}"
+        template_library_item: "{{ my_template_item.id }}"
+        placement:
+          cluster: "{{ lookup('vmware.vmware_rest.cluster_moid', '/DC1/host/KNA', **connection_args) }}"
+          folder: "{{ lookup('vmware.vmware_rest.folder_moid', '/DC1/vm', **connection_args) }}"
+          resource_pool: "{{ lookup('vmware.vmware_rest.resource_pool_moid', '/DC1/host/KNA/Resources', **connection_args) }}"
+        state: deploy
+      register: output
+      with_sequence: start=1 end="{{ num_instances|default(1) }}"
+      tags: create
+
+    - debug: var=output
+      tags: create
+
+    - name: set msg output
+      set_fact:
+        msg: "New VM: {{ output | community.general.json_query('results[*].entity.hosts[*].name') | join('')}} deployed on VMware"
+          #no_log: true
+      tags: create
+
+    - name: print new host(s) fqdn
+      debug:
+        var: msg
+      tags: create
+
+    - name: "notify via telegram"
+      telegram:
+        token: "{{ pinguobot_token }}"
+        api_args:
+          chat_id: "{{ pinguobot_chatid }}"
+          text: "{{ msg }}"
+          parse_mode: "markdown"
+          disable_web_page_preview: true
+          disable_notification: false
+      when: notify_via_telegram | bool
+      tags: create

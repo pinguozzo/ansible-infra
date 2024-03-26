@@ -1,0 +1,16 @@
+---
+- hosts: "{{ targeted_host| default('localhost') }}"
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+
+  tasks:
+    - name: "Sync repository"
+      redhat.satellite.repository_sync:
+        username: "{{ satellite_username }}"
+        password: "{{ satellite_password }}"
+        server_url: "{{ satellite_server_url }}"
+        organization: "{{ satellite_organization }}"
+        validate_certs: "{{ satellite_validate_certs }}"
+        repository: "Red Hat CodeReady Linux Builder for RHEL 8 x86_64 (RPMs)"
+        product: "Red Hat CodeReady Linux Builder for x86_64" 

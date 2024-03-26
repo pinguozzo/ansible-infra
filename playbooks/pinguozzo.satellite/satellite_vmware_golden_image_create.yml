@@ -1,0 +1,303 @@
+---
+- name: create golden image vm template
+  hosts: "{{ targeted_host| default('localhost') }}"
+  gather_facts: no
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+
+  vars:
+    domain_name: "{{ satellite_domain }}"
+      #num_instances: 1  
+      #infra_data:
+      #  domain: "apps.pinguozzo.com"
+      #  time_zone: 'Europe\Zurich'
+      #  dns_servers:
+      #    - ""
+      #    - ""
+      #  dns_suffix_list:
+      #    - ""
+      #    - ""
+      #vm_data:
+      #  name: "{{ vm_name }}"
+  tasks: 
+
+    - name: set connection info
+      ansible.builtin.set_fact:
+        connection_args:
+            vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+            vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+            vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+      tags: always
+
+    - name: copy golden image vmdk file to datastore
+      community.vmware.vsphere_copy:
+        hostname: '{{ vcenter_hostname }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        src: "{{ playbook_dir }}/../..//{{ os_major }}-builder.vmdk"
+        validate_certs: false
+        datacenter: DC1
+        datastore: datastore1
+        path: "my_vmdk/{{ os_major }}-golden.vmdk"
+          #path: my_vmdk/{{ os_major }}-golden.vmdk
+      tags: vmdk
+
+    - name: convert the image in an up to date VMDK format
+      ansible.builtin.command: "vmkfstools -i /vmfs/volumes/datastore1/my_vmdk/{{ os_major }}-golden.vmdk  /vmfs/volumes/datastore1/my_vmdk/{{ os_major }}-golden-converted.vmdk -d thin"
+      delegate_to: "{{ esxi_host }}"
+      vars:
+        ansible_user: root
+        ansible_python_interpreter: /bin/python3
+      tags: vmdk
+
+    - name: create base vm
+      vmware.vmware_rest.vcenter_vm:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        placement:
+          cluster: "{{ lookup('vmware.vmware_rest.cluster_moid', '/DC1/host/KNA', **connection_args) }}"
+          datastore: "{{ lookup('vmware.vmware_rest.datastore_moid', '/DC1/datastore/datastore1', **connection_args) }}"
+          folder: "{{ lookup('vmware.vmware_rest.folder_moid', '/DC1/vm', **connection_args) }}"
+          resource_pool: "{{ lookup('vmware.vmware_rest.resource_pool_moid', '/DC1/host/KNA/Resources', **connection_args) }}"
+        name: "{{ os_major }}-builder-vm"
+        guest_OS: RHEL_9_64
+        hardware_version: VMX_19
+        memory:
+          hot_add_enabled: true
+          size_MiB: 1024
+        disks:
+          - type: SATA
+            backing:
+              type: VMDK_FILE
+              vmdk_file: "[datastore1] my_vmdk/{{ os_major }}-golden-converted.vmdk"
+        cdroms:
+          - type: SATA
+            sata:
+              bus: 0
+              unit: 2
+        nics:
+          - backing:
+              type: STANDARD_PORTGROUP
+              network: "{{ lookup('vmware.vmware_rest.network_moid', '/DC1/network/VLAN 5', **connection_args) }}"
+            start_connected: true
+      register: deploy_vm 
+      tags: base,template
+
+    - debug: var=deploy_vm
+
+    - name: ensure vm is turned on
+      vmware.vmware_rest.vcenter_vm_power:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        state: start
+        vm: '{{ deploy_vm.id }}'
+          #vm: "{{ search_result.value[0].vm }}"
+          #when:
+          #- search_result.value[0].vm is defined
+    
+    - name: wait until my vm is ready
+      vmware.vmware_rest.vcenter_vm_tools_info:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        vm: '{{ deploy_vm.id }}'
+          #vm: "{{ search_result.value[0].vm }}"
+      register: vm_tools_info
+      until:
+      - vm_tools_info is not failed
+      - vm_tools_info.value.run_state == "RUNNING"
+      retries: 10
+      delay: 5
+
+    - name: create a content library on local disk
+      vmware.vmware_rest.content_locallibrary:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        name: local
+        description: automated
+        publish_info:
+          published: true
+          authentication_method: NONE
+        storage_backings:
+        - datastore_id: "{{ lookup('vmware.vmware_rest.datastore_moid', '/DC1/datastore/datastore1', **connection_args) }}"
+          type: DATASTORE
+        state: present
+      register: local_lib
+
+    - name: List all Local Content Library
+      vmware.vmware_rest.content_locallibrary_info:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+      register: all_content_libraries
+      tags: check
+    
+    - name: Use the name to identify the right Content Library
+      set_fact:
+        local_lib: "{{ all_content_libraries.value | selectattr('name', 'equalto', 'local')|first }}"
+      tags: check
+    
+    - name: Get the list of items of the Local library
+      vmware.vmware_rest.content_library_item_info:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        library_id: '{{ local_lib.id }}'
+      register: lib_items
+      tags: check
+
+    - name: Create a VM template on the library
+      vmware.vmware_rest.vcenter_vmtemplate_libraryitems:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        name: "{{ os_major }}-template"
+        library: "{{ local_lib.id }}"
+        source_vm: "{{ deploy_vm.id }}"
+        placement:
+          cluster: "{{ lookup('vmware.vmware_rest.cluster_moid', '/DC1/host/KNA', **connection_args) }}"
+          folder: "{{ lookup('vmware.vmware_rest.folder_moid', '/DC1/vm', **connection_args) }}"
+          resource_pool: "{{ lookup('vmware.vmware_rest.resource_pool_moid', '/DC1/host/KNA/Resources', **connection_args) }}"
+      tags: template
+    
+    - name: Get the list of items of the local library
+      vmware.vmware_rest.content_library_item_info:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        library_id: '{{ local_lib.id }}'
+      register: lib_items
+      tags: check
+    
+    - name: show lib items
+      debug: var=lib_items
+      tags: check
+  
+    - pause:    
+
+    - name: Use the name to identify the item
+      set_fact:
+        my_template_item: "{{ lib_items.value | selectattr('name', 'match', 'rhel9' )|first }}"
+      tags: check
+
+    - name: show template item
+      debug: var=my_template_item
+      tags: check
+
+    - pause:    
+
+    - name: "ensure {{ os_major }}-builder vm is turned off"
+      vmware.vmware_rest.vcenter_vm_power:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        state: stop
+        vm: '{{ deploy_vm.id }}'
+          #vm: "{{ search_result.value[0].vm }}"
+          #when:
+          #- search_result.value[0].vm is defined
+    
+    - name: "deploy a new vm with {{ os_major }} based on the template"
+      vmware.vmware_rest.vcenter_vmtemplate_libraryitems:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        name: "{{ vm_data.name | default(lookup('community.general.random_pet'), true) ~ (vm_data.name is defined and num_instances | int > 1 )|ternary(item, '') ~ '.' ~ infra_data.domain }}"
+          #name: "{{ vm_name | default(lookup('community.general.random_pet'), true) ~ (vm_name is defined and num_instances | int > 1 )|ternary(item, '') ~ '.' ~ domain_name }}"
+        library: "{{ local_lib.id }}"
+        template_library_item: "{{ my_template_item.id }}"
+        placement:
+          cluster: "{{ lookup('vmware.vmware_rest.cluster_moid', '/DC1/host/KNA', **connection_args) }}"
+          folder: "{{ lookup('vmware.vmware_rest.folder_moid', '/DC1/vm', **connection_args) }}"
+          resource_pool: "{{ lookup('vmware.vmware_rest.resource_pool_moid', '/DC1/host/KNA/Resources', **connection_args) }}"
+        state: deploy
+      register: vmware_vm
+      with_sequence: start=1 end="{{ num_instances| default('1', true) }}"
+      tags: create
+
+    - name: "Report the VM!"
+      debug:
+        var: vmware_vm
+        #vm: "{{ search_result.value[0].vm }}"
+        #
+
+    - name: "Get the VM"
+      vmware.vmware_rest.vcenter_vm_info:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        names: "{{ vm_data.name ~ '.' ~ infra_data.domain }}"
+      register: vmware_vm
+      tags: customize
+
+      # This variable can be found as `{{ vmware_vm.value.vm }}`
+      # This lets us fail out if the VM isn't found
+    - name: "Dump VM Data!"
+      debug:
+        msg: "{{ vmware_vm.value[0].name }}"
+      tags: customize
+
+    - name: "Dump VM Data!"
+      debug:
+        msg: "{{ vm_data.interfaces }}"
+      tags: customize,check
+
+    - name: "customize the vm {{ vmware_vm.value[0].name }}"
+      vmware.vmware_rest.vcenter_vm_guest_customization:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        vm: '{{ vmware_vm.value[0].vm }}'
+          #vm: "{{ lookup('vmware.vmware_rest.vm_moid', '/DC1/vm/{{ os_major }}.apps.pinguozzo.com', **connection_args) }}"
+        configuration_spec:
+          linux_config:
+            domain: '{{ infra_data.domain }}'
+            hostname:
+              fixed_name: "{{ vm_data.name }}"
+              type: FIXED
+        interfaces: "{{ vm_data.interfaces }}"
+          #- adapter:
+          #    ipv4:
+          #      type: STATIC
+          #      gateways:
+          #      - "{{ gateway_ip|default('192.168.5.1') }}"
+          #      ip_address: "{{ vm_ip | default('192.168.5.232') }}"
+          #      prefix: 24
+        global_DNS_settings:
+          dns_suffix_list:
+          - apps.pinguozzo.com
+          dns_servers:
+          - "{{ dns_server | default('192.168.5.30') }}"
+      register: customization_result
+      tags: customize
+
+    - name: "Print results!"
+      debug:
+        var: customization_result
+      tags: customize
+
+    - name: "Start the VM!"
+      vmware.vmware_rest.vcenter_vm_power:
+        vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+        vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+        vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+        vcenter_validate_certs: false
+        vm: '{{ vmware_vm.value[0].vm }}'
+        state: start
+      tags: customize

@@ -1,0 +1,10 @@
+- name: a play that exposes the current access vars
+  hosts: all
+  gather_facts: no
+
+  tasks:
+  - name: show the value of key variables
+    debug:
+      msg: >
+        host: {{ inventory_hostname }},
+        os: {{ ansible_distribution }}

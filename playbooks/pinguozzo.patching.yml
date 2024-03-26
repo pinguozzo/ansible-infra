@@ -1,0 +1,58 @@
+---
+- name: patch rhel servers
+  hosts: localhost:foreman_hostcollection_patching
+  gather_facts: yes
+
+  vars_files:
+    - "{{ playbook_dir }}/../vaults/{{ env }}-vault.yml"
+    - "{{ playbook_dir }}/../vars//parameters.yml"
+
+  tasks:
+    - name: show active hosts
+      debug: 
+        msg: "{{ item }}"
+      loop: "{{ groups['foreman_hostcollection_patching'] | flatten(levels=1) }}"
+      delegate_to: "{{ groups['foreman_hostcollection_reporting'][0] }}"
+      run_once: True
+
+    - name: show reporting host
+      debug: 
+        msg: "reporting hostname {{ groups['foreman_hostcollection_reporting'][0] }}"
+      run_once: True
+
+    - name: check connectivity to reporting host
+      ping: 
+      delegate_to: "{{ groups['foreman_hostcollection_reporting'][0] }}"
+      run_once: True
+
+    - pause:
+
+    - name: run linux patching 
+      block:
+        - name: upgrade all packages (yum)
+          ansible.builtin.yum:
+            name: '*'
+            state: latest
+          when: ansible_pkg_mgr == "yum"
+          register: patchingresult
+
+        - name: upgrade all packages (dnf)
+          ansible.builtin.dnf:
+            name: '*'
+            state: latest
+          when: ansible_pkg_mgr == "dnf"
+          register: patchingresultdnf
+      become: True
+
+- name: build patch report
+  hosts: localhost:foreman_hostcollection_reporting
+  gather_facts: yes
+
+  tasks:
+    - name: inclue role
+      ansible.builtin.include_role:
+        name: shadowman.reports.build_report_linux_patch
+        apply:
+          become: true    
+      vars:
+        sendemailreport: false

@@ -9,6 +9,10 @@
 
   vars:
 
+  environment:
+    VMWARE_VALIDATE_CERTS: False
+
+
   tasks: 
     - name: set connection info
       ansible.builtin.set_fact:
@@ -27,7 +31,7 @@
         username: '{{ vcenter_username }}'
         password: '{{ vcenter_password }}'
         src: "{{ playbook_dir }}/../..//{{ os_major }}-builder.vmdk"
-        validate_certs: false
+        validate_certs: no
         datacenter: DC1
         datastore: "{{ vcenter_datastore }}"
         path: "my_vmdk/{{ os_major }}-golden.vmdk"
