@@ -45,7 +45,7 @@
                 product: Red Hat Enterprise Linux Server
               - name: Red Hat Enterprise Linux 7 Server - Supplementary RPMs x86_64 7Server
                 product: Red Hat Enterprise Linux Server
-              - name: Red Hat Enterprise Linux 7 Server Kickstart x86_64 7.9
+              - name: Red Hat Enterprise Linux 7 Server Kickstart x86_64 7.0
                 product: Red Hat Enterprise Linux Server
               - name: Red Hat Ansible Engine 2 RPMs for Red Hat Enterprise Linux 7 Server x86_64
                 product: Red Hat Ansible Engine
