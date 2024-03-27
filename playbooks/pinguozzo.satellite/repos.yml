@@ -12,7 +12,7 @@
             repository_sets:
               - name: Red Hat Enterprise Linux 7 Server (Kickstart)
                 basearch: x86_64
-                releasever: 7.9
+                releasever: 7.0
               - name: Red Hat Satellite Client 6 (for RHEL 7 Server) (RPMs) 
                 basearch: x86_64
               - name: Red Hat Enterprise Linux 7 Server (RPMs)
