@@ -100,13 +100,6 @@
               - name: Red Hat CodeReady Linux Builder for RHEL 9 x86_64 (RPMs)
                 releasever: 9
 
-         #- name: Red Hat Enterprise Linux for x86_64
-         #  all_repositories: true
-         #  labels: 
-         #    - rhel-8-for-x86_64-appstream-kickstart
-         #    - rhel-8-for-x86_64-baseos-kickstart
-         #
-
           - name: Red Hat Satellite
             repository_sets:
               - name: Red Hat Satellite 6.12 for RHEL 8 x86_64 (RPMs)
