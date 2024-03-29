@@ -6,6 +6,6 @@ rhc_auth:
       - "ak-rhel7-vmware"
 
 hg_name: "ESX RHEL7 NET_apps"
-os: "RHEL 7.0"
+os: "RedHat 7.0"
 ks: "Red Hat Enterprise Linux 7 Server Kickstart x86_64 7.0"
 cv: "ccv-rhel7_soe"
