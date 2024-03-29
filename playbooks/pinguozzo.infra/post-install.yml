@@ -116,3 +116,6 @@
           loop: "{{ exclude_packages }}"
 
       when: (ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version'] == "9")
+
+
+# ansible-playbook -i inventory playbooks/pinguozzo.infra/post-install.yml  -e env=infra -e '{"targeted_host": [fqdn1,fqdn2]}' 
