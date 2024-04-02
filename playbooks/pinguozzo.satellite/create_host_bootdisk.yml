@@ -56,7 +56,7 @@
 
         - name: set msg output
           set_fact:
-            msg: "New VM: {{ output | community.general.json_query('results[*].entity.hosts[*].name') | join('')}} deployed on VMware"
+            msg: "New RHEL{{ os_major }} VM: {{ output | community.general.json_query('results[*].entity.hosts[*].name') | join('')}} deployed on VMware"
 
         - name: print new host(s) fqdn
           debug:
