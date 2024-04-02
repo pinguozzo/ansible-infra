@@ -15,6 +15,10 @@
   vars_files:
     - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
 
+
+  vars:
+    notify_via_telegram: true
+
   pre_tasks:
     - name: set platform/version specific variables
       include_vars: "{{ __vars_file }}"
@@ -54,13 +58,13 @@
           register: output
           with_sequence: start=1 end="{{ num_instances|default(1) }}"
 
-        - name: set msg output
+        - name: set vms list
           set_fact:
-            msg: "New RHEL{{ os_major }} VM: {{ output | community.general.json_query('results[*].entity.hosts[*].name') | join('')}} deployed on VMware"
+            vms: "{{ output | community.general.json_query('results[*].entity.hosts[*].name') | join('')}} "
 
         - name: print new host(s) fqdn
           debug:
-            var: msg
+            var: vms
 
         - name: "notify via telegram"
           telegram:
@@ -72,3 +76,5 @@
               disable_web_page_preview: true
               disable_notification: false
           when: notify_via_telegram | bool
+          vars:
+            msg: "New RHEL{{ os_major }} VM: {{ output | community.general.json_query('results[*].entity.hosts[*].name') | join('')}} deployed on VMware"

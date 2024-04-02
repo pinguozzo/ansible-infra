@@ -19,8 +19,6 @@
     - name: lookup MoID of the object inside the path
       ansible.builtin.debug: msg="{{ lookup('vmware.vmware_rest.vm_moid', '/DC1/vm/', **connection_args) }}"
 
-    - pause:
-
     - name: Check if goldenimage VM exists
       vmware.vmware_rest.vcenter_vm_info:
         vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
