@@ -9,3 +9,10 @@ hg_name: "{{ hg | default('ESX RHEL8 NET_apps') }}"
 os: "{{ operatingsystem | default('RedHat 8.0') }}"
 ks: "Red Hat Enterprise Linux 8 for x86_64 - BaseOS Kickstart 8.0"
 cv: "ccv-rhel8_soe"
+rhsm_activationkey: ak-rhel8-vmware
+rhsm_force_register: yes
+rhsm_org: "{{ satellite_organization }}"
+
+#rhsm_repos:
+#  - rhel-8-for-x86_64-appstream-rpms
+#  - rhel-8-for-x86_64-baseos-rpms

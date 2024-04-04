@@ -1,0 +1,109 @@
+---
+- name: register/migrate host
+  hosts: all
+  become: true
+  gather_facts: yes
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+
+  vars:
+    rhsm_force_register: yes
+
+  pre_tasks:
+    - name: Set platform/version specific variables
+      include_vars: "{{ __vars_file }}"
+      loop:
+        - "{{ ansible_facts['os_family'] }}.yml"
+        - "{{ ansible_facts['distribution'] }}.yml"
+        - >-
+          {{ ansible_facts['distribution'] ~ '_' ~
+          ansible_facts['distribution_major_version'] }}.yml
+        - >-
+          {{ ansible_facts['distribution'] ~ '_' ~
+          ansible_facts['distribution_version'] }}.yml
+      vars:
+        __vars_file: "{{ playbook_dir }}/../../vars/{{ item }}"
+      when: __vars_file is file
+
+  tasks:
+    - name: Get yum repositories
+      shell: yum repolist | tail -n +3 | awk '{ print $1 }'
+      register: yum_repolist
+
+    - name: Show enabled repos
+      debug: 
+        msg: "{{ item }}"
+      loop: 
+        - "{{ yum_repolist.stdout_lines }}"
+
+    - name: Save yum repositories to file as json
+      copy:
+        content: "{{ yum_repolist.stdout_lines| to_nice_json }}"
+        dest: $HOME/yum_repositories.txt
+
+    - name: 'Unregister the system if already registered - if this is a force re-registration'
+      ansible.builtin.command: "{{ item }}"
+      with_items:
+        - 'subscription-manager clean'
+        - 'subscription-manager remove --all'
+        - 'yum remove -y "katello-ca-consumer-*"'
+      when:
+        - (rhsm_force_register|default('no'))|lower == 'yes'
+    
+    - name: "Install Satellite certificate (if applicable)"
+      command: "rpm -Uh --force http://{{ satellite_server }}/pub/katello-ca-consumer-latest.noarch.rpm"
+      when:
+        - satellite_server is defined
+        - satellite_server|trim != ''
+    
+    - name: 'Register system using Red Hat Subscription Manager'
+      redhat_subscription:
+        state: present
+        username: "{{ rhsm_username | default(omit) }}"
+        password: "{{ rhsm_password | default(omit) }}"
+        pool_ids: "{{ rhsm_pool_ids | default(omit) }}"
+        pool: "{{ rhsm_pool | default(omit) }}"
+        autosubscribe: "{{ ((rhsm_pool is defined or rhsm_pool_ids is defined or rhsm_activationkey is defined) | ternary(omit, true)) }}"
+        server_hostname: "{{ rhsm_server_hostname | default(omit) }}"
+        activationkey: "{{ rhsm_activationkey | default(omit) }}"
+        org_id: "{{ rhsm_org | default(omit) }}"
+        force_register: "{{ rhsm_force_register | default(omit) }}"
+    
+    - name: "Lock in specific release - if requested"
+      command: "subscription-manager release --set={{ rhsm_lock_release }}"
+      when:
+        - rhsm_lock_release is defined
+        - rhsm_lock_release|trim != ''
+    
+    - name: "Obtain currently enabled repos"
+      shell: 'subscription-manager repos --list-enabled | sed -ne "s/^Repo ID:[^a-zA-Z0-9]*\(.*\)/\1/p"'
+      register: enabled_repos
+      check_mode: false
+
+    - name: Show repositories to enable
+      debug:
+        msg: "{{ item }}"
+      with_items:
+        - "{{ yum_repolist.stdout_lines | difference(enabled_repos) }}"
+          #- "{{ yum_repolist.stdout_lines | difference(rhsm_repos) }}"
+
+    - name: "Build command line for repos to disable"
+      set_fact:
+        repos_params: "{{ repos_params|default('') }} --disable={{ item }}"
+      with_items:
+        - "{{ enabled_repos.stdout_lines | difference(yum_repolist.stdout_lines) }}"
+          #- "{{ enabled_repos.stdout_lines | difference(rhsm_repos) }}"
+    
+    - name: "Build command line for repos to enable"
+      set_fact:
+        repos_params: "{{ repos_params|default('') }} --enable={{ item }}"
+      with_items:
+        - "{{ yum_repolist.stdout_lines | difference(enabled_repos) }}"
+          #- "{{ yum_repolist.stdout_lines | difference(rhsm_repos) }}"
+    
+    - name: "Run 'subscription-manager to disable/enable repos"
+      command: "subscription-manager repos {{ repos_params }}"
+      when:
+        - repos_params is defined
+        - repos_params|trim != ''
