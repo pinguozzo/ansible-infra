@@ -29,18 +29,27 @@
   tasks:
     - name: Get yum repositories
       shell: yum repolist | tail -n +3 | awk '{ print $1 }'
-      register: yum_repolist
+      register: yum_repolist_enabled
 
     - name: Show enabled repos
       debug: 
         msg: "{{ item }}"
       loop: 
-        - "{{ yum_repolist.stdout_lines }}"
+        - "{{ yum_repolist_enabled.stdout_lines }}"
 
-    - name: Save yum repositories to file as json
+    - name: Save yum enabled repositories to file as json
       copy:
-        content: "{{ yum_repolist.stdout_lines| to_nice_json }}"
-        dest: $HOME/yum_repositories.txt
+        content: "{{ yum_repolist_enabled.stdout_lines| to_json }}"
+        dest: $HOME/yum_repositories_enabled.txt
+
+    - name: Get yum disabled repositories
+      shell: yum repolist --all |grep disabled | awk '{ print $1 }'
+      register: yum_repolist_disabled
+
+    - name: Save yum disabled repositories to file as json
+      copy:
+        content: "{{ yum_repolist_disabled.stdout_lines| to_json }}"
+        dest: $HOME/yum_repositories_disabled.txt
 
     - name: 'Unregister the system if already registered - if this is a force re-registration'
       ansible.builtin.command: "{{ item }}"
@@ -85,21 +94,21 @@
       debug:
         msg: "{{ item }}"
       with_items:
-        - "{{ yum_repolist.stdout_lines | difference(enabled_repos) }}"
+        - "{{ yum_repolist_enabled.stdout_lines | difference(enabled_repos) }}"
           #- "{{ yum_repolist.stdout_lines | difference(rhsm_repos) }}"
 
     - name: "Build command line for repos to disable"
       set_fact:
         repos_params: "{{ repos_params|default('') }} --disable={{ item }}"
       with_items:
-        - "{{ enabled_repos.stdout_lines | difference(yum_repolist.stdout_lines) }}"
+        - "{{ enabled_repos.stdout_lines | difference(yum_repolist_enabled.stdout_lines) }}"
           #- "{{ enabled_repos.stdout_lines | difference(rhsm_repos) }}"
     
     - name: "Build command line for repos to enable"
       set_fact:
         repos_params: "{{ repos_params|default('') }} --enable={{ item }}"
       with_items:
-        - "{{ yum_repolist.stdout_lines | difference(enabled_repos) }}"
+        - "{{ yum_repolist_enabled.stdout_lines | difference(enabled_repos) }}"
           #- "{{ yum_repolist.stdout_lines | difference(rhsm_repos) }}"
     
     - name: "Run 'subscription-manager to disable/enable repos"
