@@ -11,12 +11,12 @@ vm_data:
           prefix: 24
 
 infra:
-  domain: "{{ network_domain }}"
+  domain: "{{ domain_name }}"
   time_zone: 'Europe\Zurich'
   dns:
     dns_servers: 
       - '{{ dns_server |default(omit) }}'
     dns_suffix_list:
-      - '{{ network_domain | default(omit) }}'
+      - '{{ domain_name | default(omit) }}'
 
 swap_disk_size: "10.00 GB"

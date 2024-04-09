@@ -8,11 +8,7 @@
     - "{{ playbook_dir }}/../../vars/parameters.yml"
 
   vars:
-
-  environment:
-    VMWARE_VALIDATE_CERTS: False
-
-
+ 
   tasks: 
     - name: set connection info
       ansible.builtin.set_fact:
@@ -31,15 +27,15 @@
         username: '{{ vcenter_username }}'
         password: '{{ vcenter_password }}'
         src: "{{ playbook_dir }}/../..//{{ os_major }}-builder.vmdk"
-        validate_certs: no
+        validate_certs: false
         datacenter: DC1
-        datastore: "{{ vcenter_datastore }}"
+        datastore: "{{ vcenter_datastore_short }}"
         path: "my_vmdk/{{ os_major }}-golden.vmdk"
       tags: vmdk
 
     - name: ensure converted image for {{ os_major }} is not present
       community.vmware.vsphere_file:
-        host: '{{ vcenter_hostname }}'
+        hostname: '{{ vcenter_hostname }}'
         username: '{{ vcenter_username }}'
         password: '{{ vcenter_password }}'
         validate_certs: false
@@ -52,6 +48,6 @@
         - "my_vmdk/{{ os_major }}-golden-converted-flat.vmdk"
 
     - name: convert the image in an up to date VMDK format
-      ansible.builtin.command: "vmkfstools -i /vmfs/volumes/ssd/my_vmdk/{{ os_major }}-golden.vmdk  /vmfs/volumes/ssd/my_vmdk/{{ os_major }}-golden-converted.vmdk -d thin"
+      ansible.builtin.command: "vmkfstools -i /vmfs/volumes/ceph-nfs/my_vmdk/{{ os_major }}-golden.vmdk  /vmfs/volumes/ceph-nfs/my_vmdk/{{ os_major }}-golden-converted.vmdk -d thin"
       delegate_to: "{{ esxi_host }}"
       tags: convert
