@@ -2,3 +2,4 @@
 collections:
   - name: community.vmware
   - name: vmware.vmware_rest
+  - name: redhat.rhel_system_roles
