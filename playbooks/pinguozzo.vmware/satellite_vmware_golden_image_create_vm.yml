@@ -134,7 +134,7 @@
         network_name: "{{ item.network_name | default(omit) }}"
         connected: "{{ item.connected | default(omit) }}"
       loop:
-        - network_name: "{{ network_name }}"
+        - network_name: "{{ network_name |default('VLAN 5') }}"
           connected: true
 
     - name: "get the vm"
