@@ -55,20 +55,6 @@
         rhc_state: present
       tags: register
 
-    - name: add host to hostgroup
-      redhat.satellite.host:
-        username: "{{ satellite_username }}"
-        password: "{{ satellite_password }}"
-        server_url: "{{ satellite_server_url }}"
-        location: "{{ satellite_location }}"
-        organization: "{{ satellite_organization }}"
-        validate_certs: no
-        hostgroup: "{{ rhc_auth.hostgroup }}"
-        name: "{{ inventory_hostname }}"
-        build: false
-      delegate_to: localhost
-      become: no
-
     - name: install RHEL/Fedora web console (cockpit)
       include_role:
         name: redhat.rhel_system_roles.cockpit

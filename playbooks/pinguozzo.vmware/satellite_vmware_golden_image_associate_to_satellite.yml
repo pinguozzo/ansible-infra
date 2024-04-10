@@ -102,6 +102,20 @@
         mode: u=rw,g=r,o=r
       when: ip_mode == "static"
 
+        #    - name: add host to hostgroup
+        #      redhat.satellite.host:
+        #        username: "{{ satellite_username }}"
+        #        password: "{{ satellite_password }}"
+        #        server_url: "{{ satellite_server_url }}"
+        #        location: "{{ satellite_location }}"
+        #        organization: "{{ satellite_organization }}"
+        #        validate_certs: no
+        #        hostgroup: "{{ rhc_auth.hostgroup }}"
+        #        name: "{{ inventory_hostname }}"
+        #        build: false
+        #      delegate_to: localhost
+        #      become: no
+
     - name: reboot vm
       ansible.builtin.reboot:
       become: True  

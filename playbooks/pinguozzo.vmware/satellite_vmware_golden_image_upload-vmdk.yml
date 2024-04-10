@@ -40,7 +40,7 @@
         password: '{{ vcenter_password }}'
         validate_certs: false
         datacenter: DC1
-        datastore: "{{ vcenter_datastore }}"
+        datastore: "{{ vcenter_datastore_short }}"
         path: "{{ item }}"
         state: absent
       loop:

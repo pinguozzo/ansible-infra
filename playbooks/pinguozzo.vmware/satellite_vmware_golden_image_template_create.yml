@@ -137,7 +137,9 @@
 
     - name: "lookup MoID of {{ os_major }}-builder vm" 
       #ansible.builtin.debug: msg="{{ os_major }}-builder-vm_id = {{ lookup('vmware.vmware_rest.vm_moid', '/DC1/vm/{{ os_major }}-builder-vm', **connection_args) }}"
-      ansible.builtin.debug: msg="{{ os_major }}-builder-vm_id = {{ lookup('vmware.vmware_rest.vm_moid', 'vcenter_folder/{{ os_major }}-builder-vm', **connection_args) }}"
+      #ansible.builtin.debug: msg="{{ os_major }}-builder-vm id {{ lookup('vmware.vmware_rest.vm_moid', 'vcenter_folder/{{ os_major }}-builder-vm', **connection_args) }}"
+      ansible.builtin.debug: 
+        msg="{{ lookup('vmware.vmware_rest.vm_moid', 'DC1/vm/{{ os_major }}-builder-vm', **connection_args) }}"
 
     - name: "ensure {{ os_major }}-builder vm is turned off" 
       vmware.vmware_rest.vcenter_vm_power:

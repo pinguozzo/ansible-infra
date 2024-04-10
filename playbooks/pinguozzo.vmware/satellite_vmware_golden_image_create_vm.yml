@@ -71,6 +71,7 @@
         state: deploy
       register: vmware_vm
       # with_sequence: start=1 end="{{ num_instances| default('1', true) }}"
+      # vm: "{{ lookup('vmware.vmware_rest.vm_moid', vcenter_folder ~ '/' ~ os_major ~ '-builder-vm' , **connection_args) }}"
 
     - name: "report the vm"
       debug:
