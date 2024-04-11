@@ -12,7 +12,6 @@
       vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
       vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
       vcenter_validate_certs: false
-
     vmware.vmware_rest.vcenter_vm_info:
       vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
       vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
@@ -82,17 +81,14 @@
       register: test_vm1_info
       delegate_to: localhost
     
-    - name: Dedicate one core to the VM
-      vmware.vmware_rest.vcenter_vm_hardware_cpu:
-        vm: '{{ test_vm1_info.id }}'
-        hot_add_enabled: true
-      register: _result
-      delegate_to: localhost
-
-    - debug: var=_result
-
-    - reboot:
-      become: true
+        #    - name: Dedicate one core to the VM
+        #      vmware.vmware_rest.vcenter_vm_hardware_cpu:
+        #        vm: '{{ test_vm1_info.id }}'
+        #        hot_add_enabled: false
+        #      register: _result
+        #      delegate_to: localhost
+        #
+        #    - debug: var=_result
 
     - name: add host to hostgroup
       redhat.satellite.host:

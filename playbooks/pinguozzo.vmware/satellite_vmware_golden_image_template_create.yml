@@ -36,10 +36,10 @@
         cpu:
           count: "{{ cpu_count | default(2) }}"
           cores_per_socket: "{{ cores_per_socket | default(1) }}"
-          hot_add_enabled: yes
-          hot_remove_enabled: yes
+          hot_add_enabled: no
+          hot_remove_enabled: no
         memory:
-          hot_add_enabled: true
+          hot_add_enabled: no
           size_MiB: "{{ mem_size | default(1024) }}"
         disks:
           - type: SATA

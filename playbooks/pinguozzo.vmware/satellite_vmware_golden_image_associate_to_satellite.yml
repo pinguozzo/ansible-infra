@@ -119,6 +119,6 @@
       become: no
       ignore_errors: true
 
-    - name: reboot vm
+    - name: shutdown vm
       community.general.shutdown:
       become: True  
