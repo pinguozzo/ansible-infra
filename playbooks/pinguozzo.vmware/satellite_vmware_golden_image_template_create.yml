@@ -26,7 +26,7 @@
         vcenter_validate_certs: false
         placement:
           cluster: "{{ lookup('vmware.vmware_rest.cluster_moid', vcenter_cluster, **connection_args) }}"
-          datastore: "{{ lookup('vmware.vmware_rest.datastore_moid', '/DC1/datastore/ceph-nfs', **connection_args) }}"
+          datastore: "{{ lookup('vmware.vmware_rest.datastore_moid', vcenter_datastore, **connection_args) }}"
           folder: "{{ lookup('vmware.vmware_rest.folder_moid', vcenter_folder, **connection_args) }}"
           resource_pool: "{{ lookup('vmware.vmware_rest.resource_pool_moid', vcenter_resource_pool, **connection_args) }}"
         name: "{{ os_major }}-builder-vm"
@@ -45,7 +45,7 @@
           - type: SATA
             backing:
               type: VMDK_FILE
-              vmdk_file: "[ceph-nfs] my_vmdk/{{ os_major }}-golden-converted.vmdk"
+              vmdk_file: "[{{ vcenter_datastore_short}}] my_vmdk/{{ os_major }}-golden-converted.vmdk"
         cdroms:
           - type: SATA
             sata:

@@ -27,11 +27,15 @@
         vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
         vcenter_validate_certs: false
       register: all_content_libraries
-    
+
+    - debug: var=all_content_libraries
+
     - name: use the name to identify the right content library
       set_fact:
         local_lib: "{{ all_content_libraries.value | selectattr('name', 'equalto', 'local')|first }}"
-    
+
+    - debug: var=local_lib
+
     - name: get the list of items of the local library
       vmware.vmware_rest.content_library_item_info:
         vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
@@ -41,9 +45,13 @@
         library_id: '{{ local_lib.id }}'
       register: lib_items
 
+    - debug: var=lib_items
+
     - name: use the name to identify the item
       set_fact:
         my_template_item: "{{ lib_items.value | selectattr('name', 'equalto', ( os_major ) + '-template')|first }}"
+
+    - debug: var=my_template_item
 
     - name: set vm_name
       set_fact:
