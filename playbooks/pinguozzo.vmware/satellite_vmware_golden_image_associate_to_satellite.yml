@@ -118,8 +118,7 @@
       delegate_to: localhost
       become: no
       ignore_errors: true
-    
 
     - name: reboot vm
-      ansible.builtin.reboot:
+      community.general.shutdown:
       become: True  
