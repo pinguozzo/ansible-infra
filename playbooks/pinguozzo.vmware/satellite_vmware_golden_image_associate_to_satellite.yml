@@ -29,6 +29,7 @@
       - name: set_fact cr_list
         set_fact:
           cr_list: "{{ cr_result | community.general.json_query(json_query_name) | join(', ') }}"
+        no_log: True
         tags: cr_search
 
       - name: get cr names and id
@@ -64,7 +65,7 @@
           vms: "{{ vms|default({}) | combine ( {item.name : item.id } ) }}"
         loop: "{{ cr_vms_result| community.general.json_query('json[*]')}}"
         #when: not item.provider | regex_search('^VMware*')
-        when: 
+        when:
           #- item.name is not match('^VMware')
           - item.name == inventory_hostname
         no_log: True
@@ -91,6 +92,48 @@
           - item.name == inventory_hostname
         no_log: True
         tags: cr_search
+
+      - name: get_vm id
+        uri:
+          url: "{{ satellite_server_url }}/api/hosts?search={{ inventory_hostname }}"
+          user: "{{ satellite_username }}"
+          password: "{{ satellite_password }}"
+          method: GET
+          return_content: yes
+          force_basic_auth: yes
+          validate_certs: no
+          status_code: [200,201,202]
+        no_log: True
+        register: get_vm
+        tags: get_vm
+
+      - name: set_fact vm_id {{ inventory_hostname }}
+        set_fact:
+          vm_id: "{{ item.id }}"
+        loop:
+          - "{{ get_vm | community.general.json_query(json_query) | join(', ') }}"
+        vars:
+          json_query: "json.results[*]"
+        no_log: True
+
+      - name: show vm_id for {{ inventory_hostname }}
+        debug:
+          msg: "{{ vm_id }}"
+
+      - name: assign vm to hostgroup
+        uri:
+          url: "{{ satellite_server_url }}/api/hosts/{{ vm_id }}/"
+          user: "{{ satellite_username }}"
+          password: "{{ satellite_password }}"
+          method: PUT
+          return_content: yes
+          force_basic_auth: yes
+          validate_certs: no
+          status_code: [200,201,422]
+          body_format: json
+          body: '{"host":{ "hostgroup_id": 62 }}'
+        no_log: True
+
       delegate_to: localhost
 
     - name: ensure cloud-init is disabled
@@ -102,23 +145,7 @@
         mode: u=rw,g=r,o=r
       when: ip_mode == "static"
 
-    - name: add host to hostgroup
-      redhat.satellite.host:
-        username: "{{ satellite_username }}"
-        password: "{{ satellite_password }}"
-        server_url: "{{ satellite_server_url }}"
-        location: "{{ satellite_location }}"
-        organization: "{{ satellite_organization }}"
-        validate_certs: no
-        hostgroup: "{{ rhc_auth.hostgroup }}"
-        compute_resource: "VMware"
-        compute_profile: "{{ compute_profile|default('2-Medium Generic') }}"
-        name: "{{ inventory_hostname }}"
-        build: false
-      delegate_to: localhost
-      become: no
-      ignore_errors: true
-
     - name: shutdown vm
       community.general.shutdown:
       become: True  
+      tags: never

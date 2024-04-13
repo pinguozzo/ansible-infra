@@ -58,8 +58,6 @@
             start_connected: yes
       register: deploy_vm 
 
-    - debug: var=deploy_vm
-
     - name: ensure vm is turned on
       vmware.vmware_rest.vcenter_vm_power:
         vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
@@ -95,7 +93,7 @@
           published: true
           authentication_method: NONE
         storage_backings:
-        - datastore_id: "{{ lookup('vmware.vmware_rest.datastore_moid', vcenter_datastore, **connection_args) }}"
+        - datastore_id: "{{ lookup('vmware.vmware_rest.datastore_moid', vcenter_datastore , **connection_args) }}"
           type: DATASTORE
         state: present
       register: local_lib
@@ -107,7 +105,7 @@
         vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
         vcenter_validate_certs: false
       register: all_content_libraries
-    
+
     - name: Use the name to identify the right Content Library
       set_fact:
         local_lib: "{{ all_content_libraries.value | selectattr('name', 'equalto', 'local')|first }}"
