@@ -131,7 +131,7 @@
           validate_certs: no
           status_code: [200,201,422]
           body_format: json
-          body: '{"host":{ "hostgroup_id": 62 }}'
+          body: '{"host": { "hostgroup_id": "62" }}'
         no_log: True
 
       delegate_to: localhost
