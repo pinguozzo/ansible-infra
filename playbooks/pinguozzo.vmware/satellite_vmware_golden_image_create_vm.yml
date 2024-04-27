@@ -244,3 +244,14 @@
       - vm_tools_info.value.run_state == "RUNNING"
       retries: 10
       delay: 5
+
+    - name: Move vm to corresponding folder
+      community.vmware.vmware_guest_move:
+        hostname: "{{ vcenter_hostname }}"
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        datacenter: DC1
+        name: "{{ vm_name ~ '.' ~ infra.domain }}"
+        dest_folder: "/DC1/vm/KNA/{{ os_major | upper }}"
+        validate_certs: false 
+      delegate_to: localhost
