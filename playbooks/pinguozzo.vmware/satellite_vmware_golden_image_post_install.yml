@@ -53,7 +53,6 @@
           insecure: true
         rhc_baseurl: "https://{{ capsule_server }}/pulp/content/"
         rhc_state: present
-      tags: register
 
     - name: install RHEL/Fedora web console (cockpit)
       include_role:
