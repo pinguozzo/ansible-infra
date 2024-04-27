@@ -25,14 +25,14 @@
   import_playbook: satellite_vmware_golden_image_add_host_inventory.yml
   tags: add_host
 
+- name: Include satellite_vmware_golden_image_post_install.yml
+  import_playbook: satellite_vmware_golden_image_post_install.yml
+  tags: register
+
 - name: Include satellite_vmware_golden_image_add_swap.yml
   ansible.builtin.import_playbook: satellite_vmware_golden_image_add_swap.yml
   when: add_swap | bool
   tags: add_swap
-
-- name: Include satellite_vmware_golden_image_post_install.yml
-  import_playbook: satellite_vmware_golden_image_post_install.yml
-  tags: register
 
 - name: Include satellite_vmware_golden_image_associate_to_satellite.yml
   import_playbook: satellite_vmware_golden_image_associate_to_satellite.yml
