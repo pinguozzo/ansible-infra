@@ -1,0 +1,49 @@
+---
+- name: clean up datastore files
+  hosts: localhost
+  gather_facts: no
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+
+  vars:
+    json_query_name: "json.results[*].name"
+  
+  pre_tasks:
+    - name: set connection info
+      ansible.builtin.set_fact:
+        connection_args:
+            vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+            vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+            vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+
+  tasks: 
+    - name: recursively find files in foreman_isos folder
+      ansible.builtin.find:
+        paths: "/vmfs/volumes/nvme/foreman_isos"
+        size: 1m
+        file_type: file
+      vars:
+        ansible_python_interpreter: /bin/python
+      no_log: true
+      register: found_files
+      delegate_to: "{{ esxi_host }}"
+
+    - name: show files to delete 
+      debug: 
+        msg: "{{ item.path | basename }}"
+      loop: "{{ found_files['files']|flatten(levels=1) }}"
+
+    - name: delete unused iso files 
+      community.vmware.vsphere_file:
+        hostname: '{{ vcenter_hostname }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        datacenter: DC1
+        datastore: "nvme"
+        path: "foreman_isos/{{ item.path | basename }}"
+        state: absent
+        validate_certs: false
+      delegate_to: localhost
+      loop: "{{ found_files['files']|flatten(levels=1) }}"
+      ignore_errors: True
