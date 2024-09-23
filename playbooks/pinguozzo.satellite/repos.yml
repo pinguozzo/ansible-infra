@@ -125,9 +125,9 @@
               - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (Kickstart)
                 releasever: 8.0
               - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (Kickstart)
-                releasever: 8.10
+                releasever: "8.10"
               - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (Kickstart)
-                releasever: 8.10
+                releasever: "8.10"
               - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
                 releasever: 8.4
               - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
@@ -178,6 +178,10 @@
                 releasever: 9.0
               - name: Red Hat Enterprise Linux 9 for x86_64 - AppStream (Kickstart)
                 releasever: 9.0
+              - name: Red Hat Enterprise Linux 9 for x86_64 - BaseOS (Kickstart)
+                releasever: 9.4
+              - name: Red Hat Enterprise Linux 9 for x86_64 - AppStream (Kickstart)
+                releasever: 9.4
 
           - name: Red Hat Enterprise Linux Fast Datapath         
             repository_sets:
