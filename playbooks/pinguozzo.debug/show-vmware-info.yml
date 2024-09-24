@@ -1,0 +1,25 @@
+---
+- name: lookup for information in VMware
+  hosts: localhost
+  gather_facts: no
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+    - "{{ playbook_dir }}/../../vars/parameters.yml"
+
+  vars:
+
+  tasks: 
+
+    - name: set connection info
+      ansible.builtin.set_fact:
+        connection_args:
+            vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+            vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+            vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+            vcenter_validate_certs: false
+
+    - name: show datacenter
+      ansible.builtin.debug:
+        msg: >-
+          {{ lookup('vmware.vmware_rest.datacenter_moid', '{{ vcenter_datacenter }}', **connection_args) }}
