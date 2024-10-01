@@ -25,7 +25,7 @@
           group_by:
             key: "running_hosts"
       rescue:
-        - debug: msg="cannot connect to {{inventory_hostname}}"
+        - debug: msg="cannot connect to {{ inventory_hostname }}"
 
 
 - name: update cloudflare entries
@@ -52,7 +52,7 @@
           when:
             - item.0.dns_name in item.1.name
             - inventory_hostname ~ item.1.name
-          delegate_to: localhost
+          run_once: True
 
         - name: get public ip
           community.general.ipify_facts:
@@ -93,7 +93,6 @@
 
       when: 
         - inventory_hostname in groups["ddns"]
-      ignore_unreachable: true
 
     - name: update public ipv4 ddns
       block:
