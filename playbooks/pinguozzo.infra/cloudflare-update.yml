@@ -18,7 +18,6 @@
       block:
         - name: check connectivity
           ping: 
-          ignore_unreachable: true
 
         - name: show data
           debug: 
