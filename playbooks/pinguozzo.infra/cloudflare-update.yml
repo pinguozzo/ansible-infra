@@ -16,9 +16,16 @@
   pre_tasks:
     - name: pre_tasks
       block:
-        - name: check connectivity
-          ping: 
-          ignore_unreachable: true
+        - name: determine hosts that are up
+          wait_for_connection:
+            timeout: 5
+          vars:
+            ansible_connection: ssh
+        - name: add devices with connectivity to the "running_hosts" group
+          group_by:
+            key: "running_hosts"
+      rescue:
+        - debug: msg="cannot connect to {{inventory_hostname}}"
 
             #        - name: show data
             #          debug: 
@@ -69,6 +76,17 @@
             #
             #      when: 
             #        - inventory_hostname in groups["ddns"]
+
+- hosts: running_hosts
+  gather_facts: no
+
+  vars_files:
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+    - "{{ playbook_dir }}/../../vars/ddns.yml"
+
+  vars:
+    dns_list: []
+    ip_real: []
 
   tasks:
     - name: get updates
