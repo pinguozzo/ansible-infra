@@ -1,7 +1,8 @@
 ---
 - name: dns A record update
   hosts: "{{ targeted_host| default('all') }}"
-  serial: true
+  serial: true 
+  ignore_unreachable: true
   gather_facts: no
 
   vars_files:
