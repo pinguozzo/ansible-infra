@@ -18,7 +18,61 @@
       block:
         - name: check connectivity
           ping: 
+          ignore_unreachable: true
 
+            #        - name: show data
+            #          debug: 
+            #            msg: "update {{ item.0.dns_name }} via{{':'}} {{ item.1.name }}" 
+            #          with_subelements:
+            #            - "{{ ddns | selectattr('target', 'defined') | list }}"
+            #            - target
+            #          when:
+            #            - item.0.dns_name in item.1.name
+            #            - inventory_hostname ~ item.1.name
+            #
+            #        - name: get public ip
+            #          community.general.ipify_facts:
+            #
+            #        - name: show public ip
+            #          debug: 
+            #            msg: "{{ inventory_hostname }} has public ip pointing to {{ hostvars[inventory_hostname]['ipify_public_ip']}}"
+            #          
+            #        - name: get existing A record
+            #          set_fact:
+            #            dns_list: "{{ dns_list +
+            #                         [{ 'dns_name': item.0.dns_name,
+            #                            'domain': item.0.domain,
+            #                            'ip_current': lookup('community.general.dig', item.0.dns_name ~ '.' ~ item.0.domain  , '@1.1.1.1'),
+            #                            'ip_real': hostvars[inventory_hostname]['ipify_public_ip'],
+            #                            'target': item.1.name }] }}"
+            #          delegate_to: "{{ item.1.name }}"
+            #          loop: "{{ ddns | subelements('target') }}"
+            #          register: output
+            #          run_once: True
+            #          when:
+            #            - item.0.dns_name in item.1.name
+            #            - inventory_hostname in item.1.name
+            #
+            #        - name: get dns_list per host
+            #          debug: 
+            #            msg: "{{ hostvars[inventory_hostname]['dns_list']}}"
+            #
+            #        - name: show dns_list fact
+            #          debug: 
+            #            msg: "updating {{ item.dns_name }} with ip{{':'}} {{ item.ip_current }} to {{ item.ip_real }} via {{ item.target }}"
+            #          loop: "{{ dns_list| flatten(levels=1) }}"
+            #          delegate_to: "{{ item.target }}"
+            #          when:
+            #            - inventory_hostname in item.target
+            #            - item.ip_current != item.ip_real 
+            #          run_once: True
+            #
+            #      when: 
+            #        - inventory_hostname in groups["ddns"]
+
+  tasks:
+    - name: get updates
+      block:
         - name: show data
           debug: 
             msg: "update {{ item.0.dns_name }} via{{':'}} {{ item.1.name }}" 
@@ -68,8 +122,8 @@
 
       when: 
         - inventory_hostname in groups["ddns"]
+      ignore_unreachable: true
 
-  tasks:
     - name: update public ipv4 ddns
       block:
         - name: update DNS A record
