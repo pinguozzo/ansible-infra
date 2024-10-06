@@ -236,8 +236,10 @@
               - name: Red Hat Ansible Automation Platform 2.2 for RHEL 9 x86_64 (RPMs)
               - name: Red Hat Ansible Automation Platform 2.3 for RHEL 9 x86_64 (RPMs)
               - name: Red Hat Ansible Automation Platform 2.4 for RHEL 9 x86_64 (RPMs)
+              - name: Red Hat Ansible Automation Platform 2.5 for RHEL 9 x86_64 (RPMs)
               - name: Red Hat Ansible Automation Platform 2.2 for RHEL 8 x86_64 (RPMs)
               - name: Red Hat Ansible Automation Platform 2.3 for RHEL 8 x86_64 (RPMs)
               - name: Red Hat Ansible Automation Platform 2.4 for RHEL 8 x86_64 (RPMs)
+              - name: Red Hat Ansible Automation Platform 2.5 for RHEL 8 x86_64 (RPMs)
               - name: Red Hat Automation Hub 4.2 for RHEL 8 x86_64 (RPMs)
 
