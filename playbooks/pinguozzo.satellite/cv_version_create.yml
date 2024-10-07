@@ -131,6 +131,7 @@
               - { name: 'Red Hat Ansible Automation Platform 2.2 for RHEL 9 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
               - { name: 'Red Hat Ansible Automation Platform 2.3 for RHEL 9 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
               - { name: 'Red Hat Ansible Automation Platform 2.4 for RHEL 9 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
+              - { name: 'Red Hat Ansible Automation Platform 2.5 for RHEL 9 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
               - { name: 'Red Hat CodeReady Linux Builder for RHEL 9 x86_64 RPMs 9', product: 'Red Hat CodeReady Linux Builder for x86_64' }
               - { name: 'Red Hat Ceph Storage Tools 6 for RHEL 9 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
               - { name: 'Red Hat Ceph Storage Tools 7 for RHEL 9 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
@@ -168,6 +169,7 @@
               - { name: 'Red Hat Ansible Automation Platform 2.2 for RHEL 8 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
               - { name: 'Red Hat Ansible Automation Platform 2.3 for RHEL 8 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
               - { name: 'Red Hat Ansible Automation Platform 2.4 for RHEL 8 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
+              - { name: 'Red Hat Ansible Automation Platform 2.5 for RHEL 8 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - Supplementary - Extended Update Support RPMs 8.4', product: 'Red Hat Enterprise Linux for x86_64 - Extended Update Support' }
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - Supplementary - Extended Update Support RPMs 8.6', product: 'Red Hat Enterprise Linux for x86_64 - Extended Update Support' }
               - { name: 'Red Hat Enterprise Linux 8 for x86_64 - Supplementary RPMs 8.4', product: 'Red Hat Enterprise Linux for x86_64' }
