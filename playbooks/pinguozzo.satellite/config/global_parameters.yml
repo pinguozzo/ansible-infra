@@ -1,0 +1,17 @@
+- name: configure global_parameters
+  hosts: "{{ targeted_host| default('localhost') }}"
+
+  vars_files:
+    - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
+
+  tasks:
+    - name: configure global_parameters
+      redhat.satellite.global_parameter:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        parameter_type: "{{ item.parameter_type | default(omit) }}"
+        username: "{{ satellite_username | default(omit) }}"
+        password: "{{ satellite_password | default(omit) }}"
+        server_url: "{{ satellite_server_url | default(omit) }}"
+        validate_certs: "{{ satellite_validate_certs | default(omit) }}"
+      loop: "{{ global_parameters }}"
