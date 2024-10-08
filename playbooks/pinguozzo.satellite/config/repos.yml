@@ -2,7 +2,7 @@
 - hosts: "{{ targeted_host| default('localhost') }}"
 
   vars_files:
-    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+    - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
   
   roles:
     - role: redhat.satellite.repositories
