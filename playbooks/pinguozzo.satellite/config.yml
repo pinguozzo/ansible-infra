@@ -1,6 +1,8 @@
 ---
 - name: post-configure satellite
   hosts: "{{ targeted_host| default('localhost') }}"
+  gather_facts: no
+
 
 - name: Include repos.yml 
   ansible.builtin.import_playbook: config/repos.yml
