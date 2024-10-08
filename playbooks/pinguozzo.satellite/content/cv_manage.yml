@@ -3,11 +3,7 @@
   hosts: "{{ targeted_host| default('localhost') }}"
 
   vars_files:
-    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
-
-- name: Include repos.yml 
-  ansible.builtin.import_playbook: repos.yml
-  tags: enable_repos  
+    - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
 
 - name: Include cv_version_create.yml 
   ansible.builtin.import_playbook: cv_version_create.yml
