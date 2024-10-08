@@ -13,7 +13,7 @@
       validate_certs: no
 
   vars_files:
-    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+    - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
 
 
   vars:
@@ -25,7 +25,7 @@
       loop:
         - "RedHat_{{ os_major }}.yml"
       vars:
-        __vars_file: "{{ playbook_dir }}/../../vars/{{ item }}"
+        __vars_file: "{{ playbook_dir }}/../../../vars/{{ item }}"
       when: __vars_file is file
 
   tasks:
