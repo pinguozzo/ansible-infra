@@ -3,7 +3,7 @@
   hosts: "{{ targeted_host| default('localhost') }}"
 
   vars_files:
-    - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
 
 - name: Include repos.yml 
   ansible.builtin.import_playbook: config/repos.yml
