@@ -9,17 +9,17 @@
     satellite_composite_content_views:
       - name: ccv-rhel9_soe
       - name: ccv-rhel8_soe
-      - name: ccv-rhel7_soe
-      - name: ccv-rhel6_soe
+        # - name: ccv-rhel7_soe
+        # - name: ccv-rhel6_soe
     satellite_content_views:
       - cv-rhel9_soe
       - cv-rhel9_soe_extras
       - cv-rhel8_soe
       - cv-rhel8_soe_extras
-      - cv-rhel7_soe
-      - cv-rhel7_soe_extras
-      - cv-rhel6_soe
-      - cv-rhel6_soe_extras
+        # - cv-rhel7_soe
+        # - cv-rhel7_soe_extras
+        # - cv-rhel6_soe
+        # - cv-rhel6_soe_extras
       - cv-capsules
       - cv-rhvh
       - cv-leapp
