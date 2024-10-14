@@ -5,6 +5,11 @@
   vars_files:
     - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
 
+- name: Include cv_repos.yml 
+  ansible.builtin.import_playbook: cv_repos.yml
+  tags: repos  
+  when: enable_repos
+
 - name: Include cv_version_create.yml 
   ansible.builtin.import_playbook: cv_version_create.yml
   tags: cv_create  
