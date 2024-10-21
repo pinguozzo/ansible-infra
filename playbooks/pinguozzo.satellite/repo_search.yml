@@ -15,7 +15,7 @@
         organization: "{{ satellite_organization }}"
         #search: 'label = "rhel-7-server-satellite-client-6-rpms"'
         #search: 'label = "satellite-capsule-6.14-for-rhel-8-x86_64-rpms"'
-        search: 'label = "rhel-server-rhscl-6-rpms"'
+        search: 'label = "rhel-6-server-retired-els-rpms"'
         # search: 'label = "codeready-builder-for-rhel-8-x86_64-rpms"'
         # search: 'label = "ansible-2-for-rhel-9-x86_64-rpms"'
       register: repos

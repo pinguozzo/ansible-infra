@@ -9,8 +9,19 @@
     - role: redhat.satellite.repositories
       vars:
         satellite_products:
+          - name: Red Hat Enterprise Linux Server - Extended Life Cycle Support
+            repository_sets:
+              - name: Red Hat Enterprise Linux 6 Server - Extended Life Cycle Support - Optional (RPMs)
+                basearch: x86_64
+              - name: Red Hat Enterprise Linux 6 Server - Extended Life Cycle Support (RPMs)
+                basearch: x86_64
+
           - name: Red Hat Enterprise Linux Server
             repository_sets:
+              - name: Red Hat Enterprise Linux 6 Server - Retired Extended Life Cycle Support (RPMs)
+                basearch: x86_64
+              - name: Red Hat Enterprise Linux 6 Server - Retired Extended Life Cycle Support - Optional (RPMs)
+                basearch: x86_64
               - name: Red Hat Enterprise Linux 7 Server (Kickstart)
                 basearch: x86_64
                 releasever: 7.9
@@ -60,6 +71,7 @@
                 basearch: x86_64
               - name: Red Hat Enterprise Linux 6 Server - Optional Fastrack (RPMs)
                 basearch: x86_64
+
 
           - name: Red Hat Enterprise Linux for x86_64 - Extended Update Support
             repository_sets:
