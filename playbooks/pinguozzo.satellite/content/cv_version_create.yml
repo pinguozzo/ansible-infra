@@ -19,7 +19,13 @@
                 product: Red Hat Enterprise Linux Server - Extended Life Cycle Support
               - name: Red Hat Enterprise Linux 6 Server - Extended Life Cycle Support RPMs x86_64
                 product: Red Hat Enterprise Linux Server - Extended Life Cycle Support
+              - name: Red Hat Enterprise Linux 6 Server - Extended Life Cycle Support - Optional RPMs x86_64
+                product: Red Hat Enterprise Linux Server - Extended Life Cycle Support
               - name: Red Hat Enterprise Linux 6 Server Kickstart x86_64 6.10
+                product: Red Hat Enterprise Linux Server
+              - name: Red Hat Enterprise Linux 6 Server - Retired Extended Life Cycle Support RPMs x86_64
+                product: Red Hat Enterprise Linux Server
+              - name: Red Hat Enterprise Linux 6 Server - Retired Extended Life Cycle Support - Optional RPMs x86_64
                 product: Red Hat Enterprise Linux Server
 
           - name: cv-rhel6_soe_extras
