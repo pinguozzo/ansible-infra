@@ -55,6 +55,10 @@
           - rhc-worker-playbook
           - satellite
           - sos
+          - ansible-collection-ansible-posix.noarch
+          - ansible-collection-community-general.noarch
+          - python3.11-jmespath.noarch
+          - git
         state: present
     
     - name: enable firewalld service
