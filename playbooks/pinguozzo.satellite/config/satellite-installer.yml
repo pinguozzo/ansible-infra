@@ -4,22 +4,35 @@
   become: True
 
   vars_files:
-    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+    - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
   
   vars:
     satellite_repos:
       - rhel-8-for-x86_64-baseos-rpms
       - rhel-8-for-x86_64-appstream-rpms
-      - satellite-6.12-for-rhel-8-x86_64-rpms
-      - satellite-maintenance-6.12-for-rhel-8-x86_64-rpms
+      - satellite-6.15-for-rhel-8-x86_64-rpms
+      - satellite-maintenance-6.15-for-rhel-8-x86_64-rpms
 
     satellite_installer_scenario: satellite
     satellite_firewall_zone: public
+    fresh_install: false
+    satellite_installer_options:
+      - '--foreman-initial-organization "{{ satellite_organization }}"'
+      - '--foreman-initial-admin-password "{{ satellite_password }}"'
+      - '--no-colors'
+      - '--disable-system-checks'
+      - '--enable-foreman-plugin-rh-cloud'
+      - '--enable-foreman-plugin-remote-execution'
+      - '--enable-foreman-plugin-openscap'
+      - '--enable-foreman-proxy-plugin-openscap'
+      - '--no-enable-foreman-plugin-discovery'
+      - '--no-enable-foreman-proxy-plugin-discovery'
+      - '--foreman-plugin-tasks-automatic-cleanup true'
 
   pre_tasks:
     - community.general.redhat_subscription:
         state: present
-        activationkey: "{{ activation_key }}"
+        activationkey: ak-capsule
         org_id: "{{ satellite_organization }}"
         force_register: true
         syspurpose:
@@ -55,9 +68,6 @@
           - rhc-worker-playbook
           - satellite
           - sos
-          - ansible-collection-ansible-posix.noarch
-          - ansible-collection-community-general.noarch
-          - python3.11-jmespath.noarch
           - git
         state: present
     

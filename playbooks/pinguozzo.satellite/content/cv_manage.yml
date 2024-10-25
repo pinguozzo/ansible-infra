@@ -4,11 +4,7 @@
 
   vars_files:
     - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
-
-- name: Include cv_repos.yml 
-  ansible.builtin.import_playbook: "{{ playbook_dir }}/../config/repos.yml"
-  tags: enable_repos  
-  when: enable_repos
+    - "{{ playbook_dir }}/../../../vars/satellite.yml"
 
 - name: Include cv_version_create.yml 
   ansible.builtin.import_playbook: cv_version_create.yml

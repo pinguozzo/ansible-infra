@@ -4,6 +4,7 @@
 
   vars_files:
     - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
+    - "{{ playbook_dir }}/../../../vars/satellite.yml"
 
   vars:
     satellite_composite_content_views:

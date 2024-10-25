@@ -3,15 +3,14 @@
   hosts: "{{ targeted_host| default('localhost') }}"
   gather_facts: no  
 
-    #module_defaults:
-    #  redhat.satellite.redhat_manifest:
-    #    validate_certs: false
-    #    username: "{{ satellite_rhsm_username }}"
-    #    password: "{{ satellite_rhsm_password }}"
+  module_defaults:
+    redhat.satellite.redhat_manifest:
+      validate_certs: false
+      username: "{{ satellite_rhsm_username }}"
+      password: "{{ satellite_rhsm_password }}"
     
   vars_files:
-    # - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
-    - "{{ playbook_dir }}/../../vars/satellite.yml"
+    - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
 
   vars:
     manifest_name: "{{ satellite_server }}"
@@ -40,9 +39,6 @@
         pool_id: "{{ pool_id }}"
         quantity: 100
         path: /tmp/manifest.zip
-        validate_certs: false
-        username: "{{ satellite_rhsm_username }}"
-        password: "{{ satellite_rhsm_password }}"
       register: out
 
     - set_fact:
