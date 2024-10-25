@@ -34,6 +34,7 @@
           - requests
         collections:
           - name: ansible.controller
+          - name: ansible.posix
           - name: awx.awx
           - name: community.general
           - name: containers.podman

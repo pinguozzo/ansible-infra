@@ -51,6 +51,7 @@
           galaxy:
             collections:
               - name: ansible.controller
+              - name: ansible.posix
               - name: community.general
               - name: containers.podman
               - name: infra.controller_configuration
