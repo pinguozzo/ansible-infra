@@ -20,7 +20,6 @@
       - '--foreman-initial-organization "{{ satellite_organization }}"'
       - '--foreman-initial-admin-password "{{ satellite_password }}"'
       - '--no-colors'
-      - '--disable-system-checks'
       - '--enable-foreman-plugin-rh-cloud'
       - '--enable-foreman-plugin-remote-execution'
       - '--enable-foreman-plugin-openscap'

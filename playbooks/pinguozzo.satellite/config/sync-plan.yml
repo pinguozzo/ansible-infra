@@ -1,0 +1,16 @@
+---
+- hosts: "{{ targeted_host| default('localhost') }}"
+  gather_facts: no
+
+  vars_files:
+    - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
+    - "{{ playbook_dir }}/../../../vars/satellite-vars.yml"
+
+  roles:
+    - role: redhat.satellite.sync_plans
+      vars:
+        satellite_sync_plans:
+          - name: RHEL SOE Daily
+            interval: daily
+            sync_date: 2020-11-07 00:00:00 UTC
+            products: "{{ satellite_products | map(attribute='name') | list }}"

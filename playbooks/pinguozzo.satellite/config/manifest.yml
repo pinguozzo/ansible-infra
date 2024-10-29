@@ -39,6 +39,7 @@
         pool_id: "{{ pool_id }}"
         quantity: 100
         path: /tmp/manifest.zip
+        validate_certs: false
       register: out
 
     - set_fact:
