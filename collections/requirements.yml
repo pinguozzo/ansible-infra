@@ -3,3 +3,7 @@ collections:
   - name: community.vmware
   - name: vmware.vmware_rest
   - name: redhat.rhel_system_roles
+  - name: infra.ah_configuration
+  - name: infra.ee_utilities
+  - name: redhat.rhv
+  - name: redhat.satellite
