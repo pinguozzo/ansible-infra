@@ -25,6 +25,10 @@
   ansible.builtin.import_playbook: repos.yml
   tags: repos
 
+- name: Include sync-plan.yml
+  ansible.builtin.import_playbook: sync-plan.yml
+  tags: sync_plan
+
 - name: Include 3rdparty.yml
   ansible.builtin.import_playbook: 3rdparty.yml
   tags: 3rdparty
