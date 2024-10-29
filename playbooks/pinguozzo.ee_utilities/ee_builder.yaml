@@ -15,7 +15,7 @@
     ah_host: "{{ vaulted_ah_host }}"
     ah_token: "{{ vaulted_ah_token }}"
     ee_registry_dest: "{{ vaulted_ee_registry_dest }}"
-    ee_base_registry_username:  "{{ vaulted_ee_base_registry_username }}"
+    ee_base_registry_username: "{{ vaulted_ee_base_registry_username }}"
     ee_base_registry_password: "{{ vaulted_ee_base_registry_password }}"
     ee_base_image: "{{ vaulted_ee_base_image }}"
     # ee_builder_image: "{{ vaulted_ee_builder_image }}" # builder image not needed anymore as per version 3
@@ -29,7 +29,7 @@
         #   dest: configs
         # - src: "{{ playbook_dir }}/../../build_files/bit_proxy_root_2021.crt"
         #   dest: configs
-            
+
         dependencies:
           ansible_core:
             package_pip: ansible-core==2.14.4
@@ -88,5 +88,3 @@
 
   roles:
     - infra.ee_utilities.ee_builder
-...
-
