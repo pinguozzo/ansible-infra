@@ -14,3 +14,8 @@
             interval: daily
             sync_date: 2020-11-07 00:00:00 UTC
             products: "{{ satellite_products | map(attribute='name') | list }}"
+
+          - name: Weekly SOE
+            interval: weekly
+            sync_date: 2020-11-07 00:00:00 UTC
+            products: "{{ additional_products | map(attribute='name') | list | default(omit)}}"

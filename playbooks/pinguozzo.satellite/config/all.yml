@@ -25,13 +25,13 @@
   ansible.builtin.import_playbook: repos.yml
   tags: repos
 
-- name: Include sync-plan.yml
-  ansible.builtin.import_playbook: sync-plan.yml
-  tags: sync_plan
-
 - name: Include 3rdparty.yml
   ansible.builtin.import_playbook: 3rdparty.yml
   tags: 3rdparty
+
+- name: Include sync-plan.yml
+  ansible.builtin.import_playbook: sync-plan.yml
+  tags: sync_plan
 
 - name: Include cv_manage.yml
   ansible.builtin.import_playbook: "{{ playbook_dir }}/../content/cv_manage.yml"
@@ -40,6 +40,7 @@
 - name: satellite ansible post-installer
   hosts: "{{ targeted_host| default('localhost') }}"
   become: True
+  tags: post_install
 
   vars_files:
     - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
@@ -54,8 +55,11 @@
     - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/sat-locations"
       tags: locations
 
-    -  role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/environments"
-       tags: environments
+    - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/environments"
+      tags: environments
+
+    # - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/host-collections"
+    #   tags: host-collections
 
     # - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/proxy"
 
@@ -68,8 +72,6 @@
     #    tags: 3rdpartyrepos
     #  - role: content-views
     #    tags: content-views
-    #  - role: host-collections
-    #    tags: host-collections
     #  - role: ptable
     #    tags: ptable
     #  - role: os
