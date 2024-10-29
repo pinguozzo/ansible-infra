@@ -57,9 +57,6 @@
     -  role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/environments"
        tags: environments
 
-    -  role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/syncplans"
-       tags: syncplans
-
     # - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/proxy"
 
     # - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/sat-settings"
