@@ -18,7 +18,7 @@
 
   post_tasks:
     - name: "Sync Red Hat repository"
-      when: synced
+      when: sync_repos
       block:
         - name: sync repositories
           redhat.satellite.repository_sync:
