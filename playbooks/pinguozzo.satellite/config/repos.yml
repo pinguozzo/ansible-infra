@@ -33,6 +33,7 @@
           changed_when: false  # async always returns changed, check in async_status instead
           poll: 0
           register: async_results
+          when: sync_repos
 
         - name: Check async status for sync repository
           ansible.builtin.async_status:
@@ -53,3 +54,4 @@
             jid: '{{ item.ansible_job_id }}'
             mode: cleanup
           with_items: "{{ async_results| community.general.json_query('results[*]')}}"
+          when: sync_repos
