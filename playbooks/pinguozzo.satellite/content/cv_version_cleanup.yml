@@ -3,6 +3,7 @@
 
   vars_files:
     - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
+    - "{{ playbook_dir }}/../../../vars/satellite-vars.yml"
 
   roles:
     - role: redhat.satellite.content_view_version_cleanup
