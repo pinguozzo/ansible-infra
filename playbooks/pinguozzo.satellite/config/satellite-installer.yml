@@ -1,11 +1,11 @@
 ---
 - name: satellite ansible installer
   hosts: "{{ targeted_host| default('localhost') }}"
-  become: True
+  become: true
 
   vars_files:
     - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
-  
+
   vars:
     satellite_repos:
       - rhel-8-for-x86_64-baseos-rpms
@@ -29,7 +29,8 @@
       - '--foreman-plugin-tasks-automatic-cleanup true'
 
   pre_tasks:
-    - community.general.redhat_subscription:
+    - name: ensure host is registered
+      community.general.redhat_subscription:
         state: present
         activationkey: ak-capsule
         org_id: "{{ satellite_organization }}"
@@ -43,7 +44,7 @@
     - name: enable red hat satellite required repos
       community.general.rhsm_repository:
         name: "{{ item }}"
-      loop: "{{ satellite_repos|flatten(levels=1) }}"
+      loop: "{{ satellite_repos | flatten(levels=1) }}"
       when: satellite_installer_scenario == 'satellite'
 
     - name: reset satellite module stream
@@ -69,17 +70,17 @@
           - sos
           - git
         state: present
-    
+ 
     - name: enable firewalld service
       service:
         name: firewalld
         enabled: true
-    
+ 
     - name: start firewalld service
       service:
         name: firewalld
         state: started
-    
+ 
     - name: configure Satellite firewall
       ansible.posix.firewalld:
         zone: "{{ satellite_firewall_zone }}"
@@ -87,6 +88,6 @@
         permanent: true
         immediate: true
         state: enabled
-         
+      
   roles:
     - role: redhat.satellite_operations.installer
