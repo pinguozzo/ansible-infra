@@ -11,12 +11,19 @@
       - name: ccv-rhel9_soe
       - name: ccv-rhel8_soe
       - name: ccv-rhel7_soe
+      - name: ccv-rhel6_soe
     satellite_content_views:
       - cv-rhel9_soe
       - cv-rhel9_soe_extras
       - cv-rhel8_soe
       - cv-rhel8_soe_extras
+      - cv-rhel7_soe
+      - cv-rhel7_soe_extras
+      - cv-rhel6_soe
+      - cv-rhel6_soe_extras
       - cv-capsules
+      - cv-rhvh
+      - cv-leapp
 
     satellite_infra_content_views:
       leapp:
@@ -25,7 +32,12 @@
       satellite:
         name: cv-capsules
         lfe: INFRA
+      rhv:
+        name: cv-rhvh
+        lfe: LAB
 
+    lifecycle_paths:
+      - - label: LAB
     lifecycle_environments: "{{ lifecycle_paths|flatten|map(attribute='label')|list }}"
 
   roles:

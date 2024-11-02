@@ -35,7 +35,7 @@
           register: async_results
           when: sync_repos
 
-        - name: Check async status for sync repository
+        - name: check async status for sync repository
           ansible.builtin.async_status:
             jid: "{{ item.ansible_job_id }}"
           register: async_poll_results
@@ -47,9 +47,10 @@
           delay: 5
           when:
             - not ansible_check_mode
+            - sync_repos
           with_items: "{{ async_results| community.general.json_query('results[*]')}}"
 
-        - name: Clean up async file
+        - name: clean up async file
           ansible.builtin.async_status:
             jid: '{{ item.ansible_job_id }}'
             mode: cleanup

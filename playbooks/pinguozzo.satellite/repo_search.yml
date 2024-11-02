@@ -4,6 +4,7 @@
 
   vars_files:
     - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+    - "{{ playbook_dir }}/../../vars/satellite-vars.yml"
   
   tasks:
     - name: "Find repository set by name and product."
@@ -13,16 +14,16 @@
         server_url: "{{ satellite_server_url }}"
         validate_certs: "{{ satellite_validate_certs }}"
         organization: "{{ satellite_organization }}"
-        #search: 'label = "rhel-7-server-satellite-client-6-rpms"'
+        search: 'label = "jb-eap-7.4-for-rhel-8-x86_64-rpms"'
         #search: 'label = "satellite-capsule-6.14-for-rhel-8-x86_64-rpms"'
-        search: 'label = "rhel-6-server-retired-els-rpms"'
+        #search: 'label = "rhel-7-server-ansible-2-rpm"'
         # search: 'label = "codeready-builder-for-rhel-8-x86_64-rpms"'
         # search: 'label = "ansible-2-for-rhel-9-x86_64-rpms"'
-      register: repos
+      register: output
 
     - name: debug repos
       debug:
-        msg: "{{repos}}"
+        msg: "{{ output }}"
 
           #  - name: "Set repository sets"
           #    redhat.satellite.repository_set:

@@ -1,0 +1,21 @@
+
+---
+- hosts: "{{ targeted_host| default('localhost') }}"
+  gather_facts: no
+
+  vars_files:
+    - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
+    - "{{ playbook_dir }}/../../../vars/satellite-vars.yml"
+
+  tasks:
+    - name: "Configure locations"
+      redhat.satellite.location:
+        username: "{{ satellite_username }}"
+        password: "{{ satellite_password }}"
+        server_url: "{{ satellite_server_url }}"
+        name: "{{ item }}"
+        organizations:
+          - "{{ satellite_organization }}"
+        state: present
+      loop: "{{ locations }}"
+      tags: locations

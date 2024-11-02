@@ -1,7 +1,6 @@
 ---
 - name: satellite installer
   hosts: "{{ targeted_host| default('localhost') }}"
-  become: True
 
   vars_files:
     - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
@@ -18,6 +17,10 @@
   ansible.builtin.import_playbook: manifest.yml
   tags: manifest
 
+- name: Include location.yml
+  ansible.builtin.import_playbook: location.yml
+  tags: location
+
 - name: Include global_parameters.yml
   ansible.builtin.import_playbook: global_parameters.yml
   tags: global_parameters
@@ -33,6 +36,10 @@
 - name: Include sync-plan.yml
   ansible.builtin.import_playbook: sync-plan.yml
   tags: sync_plan
+
+- name: Include environment.yml
+  ansible.builtin.import_playbook: environment.yml
+  tags: environments
 
 - name: Include cv_manage.yml
   ansible.builtin.import_playbook: "{{ playbook_dir }}/../content/cv_manage.yml"
@@ -52,12 +59,6 @@
   roles:
     - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/firewalld"
       tags: firewalld
-
-    - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/sat-locations"
-      tags: locations
-
-    - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/environments"
-      tags: environments
 
     # - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/host-collections"
     #   tags: host-collections
