@@ -34,7 +34,7 @@
         state: present
       loop: "{{ additional_products }}"
       tags: 3rd_party_products
-        
+
     - name: "3rd Party repos"
       redhat.satellite.repository:
         username: "{{ satellite_username | default(omit) }}"

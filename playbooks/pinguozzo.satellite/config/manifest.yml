@@ -8,7 +8,7 @@
       validate_certs: false
       username: "{{ satellite_rhsm_username }}"
       password: "{{ satellite_rhsm_password }}"
-    
+
   vars_files:
     - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
     - "{{ playbook_dir }}/../../../vars/satellite-vars.yml"
@@ -18,11 +18,11 @@
     pool_id: 8a85f99c7d76f2fd017d96c343f40655
     quantity: 100
     path: /tmp/manifest.zip
-      
+
   pre_tasks:
     - name: check that required variables are defined
       ansible.builtin.assert:
-        that: 
+        that:
           - manifest_name is defined
           - pool_id is defined
           - quantity is defined

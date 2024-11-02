@@ -29,3 +29,6 @@ Thumbs.db
 
 # Ansible
 *.retry
+
+# VSCode
+.vscode
