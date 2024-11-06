@@ -38,7 +38,7 @@
   tags: sync_plan
 
 - name: Include environment.yml
-  ansible.builtin.import_playbook: environment.yml
+  ansible.builtin.import_playbook: environments.yml
   tags: environments
 
 - name: Include cv_manage.yml

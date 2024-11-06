@@ -1,8 +1,145 @@
 ---
-lifecycle_paths:
-  - - label: DEV
-    - label: TEST
-    - label: PROD
+satellite_composite_content_views:
+  - name: ccv-rhel9_soe
+    lfe:
+      - - label: LAB
+      - - label: DEV
+        - label: TEST
+        - label: PROD
+  - name: ccv-rhel8_soe
+    lfe:
+      - - label: LAB
+      - - label: DEV
+        - label: TEST
+        - label: PROD
+
+          #satellite_content_views:
+          #  - cv-rhel9_soe
+          #  - cv-rhel9_soe_extras
+          #  - cv-rhel8_soe
+          #  - cv-rhel8_soe_extras
+          #  - cv-capsules
+
+satellite_infra_content_views:
+  satellite:
+    name: cv-capsules
+    lfe: INFRA
+
+satellite_content_views:
+  - name: cv-capsules
+    description: "Red Hat Capsules Content"
+    repositories:
+      - { name: 'Red Hat Ansible Engine 2 for RHEL 8 x86_64 RPMs', product: 'Red Hat Ansible Engine' }
+      - { name: 'Red Hat Satellite 6.15 for RHEL 8 x86_64 RPMs', product: 'Red Hat Satellite' }
+      - { name: 'Red Hat Satellite Capsule 6.15 for RHEL 8 x86_64 RPMs', product: 'Red Hat Satellite Capsule' }
+      - { name: 'Red Hat Satellite Maintenance 6.15 for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Satellite Utils 6.15 for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 9 for x86_64 - AppStream Kickstart 9.0', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 9 for x86_64 - BaseOS Kickstart 9.0', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 9 for x86_64 - AppStream Kickstart 9.4', product: 'Red Hat Enterprise Linux for x86_64' }               
+      - { name: 'Red Hat Enterprise Linux 9 for x86_64 - BaseOS Kickstart 9.4', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 9 for x86_64 - AppStream RPMs 9', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 9 for x86_64 - BaseOS RPMs 9', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream Kickstart 8.0', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS Kickstart 8.0', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream Kickstart 8.10', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS Kickstart 8.10', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream RPMs 8', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS RPMs 8', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream RPMs 8.4', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream RPMs 8.5', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream RPMs 8.6', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream RPMs 8.7', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Satellite Client 6 for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
+
+  - name: cv-rhel9_soe
+    description: "RHEL 9 SOE Content"
+    repositories:
+      - { name: 'Red Hat Enterprise Linux 9 for x86_64 - AppStream Kickstart 9.0', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 9 for x86_64 - AppStream Kickstart 9.4', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 9 for x86_64 - AppStream RPMs 9', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 9 for x86_64 - BaseOS Kickstart 9.0', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 9 for x86_64 - BaseOS Kickstart 9.4', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 9 for x86_64 - BaseOS RPMs 9', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Satellite Client 6 for RHEL 9 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
+
+  - name: cv-rhel9_soe_extras
+    description: "RHEL 9 SOE Extra Content"
+    repositories:
+      - { name: 'Red Hat Enterprise Linux 9 for x86_64 - Supplementary RPMs 9', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 9 for x86_64 - High Availability RPMs 9', product: 'Red Hat Enterprise Linux High Availability for x86_64' }
+      - { name: 'Red Hat Ansible Automation Platform 2.4 for RHEL 9 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
+      - { name: 'Red Hat Ansible Automation Platform 2.5 for RHEL 9 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
+      - { name: 'Red Hat CodeReady Linux Builder for RHEL 9 x86_64 RPMs 9', product: 'Red Hat CodeReady Linux Builder for x86_64' }
+      - { name: 'Red Hat Ceph Storage Tools 6 for RHEL 9 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Ceph Storage Tools 7 for RHEL 9 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
+
+  - name: cv-rhel8_soe
+    description: "RHEL 8 SOE Content"
+    repositories:
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream Kickstart 8.0', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS Kickstart 8.0', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream Kickstart 8.10', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS Kickstart 8.10', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream RPMs 8', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream RPMs 8.4', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream RPMs 8.5', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream RPMs 8.6', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream RPMs 8.7', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream - Extended Update Support RPMs 8.4', product: 'Red Hat Enterprise Linux for x86_64 - Extended Update Support' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream - Extended Update Support RPMs 8.6', product: 'Red Hat Enterprise Linux for x86_64 - Extended Update Support' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS RPMs 8', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS RPMs 8.4', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS RPMs 8.5', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS RPMs 8.6', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS RPMs 8.7', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS - Extended Update Support RPMs 8.4', product: 'Red Hat Enterprise Linux for x86_64 - Extended Update Support' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS - Extended Update Support RPMs 8.6', product: 'Red Hat Enterprise Linux for x86_64 - Extended Update Support' }
+      - { name: 'Red Hat Ansible Engine 2 for RHEL 8 x86_64 RPMs', product: 'Red Hat Ansible Engine' }
+      - { name: 'Fast Datapath for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux Fast Datapath' }
+      - { name: 'Red Hat Satellite Client 6 for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
+
+  - name: cv-rhel8_soe_extras
+    description: "RHEL 8 SOE Extra Content"
+    repositories:
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - Supplementary RPMs 8', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - High Availability RPMs 8', product: 'Red Hat Enterprise Linux High Availability for x86_64' }
+      - { name: 'Red Hat Ansible Automation Platform 2.4 for RHEL 8 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
+      - { name: 'Red Hat Ansible Automation Platform 2.5 for RHEL 8 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - Supplementary - Extended Update Support RPMs 8.4', product: 'Red Hat Enterprise Linux for x86_64 - Extended Update Support' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - Supplementary - Extended Update Support RPMs 8.6', product: 'Red Hat Enterprise Linux for x86_64 - Extended Update Support' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - Supplementary RPMs 8.4', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - Supplementary RPMs 8.5', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - Supplementary RPMs 8.6', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'JBoss Enterprise Application Platform 7.4 RHEL 8 RPMs', product: 'JBoss Enterprise Application Platform' }
+      - { name: 'JBoss Enterprise Application Platform 7.3 RHEL 8 RPMs', product: 'JBoss Enterprise Application Platform' }
+      - { name: 'Single Sign-On 7.6 for RHEL 8 x86_64 RPMs', product: 'Red Hat Single Sign-On' }
+      - { name: 'Single Sign-On 7.5 for RHEL 8 x86_64 RPMs', product: 'Red Hat Single Sign-On' }
+      - { name: 'Single Sign-On 7.4 for RHEL 8 x86_64 RPMs', product: 'Red Hat Single Sign-On' }
+      - { name: 'Red Hat Automation Hub 4.2 for RHEL 8 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
+      - { name: 'Red Hat Virtualization Manager 4.4 for RHEL 8 x86_64 RPMs', product: 'Red Hat Virtualization Manager' }
+      - { name: 'Red Hat Virtualization 4 Management Agents for RHEL 8 x86_64 RPMs', product: 'Red Hat Virtualization' }
+      - { name: 'Advanced Virtualization for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux Advanced Virtualization' }
+      - { name: 'Red Hat Ceph Storage Tools 4 for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat CodeReady Linux Builder for RHEL 8 x86_64 RPMs 8', product: 'Red Hat CodeReady Linux Builder for x86_64' }
+
+  - name: ccv-rhel8_soe
+    description: "CCV RHEL8 SOE"
+    components:
+      - content_view: cv-rhel8_soe
+        latest: true
+      - content_view: cv-rhel8_soe_extras
+        latest: true
+
+  - name: ccv-rhel9_soe
+    description: "CCV RHEL9 SOE"
+    components:
+      - content_view: cv-rhel9_soe
+        latest: true
+      - content_view: cv-rhel9_soe_extras
+        latest: true
+
+lifecycle_environments: "{{ lifecycle_paths|flatten|map(attribute='label')|list }}"
 
 sync_repos: false
 satellite_timeout: 1800
@@ -41,9 +178,12 @@ satellite_products:
   - name: JBoss Enterprise Application Platform
     repository_sets:
       - name: JBoss Enterprise Application Platform 7.4 (RHEL 8) (RPMs)
+      - name: JBoss Enterprise Application Platform 7.3 (RHEL 8) (RPMs)
 
   - name: Red Hat Single Sign-On
     repository_sets:
+      - name: Single Sign-On 7.6 for RHEL 8 x86_64 (RPMs)
+      - name: Single Sign-On 7.5 for RHEL 8 x86_64 (RPMs)
       - name: Single Sign-On 7.4 for RHEL 8 x86_64 (RPMs)
 
   - name: Red Hat Enterprise Linux for x86_64
@@ -82,64 +222,20 @@ satellite_products:
         releasever: 8.0
       - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (Kickstart)
         releasever: 8.0
-      - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (Kickstart)
-        releasever: "8.10"
-      - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (Kickstart)
-        releasever: "8.10"
       - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
-        releasever: 8.4
-      - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
-        releasever: 8.5
-      - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
-        releasever: 8.6
-      - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
-        releasever: 8.7
-      - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
-        releasever: 8.4
-      - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
-        releasever: 8.5
-      - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
-        releasever: 8.6
-      - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
-        releasever: 8.7
-      - name: Red Hat Enterprise Linux 8 for x86_64 - Supplementary (RPMs)
-        releasever: 8.4
-      - name: Red Hat Enterprise Linux 8 for x86_64 - Supplementary (RPMs)
-        releasever: 8.5
-      - name: Red Hat Enterprise Linux 8 for x86_64 - Supplementary (RPMs)
-        releasever: 8.6
-      - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
         releasever: 8
-      - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+      - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
         releasever: 8
       - name: Red Hat Enterprise Linux 8 for x86_64 - Supplementary (RPMs)
         releasever: 8
       - name: Red Hat Enterprise Linux 9 for x86_64 - BaseOS (RPMs)
         releasever: 9
-      - name: Red Hat Enterprise Linux 9 for x86_64 - BaseOS (RPMs)
-        releasever: 9.0
-      - name: Red Hat Enterprise Linux 9 for x86_64 - BaseOS (RPMs)
-        releasever: 9.1
-      - name: Red Hat Enterprise Linux 9 for x86_64 - BaseOS (RPMs)
-        releasever: 9.2
       - name: Red Hat Enterprise Linux 9 for x86_64 - AppStream (RPMs)
-        releasever: 9
-      - name: Red Hat Enterprise Linux 9 for x86_64 - AppStream (RPMs)
-        releasever: 9.0
-      - name: Red Hat Enterprise Linux 9 for x86_64 - AppStream (RPMs)
-        releasever: 9.1
-      - name: Red Hat Enterprise Linux 9 for x86_64 - AppStream (RPMs)
-        releasever: 9.2
-      - name: Red Hat Enterprise Linux 9 for x86_64 - Supplementary (RPMs)
         releasever: 9
       - name: Red Hat Enterprise Linux 9 for x86_64 - BaseOS (Kickstart)
         releasever: 9.0
       - name: Red Hat Enterprise Linux 9 for x86_64 - AppStream (Kickstart)
         releasever: 9.0
-      - name: Red Hat Enterprise Linux 9 for x86_64 - BaseOS (Kickstart)
-        releasever: 9.4
-      - name: Red Hat Enterprise Linux 9 for x86_64 - AppStream (Kickstart)
-        releasever: 9.4
 
   - name: Red Hat Enterprise Linux Fast Datapath         
     repository_sets:
@@ -151,27 +247,6 @@ satellite_products:
         releasever: 9
       - name: Red Hat Enterprise Linux 8 for x86_64 - High Availability (RPMs)
         releasever: 8
-
-  - name: Red Hat Enterprise Linux for x86_64 - Extended Update Support 
-    repository_sets:
-      - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS - Extended Update Support (RPMs)
-        releasever: 8.4
-      - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS - Extended Update Support (RPMs)
-        releasever: 8.6
-      - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream - Extended Update Support (RPMs)
-        releasever: 8.4
-      - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream - Extended Update Support (RPMs)
-        releasever: 8.6
-      - name: Red Hat Enterprise Linux 8 for x86_64 - Supplementary - Extended Update Support (RPMs)
-        releasever: 8.4
-      - name: Red Hat Enterprise Linux 8 for x86_64 - Supplementary - Extended Update Support (RPMs)
-        releasever: 8.6
-
-  - name: Red Hat Single Sign-On
-    repository_sets:
-      - name: Single Sign-On 7.6 for RHEL 8 x86_64 (RPMs)
-      - name: Single Sign-On 7.5 for RHEL 8 x86_64 (RPMs)
-      - name: Single Sign-On 7.4 for RHEL 8 x86_64 (RPMs)
 
   - name: Red Hat Virtualization Manager
     repository_sets:

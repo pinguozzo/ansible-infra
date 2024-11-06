@@ -9,11 +9,7 @@
 
 - name: Include cv_version_create.yml
   ansible.builtin.import_playbook: cv_version_create.yml
-<<<<<<< HEAD
   tags: cv,cv_create
-=======
-  tags: cv_create
->>>>>>> 6040336d0d7f09da7bacd7201df32d8926703acd
 
 - name: Include cv_version_publish.yml
   ansible.builtin.import_playbook: cv_version_publish_promote.yml

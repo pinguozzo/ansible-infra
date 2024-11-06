@@ -18,7 +18,7 @@
 
   post_tasks:
     - name: "Sync Red Hat repository"
-      when: sync_repos
+      when: sync_repos | bool
       block:
         - name: sync repositories
           redhat.satellite.repository_sync:
@@ -33,7 +33,6 @@
           changed_when: false  # async always returns changed, check in async_status instead
           poll: 0
           register: async_results
-          when: sync_repos
 
         - name: check async status for sync repository
           ansible.builtin.async_status:
@@ -47,7 +46,6 @@
           delay: 5
           when:
             - not ansible_check_mode
-            - sync_repos
           with_items: "{{ async_results| community.general.json_query('results[*]')}}"
 
         - name: clean up async file
@@ -55,4 +53,3 @@
             jid: '{{ item.ansible_job_id }}'
             mode: cleanup
           with_items: "{{ async_results| community.general.json_query('results[*]')}}"
-          when: sync_repos
