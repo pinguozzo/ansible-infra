@@ -9,16 +9,14 @@ lifecycle_environments: "{{ lifecycle_paths|flatten|map(attribute='label')|list 
 satellite_composite_content_views:
   - name: ccv-rhel9_soe
     lfe:
-      - - label: LAB
-      - - label: DEV
-        - label: TEST
-        - label: PROD
+      - DEV
+      - TEST
+      - PROD
   - name: ccv-rhel8_soe
     lfe:
-      - - label: LAB
-      - - label: DEV
-        - label: TEST
-        - label: PROD
+      - DEV
+      - TEST
+      - PROD
 
           #satellite_content_views:
           #  - cv-rhel9_soe
