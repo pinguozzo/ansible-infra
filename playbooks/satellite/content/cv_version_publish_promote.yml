@@ -14,8 +14,8 @@
       loop: "{{ satellite_composite_content_views }}"
       tags: lfe
 
-  roles:
-    - role: redhat.satellite.content_view_publish
+        #  roles:
+        #- role: redhat.satellite.content_view_publish
 
   tasks:
     - name: "Promote composite content views"
@@ -30,7 +30,7 @@
           organization: "{{ satellite_organization }}"
           lifecycle_environments: "{{ item.lfe }}"
         loop: "{{ satellite_composite_content_views }}"
-            #loop: "{{ lookup('ansible.builtin.dict', satellite_composite_content_views, wantlist=True) }}"
+          #loop: "{{ lookup('ansible.builtin.dict', satellite_composite_content_views, wantlist=True) }}"
       tags: promote
 
     - name: "Promote infra content views"

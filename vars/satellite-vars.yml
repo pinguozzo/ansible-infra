@@ -1,5 +1,6 @@
 ---
 lifecycle_paths:
+  - - label: INFRA
   - - label: DEV
     - label: TEST
     - label: PROD
@@ -7,7 +8,9 @@ lifecycle_paths:
 lifecycle_environments: "{{ lifecycle_paths|flatten|map(attribute='label')|list }}"
 
 satellite_composite_content_views:
-  - name: ccv-rhel9_soe
+  #- name: ccv-rhel9_soe
+  - rhel9:
+    name: ccv-rhel9_soe
     lfe:
       - DEV
       - TEST
