@@ -11,7 +11,7 @@
     
   vars_files:
     # - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
-    - "{{ playbook_dir }}/../../vars/satellite.yml"
+    - "{{ playbook_dir }}/../../vars/satellite-vars.yml"
 
   vars:
     manifest_name: "{{ satellite_server }}"

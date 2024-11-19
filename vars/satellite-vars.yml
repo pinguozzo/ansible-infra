@@ -1,4 +1,6 @@
 ---
+satellite_organization: "ACME"
+
 lifecycle_paths:
   - - label: INFRA
   - - label: DEV
@@ -9,8 +11,7 @@ lifecycle_environments: "{{ lifecycle_paths|flatten|map(attribute='label')|list 
 
 satellite_composite_content_views:
   #- name: ccv-rhel9_soe
-  - rhel9:
-    name: ccv-rhel9_soe
+  - name: ccv-rhel9_soe
     lfe:
       - DEV
       - TEST
@@ -33,15 +34,38 @@ satellite_infra_content_views:
     name: cv-capsules
     lfe: INFRA
 
+satellite_activation_keys:
+  - name: "ak-rhel8-dev"
+    lifecycle_environment: "DEV"
+    content_view: "ccv-rhel8_soe"
+    content_overrides:
+      - label: "satellite-client-6-for-rhel-8-x86_64-rpms"
+        override: enabled
+
+  - name: "ak-rhel9-dev"
+    lifecycle_environment: "DEV"
+    content_view: "ccv-rhel9_soe"
+    content_overrides:
+      - label: "satellite-client-6-for-rhel-9-x86_64-rpms"
+        override: enabled
+
 satellite_content_views:
   - name: cv-capsules
     description: "Red Hat Capsules Content"
     repositories:
       - { name: 'Red Hat Ansible Engine 2 for RHEL 8 x86_64 RPMs', product: 'Red Hat Ansible Engine' }
       - { name: 'Red Hat Satellite 6.15 for RHEL 8 x86_64 RPMs', product: 'Red Hat Satellite' }
+      - { name: 'Red Hat Satellite 6.16 for RHEL 8 x86_64 RPMs', product: 'Red Hat Satellite' }
+      - { name: 'Red Hat Satellite 6.16 for RHEL 9 x86_64 RPMs', product: 'Red Hat Satellite' }
       - { name: 'Red Hat Satellite Capsule 6.15 for RHEL 8 x86_64 RPMs', product: 'Red Hat Satellite Capsule' }
+      - { name: 'Red Hat Satellite Capsule 6.16 for RHEL 8 x86_64 RPMs', product: 'Red Hat Satellite Capsule' }
+      - { name: 'Red Hat Satellite Capsule 6.16 for RHEL 9 x86_64 RPMs', product: 'Red Hat Satellite Capsule' }
       - { name: 'Red Hat Satellite Maintenance 6.15 for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Satellite Maintenance 6.16 for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Satellite Maintenance 6.16 for RHEL 9 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
       - { name: 'Red Hat Satellite Utils 6.15 for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Satellite Utils 6.16 for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Satellite Utils 6.16 for RHEL 9 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
       - { name: 'Red Hat Enterprise Linux 9 for x86_64 - AppStream Kickstart 9.0', product: 'Red Hat Enterprise Linux for x86_64' }
       - { name: 'Red Hat Enterprise Linux 9 for x86_64 - BaseOS Kickstart 9.0', product: 'Red Hat Enterprise Linux for x86_64' }
       - { name: 'Red Hat Enterprise Linux 9 for x86_64 - AppStream RPMs 9', product: 'Red Hat Enterprise Linux for x86_64' }
@@ -167,9 +191,13 @@ satellite_products:
   - name: Red Hat Enterprise Linux for x86_64
     repository_sets:
       - name: Red Hat Satellite Utils 6.15 for RHEL 8 x86_64 (RPMs)
+      - name: Red Hat Satellite Utils 6.16 for RHEL 8 x86_64 (RPMs)
+      - name: Red Hat Satellite Utils 6.16 for RHEL 9 x86_64 (RPMs)
       - name: Red Hat Satellite Client 6 for RHEL 8 x86_64 (RPMs)
       - name: Red Hat Satellite Client 6 for RHEL 9 x86_64 (RPMs)
       - name: Red Hat Satellite Maintenance 6.15 for RHEL 8 x86_64 (RPMs)
+      - name: Red Hat Satellite Maintenance 6.16 for RHEL 8 x86_64 (RPMs)
+      - name: Red Hat Satellite Maintenance 6.16 for RHEL 9 x86_64 (RPMs)
       - name: Red Hat Ceph Storage Tools 4 for RHEL 8 x86_64 (RPMs)
       - name: Red Hat Ceph Storage Tools 5 for RHEL 9 x86_64 (RPMs)
       - name: Red Hat Ceph Storage Tools 6 for RHEL 9 x86_64 (RPMs)
@@ -189,10 +217,14 @@ satellite_products:
   - name: Red Hat Satellite
     repository_sets:
       - name: Red Hat Satellite 6.15 for RHEL 8 x86_64 (RPMs)
+      - name: Red Hat Satellite 6.16 for RHEL 8 x86_64 (RPMs)
+      - name: Red Hat Satellite 6.16 for RHEL 9 x86_64 (RPMs)
 
   - name: Red Hat Satellite Capsule
     repository_sets:
       - name: Red Hat Satellite Capsule 6.15 for RHEL 8 x86_64 (RPMs)
+      - name: Red Hat Satellite Capsule 6.16 for RHEL 8 x86_64 (RPMs)
+      - name: Red Hat Satellite Capsule 6.16 for RHEL 9 x86_64 (RPMs)
 
   - name: Red Hat Enterprise Linux for x86_64
     repository_sets:

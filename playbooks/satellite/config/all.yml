@@ -5,7 +5,7 @@
   vars_files:
     - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
     - "{{ playbook_dir }}/../../../vars/satellite-vars.yml"
-  
+
   collections:
     - redhat.satellite
 
@@ -44,6 +44,10 @@
 - name: Include cv_manage.yml
   ansible.builtin.import_playbook: "{{ playbook_dir }}/../content/cv_manage.yml"
   tags: cv
+
+- name: Include activation_keys.yml
+  ansible.builtin.import_playbook: "{{ playbook_dir }}/../config/activation_keys.yml"
+  tags: ak
 
 - name: satellite ansible post-installer
   hosts: "{{ targeted_host| default('localhost') }}"

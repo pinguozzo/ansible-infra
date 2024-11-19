@@ -11,8 +11,9 @@
     satellite_repos:
       - rhel-8-for-x86_64-baseos-rpms
       - rhel-8-for-x86_64-appstream-rpms
-      - satellite-6.15-for-rhel-8-x86_64-rpms
-      - satellite-maintenance-6.15-for-rhel-8-x86_64-rpms
+      - satellite-6.16-for-rhel-8-x86_64-rpms
+      - satellite-maintenance-6.16-for-rhel-8-x86_64-rpms
+      - satellite-utils-6.16-for-rhel-8-x86_64-rpms
 
     satellite_installer_scenario: satellite
     satellite_firewall_zone: public
@@ -21,6 +22,7 @@
       - '--foreman-initial-organization "{{ satellite_organization }}"'
       - '--foreman-initial-admin-password "{{ satellite_password }}"'
       - '--no-colors'
+      - '--force'
       - '--enable-foreman-plugin-rh-cloud'
       - '--enable-foreman-plugin-remote-execution'
       - '--enable-foreman-plugin-openscap'
@@ -34,13 +36,14 @@
       community.general.redhat_subscription:
         state: present
         activationkey: ak-capsule
-        org_id: "{{ satellite_organization }}"
+        org_id: "{{ build_organization }}"
         force_register: true
         syspurpose:
           usage: "Development"
           role: "Red Hat Enterprise Linux Server"
           service_level_agreement: "Self-Support"
           sync: true
+      when: force_register | bool
 
     - name: enable red hat satellite required repos
       community.general.rhsm_repository:
@@ -51,13 +54,12 @@
     - name: reset satellite module stream
       command: >
         dnf -y module reset
-        satellite:el{{ ansible_facts.distribution_major_version }} postgresql:12 ruby:2.7
-      when: not fresh_install
+        satellite:el{{ ansible_facts.distribution_major_version }} postgresql ruby
+      when: fresh_install | bool
 
     - name: enable satellite module stream
       command: >
-        dnf -y module enable
-        satellite:el{{ ansible_facts.distribution_major_version }} postgresql:12 ruby:2.7
+        dnf -y module enable satellite:el{{ ansible_facts.distribution_major_version }}
 
     - name: install satellite packages
       yum:
