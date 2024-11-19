@@ -1,6 +1,7 @@
 
 ---
-- hosts: "{{ targeted_host| default('localhost') }}"
+- name: configure locations
+  hosts: "{{ targeted_host| default('localhost') }}"
   gather_facts: no
 
   vars_files:
