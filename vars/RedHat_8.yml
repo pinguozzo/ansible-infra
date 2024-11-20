@@ -14,6 +14,9 @@ rhsm_activationkey: ak-rhel8-vmware
 rhsm_force_register: yes
 rhsm_org: "{{ satellite_organization }}"
 
-#rhsm_repos:
-#  - rhel-8-for-x86_64-appstream-rpms
-#  - rhel-8-for-x86_64-baseos-rpms
+satellite_repos:
+  - rhel-8-for-x86_64-baseos-rpms
+  - rhel-8-for-x86_64-appstream-rpms
+  - satellite-6.16-for-rhel-8-x86_64-rpms
+  - satellite-maintenance-6.16-for-rhel-8-x86_64-rpms
+  - satellite-utils-6.16-for-rhel-8-x86_64-rpms

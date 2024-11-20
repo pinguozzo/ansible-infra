@@ -8,13 +8,6 @@
     - "{{ playbook_dir }}/../../../vars/satellite-vars.yml"
 
   vars:
-    satellite_repos:
-      - rhel-8-for-x86_64-baseos-rpms
-      - rhel-8-for-x86_64-appstream-rpms
-      - satellite-6.16-for-rhel-8-x86_64-rpms
-      - satellite-maintenance-6.16-for-rhel-8-x86_64-rpms
-      - satellite-utils-6.16-for-rhel-8-x86_64-rpms
-
     satellite_installer_scenario: satellite
     satellite_firewall_zone: public
     fresh_install: false
@@ -32,6 +25,14 @@
       - '--foreman-plugin-tasks-automatic-cleanup true'
 
   pre_tasks:
+    - name: set platform/version specific variables
+      include_vars: "{{ __vars_file }}"
+      loop:
+        - "RedHat_{{ os_major }}.yml"
+      vars:
+        __vars_file: "{{ playbook_dir }}/../../../vars/{{ item }}"
+      when: __vars_file is file
+
     - name: ensure host is registered
       community.general.redhat_subscription:
         state: present
