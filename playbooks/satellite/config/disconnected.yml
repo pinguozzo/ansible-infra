@@ -1,0 +1,86 @@
+---
+- name: satellite disconnected pre run 
+  hosts: "{{ targeted_host| default('localhost') }}"
+  become: true
+  gather_facts: no
+
+  vars_files:
+    - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
+    - "{{ playbook_dir }}/../../../vars/satellite-vars.yml"
+
+  vars:
+    ansible_remote_tmp: /tmp
+    isos:
+      - name: rhel
+        file: rhel-9.5-x86_64-dvd.iso
+        directory: rhel
+        mountpoint: /media/rhel
+
+      - name: sat6
+        file: Satellite-6.16.0.1-rhel-9-x86_64.dvd.iso
+        directory: sat6
+        mountpoint: /media/sat6
+
+  pre_tasks:
+    - name: set platform/version specific variables
+      include_vars: "{{ __vars_file }}"
+      loop:
+        - "RedHat_{{ ansible_distribution_major_version }}.yml"
+      vars:
+        __vars_file: "{{ playbook_dir }}/../../../vars/{{ item }}"
+      when: __vars_file is file
+
+  tasks:
+    - name: ensure directories are created
+      ansible.builtin.file:
+        path: "{{ item.mountpoint }}"
+        state: directory
+        mode: '0755'
+      loop: "{{ isos }}"
+
+    - name: Copy file with owner and permissions
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/../../../files/rhel.repo"
+        dest: /etc/yum.repos.d/rhel.repo
+
+    - name: Download rhel-9.5-x86_64-dvd.iso
+      ansible.builtin.get_url:
+        url: "http://builder.apps.pinguozzo.com/pub/{{ item.file }}"
+        dest: /tmp/{{ item.file }}
+        mode: '0440'
+      loop: "{{ isos }}"
+
+    - name: Mount rhel-9.5 iso
+      ansible.posix.mount:
+        src: /tmp/{{ item.file }}
+        path: /media/{{ item.name }}
+        fstype: iso9660
+        opts: ro,noauto
+        state: mounted
+      loop: "{{ isos }}"
+
+    - name: Run install_packages
+      ansible.builtin.shell: /media/sat6/install_packages 
+      async: "{{ ansible_check_mode | ternary(0, 1800) }}"  # avoid connection timeouts
+      changed_when: false  # async always returns changed, check in async_status instead
+      poll: 0
+      register: install_packages
+
+    - name: Check async status for install_packages
+      ansible.builtin.async_status:
+        jid: "{{ install_packages.ansible_job_id }}"
+      register: install_packages_results
+      until: install_packages_results.finished
+      retries: "{{ (( 1800 | int) / 5) | round | int }}"
+      changed_when: install_packages_results.rc is defined and install_packages_results.rc == 2
+      failed_when:
+        - (not install_packages_results.finished) or (install_packages_results.rc is defined and install_packages_results.rc not in [0, 2])
+      delay: 5
+      when:
+        - not ansible_check_mode
+
+    - name: Unmount a mounted volume
+      ansible.posix.mount:
+        path: /media/{{ item.name }}
+        state: unmounted
+      loop: "{{ isos }}"

@@ -1,0 +1,15 @@
+[RHEL-BaseOS]
+name=Red Hat Enterprise Linux BaseOS
+mediaid=None
+metadata_expire=-1
+gpgcheck=0
+cost=500
+baseurl=file:///media/rhel/BaseOS/
+
+[RHEL-AppStream]
+name=Red Hat Enterprise Linux Appstream
+mediaid=None
+metadata_expire=-1
+gpgcheck=0
+cost=500
+baseurl=file:///media/rhel/AppStream/

@@ -1,0 +1,27 @@
+- hosts: all
+
+  tasks:
+    - name: Identify data disks that are 50 GB
+      set_fact:
+        data_disks: "{{ ansible_devices | dict2items | selectattr('key', 'match', '^sd.*') | rejectattr('key', 'match', '^sda$') | selectattr('value.size', 'match', '^50.00 GB') | map(attribute='key') | list }}"
+
+    - name: Show value of data_disks
+      ansible.builtin.debug:
+        var: data_disks
+
+    - name: Run storage role
+      vars:
+        storage_pools:
+          - name: vg_satellite
+            disks: "{{ data_disks }}"
+            volumes:
+              - name: var_lib_pgsql
+                size: 60%
+                mount_point: "/var/lib/pgsql"
+                state: present
+              - name: var_lib_pulp
+                size: 40%
+                mount_point: "/var/lib/pulp"
+                state: present
+      ansible.builtin.include_role:
+        name: redhat.rhel_system_roles.storage

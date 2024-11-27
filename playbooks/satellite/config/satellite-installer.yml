@@ -15,7 +15,7 @@
       - '--foreman-initial-organization "{{ satellite_organization }}"'
       - '--foreman-initial-admin-password "{{ satellite_password }}"'
       - '--no-colors'
-      - '--force'
+      - '-s'
       - '--enable-foreman-plugin-rh-cloud'
       - '--enable-foreman-plugin-remote-execution'
       - '--enable-foreman-plugin-openscap'
@@ -28,7 +28,7 @@
     - name: set platform/version specific variables
       include_vars: "{{ __vars_file }}"
       loop:
-        - "RedHat_{{ os_major }}.yml"
+        - "RedHat_{{ ansible_distribution_major_version }}.yml"
       vars:
         __vars_file: "{{ playbook_dir }}/../../../vars/{{ item }}"
       when: __vars_file is file
@@ -46,21 +46,23 @@
           sync: true
       when: force_register | bool
 
-    - name: enable red hat satellite required repos
-      community.general.rhsm_repository:
-        name: "{{ item }}"
-      loop: "{{ satellite_repos | flatten(levels=1) }}"
-      when: satellite_installer_scenario == 'satellite'
+        # - name: enable red hat satellite required repos
+        #   community.general.rhsm_repository:
+        #     name: "{{ item }}"
+        #   loop: "{{ satellite_repos | flatten(levels=1) }}"
+        #   when: satellite_installer_scenario == 'satellite'
 
     - name: reset satellite module stream
       command: >
-        dnf -y module reset
-        satellite:el{{ ansible_facts.distribution_major_version }} postgresql ruby
-      when: fresh_install | bool
+        dnf -y module reset satellite:el{{ ansible_facts.distribution_major_version }} postgresql ruby
+      when: 
+        - fresh_install | bool
+        - ansible_distribution_major_version == 8
 
     - name: enable satellite module stream
       command: >
         dnf -y module enable satellite:el{{ ansible_facts.distribution_major_version }}
+      when: ansible_distribution_major_version == 8
 
     - name: install satellite packages
       yum:

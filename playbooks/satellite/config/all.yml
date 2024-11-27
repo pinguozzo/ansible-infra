@@ -9,6 +9,16 @@
   collections:
     - redhat.satellite
 
+- name: Include disconnected.yml
+  ansible.builtin.import_playbook: disconnected.yml
+  tags: disconnected
+  when: disconnected | bool
+
+- name: Include storage.yml
+  ansible.builtin.import_playbook: storage.yml
+  tags: lvm
+  when: lvm_setup | bool
+
 - name: Include satellite-installer.yml
   ansible.builtin.import_playbook: satellite-installer.yml
   tags: installer
