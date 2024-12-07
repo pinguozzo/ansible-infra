@@ -4,15 +4,25 @@
   gather_facts: no
 
   vars_files:
-    - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
-    - "{{ playbook_dir }}/../../../vars/satellite-vars.yml"
+  #  - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
+  #  - "{{ playbook_dir }}/../../../vars/satellite-{{ env }}.yml"
 
   pre_tasks:
-  #  - name: get satellite_products list
-  #    set_fact:
-  #      list_products: "{{ list_products | default([]) + [item.name] | unique }}"
-  #    loop: "{{ satellite_products | selectattr('name', 'defined') | list }}"
-  #
+    - name: set platform/version/env specific variables
+      include_vars: "{{ __vars_file }}"
+      loop:
+        - "satellite-{{ hostvars[inventory_hostname].env }}.yml"
+      vars:
+        __vars_file: "{{ playbook_dir }}/../../../vars/satellite-{{ hostvars[inventory_hostname].env }}.yml"
+      when: __vars_file is file
+  
+    - name: set login/env specific variables
+      include_vars: "{{ __vars_file }}"
+      loop:
+        - "satellite-{{ hostvars[inventory_hostname].env }}.yml"
+      vars:
+        __vars_file: "{{ playbook_dir }}/../../../vaults/{{ hostvars[inventory_hostname].env }}-vault.yml"
+      when: __vars_file is file
 
   roles:
     - role: redhat.satellite.repositories

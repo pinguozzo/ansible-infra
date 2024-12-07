@@ -4,11 +4,30 @@ all:
     location: CH
     timezone: Europe\Zurich
   hosts:
+
+    satellite-upstream: 
+      ansible_host: sat-upstream.mgmt.zg.pinguozzo.com
+      env: upstream
+      infra: no
+
+    satellite-mgmt: 
+      ansible_host: satellite.mgmt.zg.pinguozzo.com
+      env: mgmt
+      infra: yes  
+
     localhost:
       ansible_connection: local
       ansible_python_interpreter: "{{ansible_playbook_python}}"
     jumper:
   children:
+    INFRA:
+      children:
+        mgmt:
+          hosts:
+            satellite-mgmt:
+        upstream:
+          hosts:
+            satellite-upstream:
     CH:
       children: 
         Test:
@@ -21,7 +40,3 @@ all:
         Prod:
           hosts:
         dc1:
-    IT:
-    SG:
-      children:
-        DevCloud:

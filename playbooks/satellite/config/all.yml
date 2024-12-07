@@ -4,10 +4,14 @@
 
   vars_files:
     - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
-    - "{{ playbook_dir }}/../../../vars/satellite-vars.yml"
+      #    - "{{ playbook_dir }}/../../../vars/satellite-vars.yml"
 
   collections:
     - redhat.satellite
+
+- name: Include init.yml
+  ansible.builtin.import_playbook: init.yml
+  tags: init,always
 
 - name: Include disconnected.yml
   ansible.builtin.import_playbook: disconnected.yml

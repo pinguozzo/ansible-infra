@@ -1,15 +1,9 @@
 ---
-- name: satellite ansible installer
+- name: run init 
   hosts: "{{ targeted_host| default('localhost') }}"
-  become: false
+  gather_facts: no
 
-  vars_files:
-    - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
-    - "{{ playbook_dir }}/../../../vars/satellite-vars.yml"
-
-  vars:
-
-  pre_tasks:
+  tasks:
     - name: set platform/version/env specific variables
       include_vars: "{{ __vars_file }}"
       loop:
@@ -26,11 +20,6 @@
         __vars_file: "{{ playbook_dir }}/../../../vaults/{{ hostvars[inventory_hostname].env }}-vault.yml"
       when: __vars_file is file
 
-
-  tasks:
-    - name: loop through the life cycle paths
-      include_tasks:
-        file: lfe.yml
-      loop: "{{ lifecycle_paths }}"
-      loop_control:
-        loop_var: lcp_item
+    - name: run if how in groups
+      debug: msg="host in group"
+      when: inventory_hostname in lookup('inventory_hostnames', 'mgmt:upstream')

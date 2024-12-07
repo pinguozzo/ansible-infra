@@ -22,12 +22,20 @@
         mountpoint: /media/sat6
 
   pre_tasks:
-    - name: set platform/version specific variables
+    - name: set platform/version/env specific variables
       include_vars: "{{ __vars_file }}"
       loop:
-        - "RedHat_{{ ansible_distribution_major_version }}.yml"
+        - "satellite-{{ hostvars[inventory_hostname].env }}.yml"
       vars:
-        __vars_file: "{{ playbook_dir }}/../../../vars/{{ item }}"
+        __vars_file: "{{ playbook_dir }}/../../../vars/satellite-{{ hostvars[inventory_hostname].env }}.yml"
+      when: __vars_file is file
+  
+    - name: set login/env specific variables
+      include_vars: "{{ __vars_file }}"
+      loop:
+        - "satellite-{{ hostvars[inventory_hostname].env }}.yml"
+      vars:
+        __vars_file: "{{ playbook_dir }}/../../../vaults/{{ hostvars[inventory_hostname].env }}-vault.yml"
       when: __vars_file is file
 
   tasks:

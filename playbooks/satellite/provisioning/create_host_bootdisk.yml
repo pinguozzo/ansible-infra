@@ -3,32 +3,61 @@
   hosts: "{{ targeted_host| default('localhost') }}"
   gather_facts: no
 
-  module_defaults:
-    redhat.satellite.host:
-      username: "{{ satellite_username }}"
-      password: "{{ satellite_password }}"
-      server_url: "{{ satellite_server_url }}"
-      location: "{{ satellite_location }}"
-      organization: "{{ satellite_organization }}"
-      validate_certs: no
-
-  vars_files:
-    - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
-
+    #  module_defaults:
+    #    redhat.satellite.host:
+    #      username: "{{ satellite_username }}"
+    #      password: "{{ satellite_password }}"
+    #      server_url: "{{ satellite_server_url }}"
+    #      location: "{{ satellite_location }}"
+    #      organization: "{{ satellite_organization }}"
+    #      validate_certs: no
 
   vars:
     notify_via_telegram: true
 
   pre_tasks:
-    - name: set platform/version specific variables
+    - name: set platform/version/env specific variables
+      include_vars: "{{ item }}"
+      loop:
+        - "{{ playbook_dir }}/../../../vars/RedHat_{{ os_major }}.yml"
+        - "{{ playbook_dir }}/../../../vars/satellite-{{ hostvars[inventory_hostname].env }}.yml"
+      when: item is file
+  
+    - name: set login/env specific variables
       include_vars: "{{ __vars_file }}"
       loop:
-        - "RedHat_{{ os_major }}.yml"
+        - "satellite-{{ hostvars[inventory_hostname].env }}.yml"
       vars:
-        __vars_file: "{{ playbook_dir }}/../../../vars/{{ item }}"
+        __vars_file: "{{ playbook_dir }}/../../../vaults/{{ hostvars[inventory_hostname].env }}-vault.yml"
       when: __vars_file is file
 
+        #- name: show data
+        #  debug:
+        #    msg: 
+        #      Hostgroup "{{ hg_name }}",
+        #      Compute_profile "{{ compute_profile }}",
+        #      Ptable "{{ ptable }}",
+        #      OS "{{ os }}",
+        #      Kickstart_repository "{{ ks }}",
+        #      Content_view "{{ cv }}",
+        #      Content_source "{{ capsule_server }}"
+
+    - name: show data
+      ansible.builtin.debug:
+        msg: >-
+          Hostgroup: "{{ hg_name }}",
+          Compute_profile: "{{ compute_profile }}",
+          Ptable: "{{ ptable }}",
+          OS: "{{ os }}",
+          Kickstart_repository: "{{ ks }}",
+          Content_view: "{{ cv }}",
+          Content_source: "{{ capsule_server }}"
+
   tasks:
+    - pause: 
+        prompt: Verify that the information is correct before proceeding.
+
+
     - name: create host(s)
       block:
         - name: create host(s) in vSphere
@@ -40,15 +69,14 @@
             organization: "{{ satellite_organization }}"
             validate_certs: "{{ satellite_validate_certs | default(omit) }}"
             name: "{{ vm_name | default(lookup('community.general.random_pet'), true) ~ (vm_name is defined and num_instances | int > 1 )|ternary('-' + item, '') ~ '.' ~ domain_name }}"
-              #name: "{{ vm_name | default(lookup('community.general.random_pet'), true) ~ (vm_name is defined and num_instances | int > 1 )|ternary('-' + item, '') ~ '.' ~ domain_name }}"
             state: present
             build: true
             hostgroup: "{{ hg_name }}"
             compute_resource: "VMware"
-            compute_profile: "{{ compute_profile|default('2-Medium Generic') }}"
+            compute_profile: "{{ compute_profile | default('2-Medium Generic') }}"
             compute_attributes:
               start: "1"
-            ptable: 'Kickstart default'
+            ptable: "{{ ptable }}" 
             provision_method: bootdisk
             operatingsystem: "{{ os }}"
             kickstart_repository: "{{ ks }}"
