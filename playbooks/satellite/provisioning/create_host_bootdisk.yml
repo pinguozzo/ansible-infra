@@ -3,15 +3,6 @@
   hosts: "{{ targeted_host| default('localhost') }}"
   gather_facts: no
 
-    #  module_defaults:
-    #    redhat.satellite.host:
-    #      username: "{{ satellite_username }}"
-    #      password: "{{ satellite_password }}"
-    #      server_url: "{{ satellite_server_url }}"
-    #      location: "{{ satellite_location }}"
-    #      organization: "{{ satellite_organization }}"
-    #      validate_certs: no
-
   vars:
     notify_via_telegram: true
 
@@ -31,20 +22,9 @@
         __vars_file: "{{ playbook_dir }}/../../../vaults/{{ hostvars[inventory_hostname].env }}-vault.yml"
       when: __vars_file is file
 
-        #- name: show data
-        #  debug:
-        #    msg: 
-        #      Hostgroup "{{ hg_name }}",
-        #      Compute_profile "{{ compute_profile }}",
-        #      Ptable "{{ ptable }}",
-        #      OS "{{ os }}",
-        #      Kickstart_repository "{{ ks }}",
-        #      Content_view "{{ cv }}",
-        #      Content_source "{{ capsule_server }}"
-
-    - name: show data
+    - name: show info
       ansible.builtin.debug:
-        msg: >-
+        msg: |- 
           Hostgroup: "{{ hg_name }}",
           Compute_profile: "{{ compute_profile }}",
           Ptable: "{{ ptable }}",
@@ -54,9 +34,9 @@
           Content_source: "{{ capsule_server }}"
 
   tasks:
-    - pause: 
-        prompt: Verify that the information is correct before proceeding.
-
+    - name: check defailt before proceeding 
+      pause: 
+        seconds: 10
 
     - name: create host(s)
       block:
