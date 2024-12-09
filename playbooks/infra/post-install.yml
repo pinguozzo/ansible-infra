@@ -4,7 +4,7 @@
   gather_facts: true
 
   vars_files:
-    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+    - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
 
   tasks:
     - name: add targeted_host to post_install group
@@ -28,7 +28,7 @@
   become: true  
 
   vars_files:
-    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+    - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
 
   pre_tasks:
     - name: set platform/version specific variables
@@ -40,7 +40,7 @@
           {{ ansible_facts['distribution'] ~ '_' ~
           ansible_facts['distribution_major_version'] }}.yml
       vars:
-        __vars_file: "{{ playbook_dir }}/../../vars/{{ item }}"
+        __vars_file: "{{ playbook_dir }}/../../../vars/{{ item }}"
       when: __vars_file is file
 
   tasks:
