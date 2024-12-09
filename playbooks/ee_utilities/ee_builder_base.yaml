@@ -6,7 +6,7 @@
     - infra.ee_utilities
 
   vars_files:
-    - "{{ playbook_dir }}/../../vaults/infra-vault.yml"
+    - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
 
   vars:
     ee_builder_dir_clean: true
