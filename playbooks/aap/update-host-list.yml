@@ -7,7 +7,7 @@
     - infra.controller
 
   vars_files:
-    - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
+    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
 
   vars:
     json_query_name: "json.results[*].name"
