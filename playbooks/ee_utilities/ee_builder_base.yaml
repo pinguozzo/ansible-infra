@@ -1,9 +1,8 @@
 ---
 - name: Playbook to create custom EE
+- name: Create EE 
   hosts: "{{ targeted_host | default('localhost') }}"
   gather_facts: false
-  collections:
-    - infra.ee_utilities
 
   vars_files:
     - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
@@ -13,7 +12,7 @@
     ah_host: "{{ vaulted_ah_host }}"
     ah_token: "{{ vaulted_ah_token }}"
     ee_registry_dest: "{{ vaulted_ee_registry_dest }}"
-    ee_base_registry_username:  "{{ vaulted_ee_base_registry_username }}"
+    ee_base_registry_username: "{{ vaulted_ee_base_registry_username }}"
     ee_base_registry_password: "{{ vaulted_ee_base_registry_password }}"
     ee_base_image: "{{ vaulted_ee_base_image }}"
     ee_builder_image: "{{ vaulted_ee_builder_image }}"
@@ -26,18 +25,22 @@
             - libcurl-devel [platform:rpm]
             - python3-devel [platform:rpm]
             - python3-requests [platform:rpm]
+            - openssl [platform:rpm]
           python:
             - awxkit  # For import and export modules
             - petname
             - xmltodict
             - jmespath
             - requests
+            - lxml
+            - dnspython
           galaxy:
             collections:
               - name: ansible.controller
               - name: ansible.posix
               - name: awx.awx
               - name: community.general
+              - name: community.vmware
               - name: containers.podman
               - name: infra.controller_configuration
               - name: infra.ah_configuration
