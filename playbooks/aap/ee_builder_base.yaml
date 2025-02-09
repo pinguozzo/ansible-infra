@@ -1,28 +1,28 @@
 ---
-- name: add builder host to in-memory inventory
-  hosts: localhost
-  gather_facts: yes
-
-  vars_files:
-    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
-
-  tasks:
-    - name: add targeted_host to group
-      ansible.builtin.add_host:
-        hostname: "{{ builder_host }}"
-        groups: builder
- 
-    - name: show builder host
-      debug: var=groups['builder']
-
-    - name: wait for vm to become reachable
-      ansible.builtin.wait_for_connection:
-        timeout: 900
-      delegate_to: "{{ item }}"
-      loop: "{{ groups['builder'] }}"
+#- name: add builder host to in-memory inventory
+#  hosts: localhost
+#  gather_facts: yes
+#
+#  vars_files:
+#    - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
+#
+#  tasks:
+#    - name: add targeted_host to group
+#      ansible.builtin.add_host:
+#        hostname: "{{ builder_host }}"
+#        groups: builder
+# 
+#    - name: show builder host
+#      debug: var=groups['builder']
+#
+#    - name: wait for vm to become reachable
+#      ansible.builtin.wait_for_connection:
+#        timeout: 900
+#      delegate_to: "{{ item }}"
+#      loop: "{{ groups['builder'] }}"
 
 - name: create custom EE
-  hosts: builder
+  hosts: localhost
   gather_facts: false
   collections:
     - infra.ee_utilities
