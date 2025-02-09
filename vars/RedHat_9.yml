@@ -1,6 +1,6 @@
 ---
 rhc_auth:
-  hostgroup: "ESX RHEL9 NET_apps"
+  hostgroup: "ESX/ESX RHEL9 NET_apps"
   activation_keys:
     keys:
       - "ak-rhel9-vmware"
