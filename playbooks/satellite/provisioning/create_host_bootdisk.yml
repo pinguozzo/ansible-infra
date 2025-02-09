@@ -36,9 +36,6 @@
           Content_source: "{{ capsule_server }}"
 
   tasks:
-    - name: check defailt before proceeding 
-      pause: 
-        seconds: 10
 
     - name: create host(s)
       block:
