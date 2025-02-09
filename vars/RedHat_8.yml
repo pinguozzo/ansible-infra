@@ -5,7 +5,7 @@ rhc_auth:
     keys:
       - "ak-rhel8-vmware"
 
-hg_name: "{{ hg | default('ESX RHEL8 NET_apps') }}"
+hg_name: "{{ hg | default('ESX/ESX RHEL8 NET_apps') }}"
 os: "{{ operatingsystem | default('RedHat 8.0') }}"
 ks: "Red Hat Enterprise Linux 8 for x86_64 - BaseOS Kickstart 8.0"
 ptable: "Kickstart default pinguozzo"

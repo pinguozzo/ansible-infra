@@ -5,7 +5,7 @@ rhc_auth:
     keys:
       - "ak-rhel9-vmware"
 
-hg_name: "{{ hg | default('ESX RHEL9 NET_apps') }}"
+hg_name: "{{ hg | default('ESX/ESX RHEL9 NET_apps') }}"
 os: "{{ operatingsystem | default('RedHat 9.0') }}"
 compute_profile: "VMware Medium RHEL9 ESX NET_apps"
 ks: "Red Hat Enterprise Linux 9 for x86_64 - BaseOS Kickstart 9.0"
