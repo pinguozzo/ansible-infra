@@ -18,7 +18,7 @@
       block:
         - name: determine hosts that are up
           wait_for_connection:
-            timeout: 5
+            timeout: 2
           vars:
             ansible_connection: ssh
         - name: add devices with connectivity to the "running_hosts" group
