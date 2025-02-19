@@ -30,7 +30,7 @@
 
 - name: update cloudflare entries
   hosts: running_hosts
-  gather_facts: no
+  gather_facts: yes
 
   vars_files:
     - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
