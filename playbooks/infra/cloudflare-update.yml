@@ -30,6 +30,7 @@
 
 - name: update cloudflare entries
   hosts: running_hosts
+  serial: true 
   gather_facts: yes
 
   vars_files:
@@ -43,16 +44,16 @@
   tasks:
     - name: get updates
       block:
-        - name: show data
-          debug: 
-            msg: "update {{ item.0.dns_name }} via{{':'}} {{ item.1.name }}" 
-          with_subelements:
-            - "{{ ddns | selectattr('target', 'defined') | list }}"
-            - target
-          when:
-            - item.0.dns_name in item.1.name
-            - inventory_hostname ~ item.1.name
-          run_once: True
+        #  - name: show data
+        #    debug: 
+        #      msg: "update {{ item.0.dns_name }} via{{':'}} {{ item.1.name }}" 
+        #    with_subelements:
+        #      - "{{ ddns | selectattr('target', 'defined') | list }}"
+        #      - target
+        #    when:
+        #      - item.0.dns_name in item.1.name
+        #      - inventory_hostname ~ item.1.name
+        #    run_once: True
 
         - name: get public ip
           community.general.ipify_facts:
