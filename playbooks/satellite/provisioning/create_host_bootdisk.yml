@@ -86,7 +86,7 @@
             datacenter: DC1
             name: "{{ item }}"
             dest_folder: "/DC1/vm/KNA/RHEL{{ os_major }}"
-            validate_certs: false 
+            validate_certs: false
           loop: "{{ vms }}"
           delegate_to: localhost
 
