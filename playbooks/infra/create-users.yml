@@ -9,6 +9,7 @@
       ansible.builtin.add_host:
         hostname: "{{ item }}"
         groups: init
+        ansible_ssh_host: '{{ vm_ip }}'
       loop: 
         - "{{ targeted_host }}"
 

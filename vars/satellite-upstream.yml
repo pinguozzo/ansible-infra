@@ -141,8 +141,16 @@ satellite_products:
         releasever: 9
       - name: Red Hat Enterprise Linux 9 for x86_64 - BaseOS (RPMs)
         releasever: 9
+      - name: Red Hat Enterprise Linux 9 for x86_64 - BaseOS (RPMs)
+        releasever: 9.4
+      - name: Red Hat Enterprise Linux 9 for x86_64 - BaseOS (RPMs)
+        releasever: 9.5
       - name: Red Hat Enterprise Linux 9 for x86_64 - AppStream (RPMs)
         releasever: 9
+      - name: Red Hat Enterprise Linux 9 for x86_64 - AppStream (RPMs)
+        releasever: 9.4
+      - name: Red Hat Enterprise Linux 9 for x86_64 - AppStream (RPMs)
+        releasever: 9.5
       - name: Red Hat Enterprise Linux 9 for x86_64 - BaseOS (Kickstart)
         releasever: 9.0
         download_policy: immediate

@@ -63,7 +63,9 @@ satellite_content_views:
       - { name: 'Red Hat Enterprise Linux 9 for x86_64 - AppStream Kickstart 9.0', product: 'Red Hat Enterprise Linux for x86_64' }
       - { name: 'Red Hat Enterprise Linux 9 for x86_64 - BaseOS Kickstart 9.0', product: 'Red Hat Enterprise Linux for x86_64' }
       - { name: 'Red Hat Enterprise Linux 9 for x86_64 - AppStream RPMs 9', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 9 for x86_64 - AppStream RPMs 9.5', product: 'Red Hat Enterprise Linux for x86_64' }
       - { name: 'Red Hat Enterprise Linux 9 for x86_64 - BaseOS RPMs 9', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 9 for x86_64 - BaseOS RPMs 9.5', product: 'Red Hat Enterprise Linux for x86_64' }
       - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream Kickstart 8.0', product: 'Red Hat Enterprise Linux for x86_64' }
       - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS Kickstart 8.0', product: 'Red Hat Enterprise Linux for x86_64' }
       - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream RPMs 8', product: 'Red Hat Enterprise Linux for x86_64' }
@@ -83,10 +85,11 @@ satellite_content_views:
     description: "RHEL 9 SOE Extra Content"
     repositories:
       - { name: 'Red Hat Enterprise Linux 9 for x86_64 - Supplementary RPMs 9', product: 'Red Hat Enterprise Linux for x86_64' }
-      - { name: 'Red Hat Enterprise Linux 9 for x86_64 - High Availability RPMs 9', product: 'Red Hat Enterprise Linux High Availability for x86_64' }
       - { name: 'Red Hat Ansible Automation Platform 2.4 for RHEL 9 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
       - { name: 'Red Hat Ansible Automation Platform 2.5 for RHEL 9 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
       - { name: 'Red Hat CodeReady Linux Builder for RHEL 9 x86_64 RPMs 9', product: 'Red Hat CodeReady Linux Builder for x86_64' }
+      - { name: 'Red Hat Ceph Storage Tools 4 for RHEL 9 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Ceph Storage Tools 5 for RHEL 9 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
       - { name: 'Red Hat Ceph Storage Tools 6 for RHEL 9 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
       - { name: 'Red Hat Ceph Storage Tools 7 for RHEL 9 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
 
@@ -105,7 +108,6 @@ satellite_content_views:
     description: "RHEL 8 SOE Extra Content"
     repositories:
       - { name: 'Red Hat Enterprise Linux 8 for x86_64 - Supplementary RPMs 8', product: 'Red Hat Enterprise Linux for x86_64' }
-      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - High Availability RPMs 8', product: 'Red Hat Enterprise Linux High Availability for x86_64' }
       - { name: 'Red Hat Ansible Automation Platform 2.4 for RHEL 8 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
       - { name: 'Red Hat Ansible Automation Platform 2.5 for RHEL 8 x86_64 RPMs', product: 'Red Hat Ansible Automation Platform' }
       - { name: 'JBoss Enterprise Application Platform 7.4 RHEL 8 RPMs', product: 'JBoss Enterprise Application Platform' }
@@ -171,6 +173,13 @@ satellite_content_credentials:
     content: "{{ lookup('url', 'http://mirror.init7.net/fedora/epel/RPM-GPG-KEY-EPEL-9', split_lines=False) }}"
 
 satellite_products:
+  - name: Red Hat Enterprise Linux Server - Extended Life Cycle Support
+    repository_sets:
+      - name: Red Hat Enterprise Linux 7 Server - Extended Life Cycle Support (RPMs)
+        basearch: x86_64
+      - name: Red Hat Enterprise Linux 7 Server - Extended Life Cycle Support - Optional (RPMs)
+        basearch: x86_64
+
   - name: JBoss Enterprise Application Platform
     repository_sets:
       - name: JBoss Enterprise Application Platform 7.4 (RHEL 8) (RPMs)
@@ -191,6 +200,7 @@ satellite_products:
       - name: Red Hat Satellite Maintenance 6.16 for RHEL 8 x86_64 (RPMs)
       - name: Red Hat Satellite Maintenance 6.16 for RHEL 9 x86_64 (RPMs)
       - name: Red Hat Ceph Storage Tools 4 for RHEL 8 x86_64 (RPMs)
+      - name: Red Hat Ceph Storage Tools 4 for RHEL 9 x86_64 (RPMs)
       - name: Red Hat Ceph Storage Tools 5 for RHEL 9 x86_64 (RPMs)
       - name: Red Hat Ceph Storage Tools 6 for RHEL 9 x86_64 (RPMs)
       - name: Red Hat Ceph Storage Tools 7 for RHEL 9 x86_64 (RPMs)
@@ -232,8 +242,16 @@ satellite_products:
         releasever: 9
       - name: Red Hat Enterprise Linux 9 for x86_64 - BaseOS (RPMs)
         releasever: 9
+      - name: Red Hat Enterprise Linux 9 for x86_64 - BaseOS (RPMs)
+        releasever: 9.4
+      - name: Red Hat Enterprise Linux 9 for x86_64 - BaseOS (RPMs)
+        releasever: 9.5
       - name: Red Hat Enterprise Linux 9 for x86_64 - AppStream (RPMs)
         releasever: 9
+      - name: Red Hat Enterprise Linux 9 for x86_64 - AppStream (RPMs)
+        releasever: 9.4
+      - name: Red Hat Enterprise Linux 9 for x86_64 - AppStream (RPMs)
+        releasever: 9.5
       - name: Red Hat Enterprise Linux 9 for x86_64 - BaseOS (Kickstart)
         releasever: 9.0
       - name: Red Hat Enterprise Linux 9 for x86_64 - AppStream (Kickstart)
