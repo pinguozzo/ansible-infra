@@ -3,10 +3,6 @@
   hosts: "{{ targeted_host| default('localhost') }}"
   become: true
 
-  vars_files:
-    - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
-    - "{{ playbook_dir }}/../../../vars/satellite-vars.yml"
-
   vars:
     satellite_installer_scenario: satellite
     satellite_firewall_zone: public

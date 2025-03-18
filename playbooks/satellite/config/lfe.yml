@@ -1,5 +1,5 @@
 ---
-- name: "add lifecycle environment(s)"
+- name: "Add lifecycle environment(s)"
   redhat.satellite.lifecycle_environment:
     server_url: "{{ satellite_server_url }}"
     username: "{{ satellite_username }}"
@@ -8,7 +8,7 @@
     validate_certs: false
     name: "{{ item.name | default(item.label) }}"
     label: "{{ item.label }}"
-    prior: "{{ item.prior | default((lce_idx > 0) | ternary(lcp_item[lce_idx-1]['label'], 'Library')) }}"
+    prior: "{{ item.prior | default((lce_idx > 0) | ternary(lcp_item[lce_idx - 1]['label'], 'Library')) }}"
     description: "{{ item.desc | default(omit) }}"
     state: "{{ item.state | default(omit) }}"
   loop: "{{ lcp_item }}"

@@ -14,9 +14,10 @@
         server_url: "{{ satellite_server_url }}"
         validate_certs: "{{ satellite_validate_certs }}"
         organization: "{{ satellite_organization }}"
-        search: 'label = "jb-eap-7.4-for-rhel-8-x86_64-rpms"'
-        #search: 'label = "satellite-capsule-6.14-for-rhel-8-x86_64-rpms"'
-        #search: 'label = "rhel-7-server-ansible-2-rpm"'
+        search: 'label = "rhel-9-for-x86_64-appstream-rpms"'
+        # search: 'label = "jb-eap-7.4-for-rhel-8-x86_64-rpms"'
+        # search: 'label = "satellite-capsule-6.14-for-rhel-8-x86_64-rpms"'
+        # search: 'label = "rhel-7-server-ansible-2-rpm"'
         # search: 'label = "codeready-builder-for-rhel-8-x86_64-rpms"'
         # search: 'label = "ansible-2-for-rhel-9-x86_64-rpms"'
       register: output

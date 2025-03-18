@@ -2,13 +2,13 @@
 satellite_compute_profiles:
   - name: "VMware Medium RHEL9 ESX NET_apps"
     compute_attributes:
-      - compute_resource: "{{ lookup('ansible.builtin.vars', 'satellite_compute_resource', default='')}}"
+      - compute_resource: "{{ lookup('ansible.builtin.vars', 'satellite_compute_resource', default='') }}"
         vm_attrs:
-          cluster: "{{ lookup('ansible.builtin.vars', 'vcenter_cluster', default='')}}"
+          cluster: "{{ lookup('ansible.builtin.vars', 'vcenter_cluster', default='') }}"
             #path: /Datacenter/vm/
           path: /Datacenters/DC1/vm/
           scsi_controllers:
-          - type: ParaVirtualSCSIController  
+            - type: ParaVirtualSCSIController
           memoryHotAddEnabled: true
           cpuHotAddEnabled: true
           cpus: 2
@@ -18,7 +18,7 @@ satellite_compute_profiles:
           guest_id: "rhel9_64Guest"
           volumes_attributes:
             0:
-              datastore: "{{ lookup('ansible.builtin.vars', 'vcenter_datastore', default='')}}"
+              datastore: "{{ lookup('ansible.builtin.vars', 'vcenter_datastore', default='') }}"
               size_gb: 30
           interfaces_attributes:
             0:
@@ -27,13 +27,13 @@ satellite_compute_profiles:
 
   - name: "VMware Medium RHEL8 ESX NET_apps"
     compute_attributes:
-      - compute_resource: "{{ lookup('ansible.builtin.vars', 'satellite_compute_resource', default='')}}"
+      - compute_resource: "{{ lookup('ansible.builtin.vars', 'satellite_compute_resource', default='') }}"
         vm_attrs:
-          cluster: "{{ lookup('ansible.builtin.vars', 'vcenter_cluster', default='')}}"
+          cluster: "{{ lookup('ansible.builtin.vars', 'vcenter_cluster', default='') }}"
             #path: /Datacenter/vm/
           path: /Datacenters/DC1/vm/
           scsi_controllers:
-          - type: ParaVirtualSCSIController  
+            - type: ParaVirtualSCSIController
           memoryHotAddEnabled: true
           cpuHotAddEnabled: true
           cpus: 2
@@ -43,10 +43,9 @@ satellite_compute_profiles:
           guest_id: "rhel8_64Guest"
           volumes_attributes:
             0:
-              datastore: "{{ lookup('ansible.builtin.vars', 'vcenter_datastore', default='')}}"
+              datastore: "{{ lookup('ansible.builtin.vars', 'vcenter_datastore', default='') }}"
               size_gb: 30
           interfaces_attributes:
             0:
               type: "VirtualVmxnet3"
               network: "VLAN 5"
-

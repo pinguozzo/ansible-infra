@@ -1,24 +1,17 @@
 ---
-- name: satellite ansible installer
+- name: Satellite ansible installer
   hosts: "{{ targeted_host| default('localhost') }}"
   become: false
 
-  vars_files:
-    - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
-    - "{{ playbook_dir }}/../../../vars/satellite-vars.yml"
-
-  vars:
-
   pre_tasks:
-    - name: set platform/version/env specific variables
+    - name: Set platform/version/env specific variables
       include_vars: "{{ __vars_file }}"
       loop:
         - "satellite-{{ hostvars[inventory_hostname].env }}.yml"
       vars:
         __vars_file: "{{ playbook_dir }}/../../../vars/satellite-{{ hostvars[inventory_hostname].env }}.yml"
       when: __vars_file is file
-  
-    - name: set login/env specific variables
+    - name: Set login/env specific variables
       include_vars: "{{ __vars_file }}"
       loop:
         - "satellite-{{ hostvars[inventory_hostname].env }}.yml"
@@ -28,7 +21,7 @@
 
 
   tasks:
-    - name: loop through the life cycle paths
+    - name: Loop through the life cycle paths
       include_tasks:
         file: lfe.yml
       loop: "{{ lifecycle_paths }}"

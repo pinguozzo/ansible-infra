@@ -1,38 +1,37 @@
 ---
 # tasks file for pinguozzo.ovirt-rename-disks
 
-- block:
-  - name: include vars
-    include_vars: "{{ item }}.yml"
-    with_items:
-      - engine_vars
-  
-  - name: Login to oVirt
-    ovirt_auth:
-      url: "{{ engine_url | default(lookup('env','OVIRT_URL')) | default(omit) }}"
-      hostname: "{{ engine_fqdn | default(lookup('env','OVIRT_HOSTNAME')) | default(omit) }}"
-      username: "{{ engine_user | default(lookup('env','OVIRT_USERNAME')) | default(omit) }}"
-      password: "{{ engine_password | default(lookup('env','OVIRT_PASSWORD')) | default(omit) }}"
-      ca_file: "{{ engine_cafile | default(lookup('env','OVIRT_CAFILE')) | default(omit) }}"
-      insecure: "{{ engine_insecure | default(true) }}"
-    when: ovirt_auth is undefined or not ovirt_auth
-    register: loggedin
+- name: Include vars
+  delegate_to: 127.0.0.1
+  when: not loggedin.skipped | default(false)
+  block:
+    - name: Include vars
+      include_vars: "{{ item }}.yml"
+      with_items:
+        - engine_vars
+    - name: Login to oVirt
+      ovirt.ovirt.ovirt_auth:
+        url: "{{ engine_url | default(lookup('env', 'OVIRT_URL')) | default(omit) }}"
+        hostname: "{{ engine_fqdn | default(lookup('env', 'OVIRT_HOSTNAME')) | default(omit) }}"
+        username: "{{ engine_user | default(lookup('env', 'OVIRT_USERNAME')) | default(omit) }}"
+        password: "{{ engine_password | default(lookup('env', 'OVIRT_PASSWORD')) | default(omit) }}"
+        ca_file: "{{ engine_cafile | default(lookup('env', 'OVIRT_CAFILE')) | default(omit) }}"
+        insecure: "{{ engine_insecure | default(true) }}"
+      when: ovirt_auth is undefined or not ovirt_auth
+      register: loggedin
 
-  - name: include tasks
-    include_tasks: "{{ item }}.yml"
-    with_items:  
-      - ovirt_rename_disks
+    - name: Include tasks
+      include_tasks: "{{ item }}.yml"
+      with_items:
+        - ovirt_rename_disks
 
   rescue:
-      - name: Print when errors
-        ansible.builtin.debug:
-          var: vm_info 
+    - name: Print when errors
+      ansible.builtin.debug:
+        var: vm_info
 
   always:
     - name: Logout from oVirt
-      ovirt_auth:
+      ovirt.ovirt.ovirt_auth:
         state: absent
         ovirt_auth: "{{ ovirt_auth }}"
-      when: not loggedin.skipped | default(false)
-
-  delegate_to: 127.0.0.1

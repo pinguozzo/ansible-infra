@@ -1,7 +1,7 @@
 ---
-- name: configure 3rdparty products 
+- name: Configure 3rdparty products
   hosts: "{{ targeted_host| default('localhost') }}"
-  gather_facts: no
+  gather_facts: false
 
   pre_tasks:
     - name: Create Content Crendentials
@@ -40,22 +40,22 @@
         validate_certs: "{{ satellite_validate_certs | default(omit) }}"
         name: "{{ item.name }}"
         content_type: "yum"
-        url: "{{ item.url|default(omit) }}"
-        http_proxy_policy: "{{ item.http_proxy_policy|default(omit) }}"
-        http_proxy: "{{ item.http_proxy|default(omit) }}"
-        gpg_key: "{{ item.gpg_key|default(omit) }}"
+        url: "{{ item.url | default(omit) }}"
+        http_proxy_policy: "{{ item.http_proxy_policy | default(omit) }}"
+        http_proxy: "{{ item.http_proxy | default(omit) }}"
+        gpg_key: "{{ item.gpg_key | default(omit) }}"
         product: "{{ item.product }}"
-        mirror_on_sync: "{{ item.mirror_on_sync|default(false) }}"
-        os_versions: "{{ item.os_version|default(omit) }}"
-        unprotected: "{{ item.unprotected|default(omit) }}"
-        download_policy: "{{ item.download_policy|default(omit) }}"
+        mirror_on_sync: "{{ item.mirror_on_sync | default(false) }}"
+        os_versions: "{{ item.os_version | default(omit) }}"
+        unprotected: "{{ item.unprotected | default(omit) }}"
+        download_policy: "{{ item.download_policy | default(omit) }}"
       loop: "{{ additional_repos }}"
       tags: 3rd_party_repos
 
     - name: "Sync 3rd party repository"
       when: sync_repos | bool
       block:
-        - name: sync 3rd repositories
+        - name: Sync 3rd repositories
           redhat.satellite.repository_sync:
             product: "{{ item }}"
             server_url: "{{ satellite_server_url }}"
@@ -69,7 +69,7 @@
           poll: 0
           register: async_results_3rd
 
-        - name: check async status for sync repository
+        - name: Check async status for sync repository
           ansible.builtin.async_status:
             jid: "{{ item.ansible_job_id }}"
           register: async_poll_results
@@ -77,13 +77,13 @@
           changed_when: async_poll_results.rc is defined and async_poll_results.rc == 2
           failed_when:
             - (not async_poll_results.finished) or (async_poll_results.rc is defined and async_poll_results.rc not in [0, 2])
-          retries: "{{ (( satellite_timeout | int) / 5) | round | int }}"
+          retries: "{{ ((satellite_timeout | int) / 5) | round | int }}"
           delay: 5
           when:
             - not ansible_check_mode
           with_items: "{{ async_results_3rd | community.general.json_query('results[*]')}}"
 
-        - name: clean up async file
+        - name: Clean up async file
           ansible.builtin.async_status:
             jid: '{{ item.ansible_job_id }}'
             mode: cleanup

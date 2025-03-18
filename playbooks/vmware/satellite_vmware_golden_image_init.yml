@@ -8,6 +8,8 @@
     - "{{ playbook_dir }}/../../vars/parameters.yml"
 
   vars:
+    ip_mode: "{{ ( ip_mode == 'dhcp') | ternary('dhcp', 'static') }}"
+    os_major: rhel9
 
 - name: Include satellite_vmware_golden_image_upload-vmdk.yml
   import_playbook: satellite_vmware_golden_image_upload-vmdk.yml 

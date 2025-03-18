@@ -15,7 +15,7 @@
         - "{{ playbook_dir }}/../../../vars/RedHat_{{ os_major | default('9') }}.yml"
         - "{{ playbook_dir }}/../../../vars/satellite-{{ hostvars[inventory_hostname].env | default('mgmt')}}.yml"
       when: item is file
-  
+
     - name: set login/env specific variables
       include_vars: "{{ __vars_file }}"
       loop:
@@ -26,16 +26,16 @@
 
     - name: show info
       ansible.builtin.debug:
-        msg: |- 
-          Hostgroup: "{{ hg_name }}",
-          Hostgroup Full: "{{ hg_name_full }}",
+        msg: |-
+          Hostgroup: "{{ hg_name_full }}",
           Network: "{{ net }}",
-          Compute_profile: "{{ compute_profile }}",
           Ptable: "{{ ptable }}",
           OS: "{{ os }}",
           Kickstart_repository: "{{ ks }}",
           Content_view: "{{ cv }}",
           Content_source: "{{ capsule_server }}"
+
+    - pause:
 
   tasks:
 
@@ -46,19 +46,18 @@
             username: "{{ satellite_username | default(omit) }}"
             password: "{{ satellite_password | default(omit) }}"
             server_url: "{{ satellite_server_url | default(omit) }}"
-            location: "{{ satellite_location }}"  
+            location: "{{ satellite_location }}"
             organization: "{{ satellite_organization }}"
             validate_certs: "{{ satellite_validate_certs | default(omit) }}"
             name: "{{ vm_name | default(lookup('community.general.random_pet'), true) ~ (vm_name is defined and num_instances | int > 1 )|ternary('-' + item, '') ~ '.' ~ domain_name }}"
             state: present
             build: true
             hostgroup: "{{ hg_name_full }}"
-              #hostgroup: "{{ hg_name }}"
             compute_resource: "VMware"
             compute_profile: "{{ compute_profile | default('2-Medium Generic') }}"
             compute_attributes:
               start: "1"
-            ptable: "{{ ptable }}" 
+            ptable: "{{ ptable }}"
             provision_method: bootdisk
             operatingsystem: "{{ os }}"
             kickstart_repository: "{{ ks }}"

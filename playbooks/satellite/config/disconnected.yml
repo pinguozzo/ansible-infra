@@ -1,12 +1,8 @@
 ---
-- name: satellite disconnected pre run 
+- name: Satellite disconnected pre run
   hosts: "{{ targeted_host| default('localhost') }}"
   become: true
-  gather_facts: no
-
-  vars_files:
-    - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
-    - "{{ playbook_dir }}/../../../vars/satellite-vars.yml"
+  gather_facts: false
 
   vars:
     ansible_remote_tmp: /tmp
@@ -22,15 +18,14 @@
         mountpoint: /media/sat6
 
   pre_tasks:
-    - name: set platform/version/env specific variables
+    - name: Set platform/version/env specific variables
       include_vars: "{{ __vars_file }}"
       loop:
         - "satellite-{{ hostvars[inventory_hostname].env }}.yml"
       vars:
         __vars_file: "{{ playbook_dir }}/../../../vars/satellite-{{ hostvars[inventory_hostname].env }}.yml"
       when: __vars_file is file
-  
-    - name: set login/env specific variables
+    - name: Set login/env specific variables
       include_vars: "{{ __vars_file }}"
       loop:
         - "satellite-{{ hostvars[inventory_hostname].env }}.yml"
@@ -39,7 +34,7 @@
       when: __vars_file is file
 
   tasks:
-    - name: ensure directories are created
+    - name: Ensure directories are created
       ansible.builtin.file:
         path: "{{ item.mountpoint }}"
         state: directory
@@ -68,7 +63,7 @@
       loop: "{{ isos }}"
 
     - name: Run install_packages
-      ansible.builtin.shell: /media/sat6/install_packages 
+      ansible.builtin.shell: /media/sat6/install_packages
       async: "{{ ansible_check_mode | ternary(0, 1800) }}"  # avoid connection timeouts
       changed_when: false  # async always returns changed, check in async_status instead
       poll: 0
@@ -79,7 +74,7 @@
         jid: "{{ install_packages.ansible_job_id }}"
       register: install_packages_results
       until: install_packages_results.finished
-      retries: "{{ (( 1800 | int) / 5) | round | int }}"
+      retries: "{{ ((1800 | int) / 5) | round | int }}"
       changed_when: install_packages_results.rc is defined and install_packages_results.rc == 2
       failed_when:
         - (not install_packages_results.finished) or (install_packages_results.rc is defined and install_packages_results.rc not in [0, 2])
