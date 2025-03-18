@@ -3,10 +3,6 @@
   hosts: "{{ targeted_host| default('localhost') }}"
   become: true
 
-  vars_files:
-    - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
-    - "{{ playbook_dir }}/../../../vars/satellite-vars.yml"
-
   vars:
     satellite_installer_scenario: satellite
     satellite_firewall_zone: public
@@ -60,19 +56,19 @@
         #   loop: "{{ satellite_repos | flatten(levels=1) }}"
         #   when: satellite_installer_scenario == 'satellite'
 
-    - name: reset satellite module stream
+    - name: Reset satellite module stream
       command: >
         dnf -y module reset satellite:el{{ ansible_facts.distribution_major_version }} postgresql ruby
       when: 
         - fresh_install | bool
         - ansible_distribution_major_version == 8
 
-    - name: enable satellite module stream
+    - name: Enable satellite module stream
       command: >
         dnf -y module enable satellite:el{{ ansible_facts.distribution_major_version }}
       when: ansible_distribution_major_version == 8
 
-    - name: install satellite packages
+    - name: Install satellite packages
       yum:
         name:
           - firewalld
@@ -84,17 +80,14 @@
           - sos
           - git
         state: present
- 
     - name: enable firewalld service
       service:
         name: firewalld
         enabled: true
- 
     - name: start firewalld service
       service:
         name: firewalld
         state: started
- 
     - name: configure Satellite firewall
       ansible.posix.firewalld:
         zone: "{{ satellite_firewall_zone }}"
@@ -102,6 +95,5 @@
         permanent: true
         immediate: true
         state: enabled
-      
   roles:
     - role: redhat.satellite_operations.installer

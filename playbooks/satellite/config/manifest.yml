@@ -9,10 +9,6 @@
       username: "{{ satellite_rhsm_username }}"
       password: "{{ satellite_rhsm_password }}"
 
-  vars_files:
-    - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
-    - "{{ playbook_dir }}/../../../vars/satellite-vars.yml"
-
   vars:
     manifest_name: "{{ satellite_server }}"
     pool_id: 8a85f99c7d76f2fd017d96c343f40655

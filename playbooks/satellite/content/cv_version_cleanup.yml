@@ -1,8 +1,6 @@
 - name: Clean old and unused cvs and ccvs
   hosts: "{{ targeted_host| default('localhost') }}"
 
-  vars_files:
-
   roles:
     - role: redhat.satellite.content_view_version_cleanup
       vars:

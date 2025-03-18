@@ -1,0 +1,28 @@
+---
+all:
+  vars:
+    location: CH
+    timezone: Europe\Zurich
+    env: infra
+  hosts:
+    localhost:
+      ansible_connection: local
+      ansible_python_interpreter: "{{ ansible_playbook_python }}"
+
+    terlicium.wg.pinguozzo.com:
+      ansible_ssh_host: 10.0.0.10
+      ansible_user: rex
+
+    comski.wg.pinguozzo.com:
+      ansible_ssh_host: 10.0.0.6
+      ansible_user: rex
+
+  children:
+    ddns:
+     children:
+       terlicium:
+         hosts:
+           terlicium.wg.pinguozzo.com
+       comski:
+         hosts:
+           comski.wg.pinguozzo.com

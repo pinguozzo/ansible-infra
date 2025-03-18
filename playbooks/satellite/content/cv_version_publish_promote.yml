@@ -3,9 +3,6 @@
   hosts: "{{ targeted_host| default('localhost') }}"
   gather_facts: false
 
-  #roles:
-  #  - role: redhat.satellite.content_view_publish
-  #
   tasks:
     - name: "Publish content views"
       redhat.satellite.content_view_version:

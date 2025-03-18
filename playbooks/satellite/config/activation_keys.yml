@@ -1,7 +1,7 @@
 ---
-- name: create activation keys
+- name: Create activation keys
   hosts: "{{ targeted_host| default('localhost') }}"
-  gather_facts: no  
+  gather_facts: false
 
   roles:
     - role: redhat.satellite.activation_keys
