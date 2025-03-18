@@ -4,20 +4,33 @@ all:
     location: CH
     timezone: Europe\Zurich
   hosts:
-
-    satellite-upstream: 
+    virt-console:
+      ansible_host: virt-console.mgmt.zg.pinguozzo.com
+      env: mgmt
+      infra: yes
+    satellite-upstream:
       ansible_host: sat-upstream.mgmt.zg.pinguozzo.com
       env: upstream
       infra: no
-    satellite-mgmt: 
+    satellite-mgmt:
       ansible_host: satellite.mgmt.zg.pinguozzo.com
       env: mgmt
-      infra: yes  
+      infra: yes
     localhost:
       ansible_connection: local
       ansible_python_interpreter: "{{ansible_playbook_python}}"
     jumper:
+    terlicium.wg.pinguozzo.com:
+      ansible_ssh_host: 10.0.0.10
+      ansible_user: rex
+
   children:
+    ddns:
+     hosts:
+       terlicium.wg.pinguozzo.com
+    terlicium:
+     hosts:
+       terlicium.wg.pinguozzo.com
     INFRA:
       children:
         mgmt:
@@ -27,7 +40,7 @@ all:
           hosts:
             satellite-upstream:
     CH:
-      children: 
+      children:
         Test:
           hosts:
         LAB:
@@ -38,3 +51,4 @@ all:
         Prod:
           hosts:
         dc1:
+...
