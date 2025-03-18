@@ -1,27 +1,47 @@
 ---
-- name: clean up datastore files
+- name: Clean up datastore files
   hosts: localhost
-  gather_facts: no
+  gather_facts: false
 
   vars_files:
     - "{{ playbook_dir }}/../../vaults/{{ env }}-vault.yml"
 
   vars:
     json_query_name: "json.results[*].name"
-  
+
   pre_tasks:
-    - name: set connection info
+    - name: Set connection info
       ansible.builtin.set_fact:
         connection_args:
-            vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
-            vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
-            vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
+          vcenter_hostname: "{{ lookup('ansible.builtin.vars', 'vcenter_hostname') }}"
+          vcenter_username: "{{ lookup('ansible.builtin.vars', 'vcenter_username') }}"
+          vcenter_password: "{{ lookup('ansible.builtin.vars', 'vcenter_password', default='') }}"
 
-  tasks: 
-    - name: recursively find files in foreman_isos folder
+  tasks:
+    - name: Get host list
+      uri:
+        url: "{{ satellite_server_url }}/api/hosts"
+        user: "{{ satellite_username }}"
+        password: "{{ satellite_password }}"
+        method: GET
+        return_content: yes
+        force_basic_auth: yes
+        validate_certs: no
+        status_code: [200,201,202]
+      no_log: True
+      register: host_list
+
+    - name: Set hosts_list
+      set_fact:
+        host: "{{ host_list| community.general.json_query(json_query_name) }}"
+      no_log: true
+      loop:
+        - "{{ host_list }}"
+
+    - name: Recursively find files in foreman_isos folder
       ansible.builtin.find:
         paths: "/vmfs/volumes/nvme/foreman_isos"
-        size: 1m
+        size: 1b
         file_type: file
       vars:
         ansible_python_interpreter: /bin/python
@@ -29,12 +49,12 @@
       register: found_files
       delegate_to: "{{ esxi_host }}"
 
-    - name: show files to delete 
-      debug: 
+    - name: Show files to delete
+      debug:
         msg: "{{ item.path | basename }}"
       loop: "{{ found_files['files']|flatten(levels=1) }}"
 
-    - name: delete unused iso files 
+    - name: Delete unused iso files
       community.vmware.vsphere_file:
         hostname: '{{ vcenter_hostname }}'
         username: '{{ vcenter_username }}'
@@ -45,5 +65,7 @@
         state: absent
         validate_certs: false
       delegate_to: localhost
-      loop: "{{ found_files['files']|flatten(levels=1) }}"
-      ignore_errors: True
+      loop: "{{ found_files['files'] | flatten(levels=1) }}"
+      ignore_errors: true
+      when: (item.path | basename) not in host
+...
