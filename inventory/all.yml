@@ -9,12 +9,10 @@ all:
       ansible_host: sat-upstream.mgmt.zg.pinguozzo.com
       env: upstream
       infra: no
-
     satellite-mgmt: 
       ansible_host: satellite.mgmt.zg.pinguozzo.com
       env: mgmt
       infra: yes  
-
     localhost:
       ansible_connection: local
       ansible_python_interpreter: "{{ansible_playbook_python}}"
