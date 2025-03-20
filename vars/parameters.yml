@@ -9,13 +9,12 @@ vm_data:
             - '{{ gateway_ip }}'
           ip_address: '{{ vm_ip }}'
           prefix: 24
-
 infra:
   domain: "{{ domain_name }}"
   time_zone: 'Europe\Zurich'
   dns:
-    dns_servers: 
-      - '{{ dns_server |default(omit) }}'
+    dns_servers:
+      - '{{ dns_server | default(omit) }}'
     dns_suffix_list:
       - '{{ domain_name | default(omit) }}'
 

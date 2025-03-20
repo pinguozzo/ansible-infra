@@ -1,24 +1,26 @@
 ---
-- ovirt_vm_info:
+- name: Get vm_info
+  ovirt.ovirt.ovirt_vm_info:
     auth: "{{ ovirt_auth }}"
     pattern: "name={{ vm_name }}"
     fetch_nested: true
-    nested_attributes: all  
+    nested_attributes: all
   register: vm_info
 
-- name: show info about the host 
-  vars:
+- name: Show info about the host 
+ te vars:
     msg: |
          - Hostname is: {{ vm_info.ovirt_vms[0].name }}
          - Disk id: {{ vm_info.ovirt_vms[0].disk_attachments[0].id }}
   debug:
     msg: "{{ msg.split('\n') }}"
 
-- ovirt_disk:
+- name: Add disk 
+  ovirt.ovirt.ovirt_disk:
     auth: "{{ ovirt_auth }}"
     id: "{{ item.ovirt_vms[0].disk_attachments[0].id }}"
     storage_domain: Ceph_iSCSI
     name: "{{ item.ovirt_vms[0].name }}_Disk1"
     vm_name: "{{ item.ovirt_vms[0].name }}"
-  loop: 
+  loop:
     - "{{ vm_info }}"

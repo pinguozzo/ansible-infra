@@ -1,7 +1,7 @@
 ---
-- name: create vmware host with bootdisk
+- name: Create vmware host with bootdisk
   hosts: "{{ targeted_host| default('localhost') }}"
-  gather_facts: no
+  gather_facts: false
 
   vars:
     notify_via_telegram: true
@@ -9,14 +9,14 @@
     env: "{{ env | default('env') }}"
 
   pre_tasks:
-    - name: set platform/version/env specific variables
+    - name: Set platform/version/env specific variables
       include_vars: "{{ item }}"
       loop:
         - "{{ playbook_dir }}/../../../vars/RedHat_{{ os_major | default('9') }}.yml"
-        - "{{ playbook_dir }}/../../../vars/satellite-{{ hostvars[inventory_hostname].env | default('mgmt')}}.yml"
+        - "{{ playbook_dir }}/../../../vars/satellite-{{ hostvars[inventory_hostname].env | default('mgmt') }}.yml"
       when: item is file
 
-    - name: set login/env specific variables
+    - name: Set login/env specific variables
       include_vars: "{{ __vars_file }}"
       loop:
         - "satellite-{{ hostvars[inventory_hostname].env }}.yml"
@@ -24,7 +24,7 @@
         __vars_file: "{{ playbook_dir }}/../../../vaults/{{ hostvars[inventory_hostname].env }}-vault.yml"
       when: __vars_file is file
 
-    - name: show info
+    - name: Show info
       ansible.builtin.debug:
         msg: |-
           Hostgroup: "{{ hg_name_full }}",
@@ -35,13 +35,10 @@
           Content_view: "{{ cv }}",
           Content_source: "{{ capsule_server }}"
 
-    - pause:
-
   tasks:
-
-    - name: create host(s)
+    - name: Create host(s)
       block:
-        - name: create host(s) in vSphere
+        - name: Create host(s) in vSphere
           redhat.satellite.host:
             username: "{{ satellite_username | default(omit) }}"
             password: "{{ satellite_password | default(omit) }}"
@@ -68,14 +65,14 @@
           register: output
           with_sequence: start=1 end="{{ num_instances|default(1) }}"
 
-        - name: set vms list
+        - name: Set vms list
           set_fact:
             vms: "{{ output | community.general.json_query('results[*].entity.hosts[*].name') | flatten }} "
 
-        - name: print new host(s) fqdn
+        - name: Print new host(s) fqdn
           debug:
             msg: "{{ item }}"
-          loop:  "{{ vms }}"
+          loop: "{{ vms }}"
 
         - name: Move vm to corresponding folder
           community.vmware.vmware_guest_move:
@@ -89,8 +86,8 @@
           loop: "{{ vms }}"
           delegate_to: localhost
 
-        - name: "notify via telegram"
-          telegram:
+        - name: Notify via telegram
+          community.general.telegram:
             token: "{{ pinguobot_token }}"
             api_args:
               chat_id: "{{ pinguobot_chatid }}"
@@ -100,4 +97,4 @@
               disable_notification: false
           when: notify_via_telegram | bool
           vars:
-            msg: "New RHEL{{ os_major }} VM: {{ output | community.general.json_query('results[*].entity.hosts[*].name') | join('')}} deployed on VMware"
+            msg: "New RHEL{{ os_major }} VM: {{ output | community.general.json_query('results[*].entity.hosts[*].name') | join('') }} deployed on VMware"

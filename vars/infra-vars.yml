@@ -218,7 +218,7 @@ satellite_products:
       - name: Red Hat Enterprise Linux 8 for x86_64 - High Availability (RPMs)
         releasever: 8
 
-  - name: Red Hat Enterprise Linux for x86_64 - Extended Update Support 
+  - name: Red Hat Enterprise Linux for x86_64 - Extended Update Support
     repository_sets:
       - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS - Extended Update Support (RPMs)
         releasever: 8.4
