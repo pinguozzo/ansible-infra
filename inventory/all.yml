@@ -4,6 +4,15 @@ all:
     location: CH
     timezone: Europe\Zurich
   hosts:
+    bombino.mgmt.zg.pinguozzo.com:
+    verdeca.mgmt.zg.pinguozzo.com:
+    aleatico.mgmt.zg.pinguozzo.com:
+    sm01.mgmt.zg.pinguozzo.com:
+      infra: yes
+    sm02.mgmt.zg.pinguozzo.com:
+      infra: yes
+    sm03.mgmt.zg.pinguozzo.com:
+      infra: yes
     virt-console:
       ansible_host: virt-console.mgmt.zg.pinguozzo.com
       env: mgmt
@@ -18,8 +27,7 @@ all:
       infra: yes
     localhost:
       ansible_connection: local
-      ansible_python_interpreter: "{{ansible_playbook_python}}"
-    jumper:
+      ansible_python_interpreter: "{{ ansible_playbook_python }}"
     terlicium.wg.pinguozzo.com:
       ansible_ssh_host: 10.0.0.10
       ansible_user: rex
@@ -33,22 +41,31 @@ all:
        terlicium.wg.pinguozzo.com
     INFRA:
       children:
+        ceph:
+          vars:
+            ansible_become: true
+            ansible_user: rex
+            ansible_python_interpreter: auto
+          hosts:
+            bombino.mgmt.zg.pinguozzo.com:
+            verdeca.mgmt.zg.pinguozzo.com:
+            aleatico.mgmt.zg.pinguozzo.com:
+        rhvh:
+          vars:
+            ansible_user: rex
+            ansible_python_interpreter: auto
+          hosts:
+            sm01.mgmt.zg.pinguozzo.com:
+            sm02.mgmt.zg.pinguozzo.com:
+            sm03.mgmt.zg.pinguozzo.com:
         mgmt:
+          vars:
+            ansible_connection: local
           hosts:
             satellite-mgmt:
         upstream:
+          vars:
+            ansible_connection: local
           hosts:
             satellite-upstream:
-    CH:
-      children:
-        Test:
-          hosts:
-        LAB:
-        Dev:
-          vars:
-          hosts:
-            jumper:
-        Prod:
-          hosts:
-        dc1:
 ...
