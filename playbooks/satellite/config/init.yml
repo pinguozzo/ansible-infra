@@ -7,19 +7,19 @@
     - name: set platform/version/env specific variables
       include_vars: "{{ __vars_file }}"
       loop:
-        - "satellite-{{ hostvars[inventory_hostname].env }}.yml"
+        - "{{ hostvars[inventory_hostname].env }}.yml"
       vars:
-        __vars_file: "{{ playbook_dir }}/../../../vars/satellite-{{ hostvars[inventory_hostname].env }}.yml"
-      when: __vars_file is file
-  
-    - name: set login/env specific variables
-      include_vars: "{{ __vars_file }}"
-      loop:
-        - "satellite-{{ hostvars[inventory_hostname].env }}.yml"
-      vars:
-        __vars_file: "{{ playbook_dir }}/../../../vaults/{{ hostvars[inventory_hostname].env }}-vault.yml"
+        __vars_file: "{{ playbook_dir }}/../../../vars/{{ hostvars[inventory_hostname].env }}.yml"
       when: __vars_file is file
 
-    - name: run if how in groups
-      debug: msg="host in group"
-      when: inventory_hostname in lookup('inventory_hostnames', 'mgmt:upstream')
+    - name: set login/env specific variables
+      include_vars: "{{ __vault_file }}"
+      loop:
+        - "{{ hostvars[inventory_hostname].env }}-vault.yml"
+      vars:
+        __vault_file: "{{ playbook_dir }}/../../../vaults/{{ hostvars[inventory_hostname].env }}-vault.yml"
+      when: __vault_file is file
+
+#     - name: run if how in groups
+#       debug: msg="host in group"
+#       when: inventory_hostname in lookup('inventory_hostnames', 'mgmt:upstream')

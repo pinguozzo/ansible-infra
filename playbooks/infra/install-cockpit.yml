@@ -1,0 +1,17 @@
+---
+- name: install RHEL/Fedora web console (cockpit)
+  hosts: all
+  roles:
+    - redhat.rhel_system_roles.cockpit
+  vars:
+    cockpit_packages: default
+  tags: cockpit
+
+- name: configure firewall for web console
+  hosts: all
+  roles:
+    - redhat.rhel_system_roles.firewall
+  vars:
+    firewall:
+      service: cockpit
+  tags: cockpit

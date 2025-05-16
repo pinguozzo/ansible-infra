@@ -3,6 +3,7 @@
   hosts: localhost
   become: no
   gather_facts: false
+  tags: always
 
   tasks:
     - name: add targeted_host to group
@@ -19,7 +20,6 @@
     - name: wait for vm to become reachable
       ansible.builtin.wait_for_connection:
         timeout: 900
-      delegate_to: "{{ item }}"
       loop: "{{ groups['init'] }}"
 
 - name: create missing users
@@ -32,3 +32,20 @@
 
   roles: 
     - "{{ playbook_dir }}/../../roles/pinguozzo.create-users"
+
+- name: install RHEL/Fedora web console (cockpit)
+  hosts: init
+  roles:
+    - redhat.rhel_system_roles.cockpit
+  vars:
+    cockpit_packages: default
+  tags: cockpit
+
+- name: configure firewall for web console
+  hosts: all
+  roles:
+    - redhat.rhel_system_roles.firewall
+  vars:
+    firewall:
+      service: cockpit
+  tags: cockpit

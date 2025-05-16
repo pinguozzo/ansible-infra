@@ -17,7 +17,6 @@
       loop: "{{ satellite_content_credentials }}"
 
   tasks:
-
     - name: 3rd Party products
       redhat.satellite.product:
         username: "{{ satellite_username | default(omit) }}"

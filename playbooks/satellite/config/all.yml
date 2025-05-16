@@ -1,28 +1,4 @@
 ---
-- name: satellite installer
-  hosts: "{{ targeted_host| default('localhost') }}"
-
-  collections:
-    - redhat.satellite
-
-  pre_tasks:
-    - name: set platform/version/env specific variables
-      include_vars: "{{ __vars_file }}"
-      loop:
-        - "satellite-{{ hostvars[inventory_hostname].env }}.yml"
-      vars:
-        __vars_file: "{{ playbook_dir }}/../../../vars/satellite-{{ hostvars[inventory_hostname].env }}.yml"
-      when: __vars_file is file
-
-    - name: set login/env specific variables
-      include_vars: "{{ __vars_file }}"
-      loop:
-        - "satellite-{{ hostvars[inventory_hostname].env }}.yml"
-      vars:
-        __vars_file: "{{ playbook_dir }}/../../../vaults/{{ hostvars[inventory_hostname].env }}-vault.yml"
-      when: __vars_file is file
-
-
 - name: Include init.yml
   ansible.builtin.import_playbook: init.yml
   tags: init,always
@@ -77,52 +53,65 @@
   ansible.builtin.import_playbook: "{{ playbook_dir }}/../config/activation_keys.yml"
   tags: ak
 
-- name: satellite ansible post-installer
-  hosts: "{{ targeted_host| default('localhost') }}"
-  become: True
-  tags: post_install
+# - name: satellite ansible post-installer
+#   hosts: "{{ targeted_host| default('localhost') }}"
+#   tags: post_install
+# 
+#   collections:
+#     - redhat.satellite
+# 
+#   pre_tasks:
+#     - name: set platform/version/env specific variables
+#       include_vars: "{{ __vars_file }}"
+#       loop:
+#         - "satellite-{{ hostvars[inventory_hostname].env }}.yml"
+#       vars:
+#         __vars_file: "{{ playbook_dir }}/../../../vars/satellite-{{ hostvars[inventory_hostname].env }}.yml"
+#       when: __vars_file is file
+#   
+#     - name: set login/env specific variables
+#       include_vars: "{{ __vault_file }}"
+#       loop:
+#         - "{{ hostvars[inventory_hostname].env }}.yml"
+#       vars:
+#         __vault_file: "{{ playbook_dir }}/../../../vaults/{{ hostvars[inventory_hostname].env }}-vault.yml"
+#       when: __vault_file is file
 
-  vars_files:
-    - "{{ playbook_dir }}/../../../vaults/{{ env }}-vault.yml"
+#   roles:
+#     - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/firewalld"
+#       tags: firewalld
 
-  collections:
-    - redhat.satellite
+# - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/host-collections"
+#   tags: host-collections
 
-  roles:
-    - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/firewalld"
-      tags: firewalld
+# - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/proxy"
 
-    # - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/host-collections"
-    #   tags: host-collections
+# - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/sat-settings"
 
-    # - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/proxy"
-
-    # - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/sat-settings"
-
-    # - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/gpg-keys"
-    #    tags: gpg-keys
-    #  - role: repos
-    #  - role: 3rdpartyrepos
-    #    tags: 3rdpartyrepos
-    #  - role: content-views
-    #    tags: content-views
-    #  - role: ptable
-    #    tags: ptable
-    #  - role: os
-    #    tags: os
-    #  - role: sat-domains
-    #    tags: sat-domains
-    #  - role: sat-subnets
-    #    tags: sat-subnets
-    #  - role: compute-resources
-    #  - role: host-groups
-    #    tags: host-groups
-    #  - role: activationkeys
-    #    tags: activationkeys
-    #  - role: global_parameters
-    #    tags: global_parameters
-    #  - role: sat-ldap-auth
-    #    tags: ldap-auth
-    #  - role: sat-usergroups
-    #    tags: usergroups
+# - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/gpg-keys"
+#    tags: gpg-keys
+#  - role: repos
+#  - role: 3rdpartyrepos
+#    tags: 3rdpartyrepos
+#  - role: content-views
+#    tags: content-views
+#  - role: ptable
+#    tags: ptable
+#  - role: os
+#    tags: os
+#  - role: sat-domains
+#    tags: sat-domains
+#  - role: sat-subnets
+#    tags: sat-subnets
+#  - role: compute-resources
+#  - role: host-groups
+#    tags: host-groups
+#  - role: activationkeys
+#    tags: activationkeys
+#  - role: global_parameters
+#    tags: global_parameters
+#  - role: sat-ldap-auth
+#    tags: ldap-auth
+#  - role: sat-usergroups
+#    tags: usergroups
 ...

@@ -1,0 +1,19 @@
+---
+- name: promote cvs
+  hosts: "{{ targeted_host| default('localhost') }}"
+  gather_facts: false
+
+  tasks:
+    - name: "Promote composite content views"
+      block:
+      - name: "Promote composite content views"
+        redhat.satellite.content_view_version:
+          username: "{{ satellite_username | default(omit) }}"
+          password: "{{ satellite_password | default(omit) }}"
+          server_url: "{{ satellite_server_url | default(omit) }}"
+          validate_certs: "{{ satellite_validate_certs | default(omit) }}"
+          content_view: "{{ item.name }}"
+          organization: "{{ satellite_organization }}"
+          lifecycle_environments: "{{ item.lfe }}"
+        loop: "{{ satellite_composite_content_views }}"
+

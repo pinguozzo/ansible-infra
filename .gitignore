@@ -32,3 +32,6 @@ Thumbs.db
 
 # VSCode
 .vscode
+
+# Installers
+installers/
