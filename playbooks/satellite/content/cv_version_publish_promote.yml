@@ -1,6 +1,0 @@
----
-- name: publish content views
-  hosts: "{{ targeted_host| default('localhost') }}"
-  gather_facts: false
-  roles:
-    - role: redhat.satellite.content_view_publish
