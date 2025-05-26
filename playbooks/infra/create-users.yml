@@ -32,20 +32,3 @@
 
   roles: 
     - "{{ playbook_dir }}/../../roles/pinguozzo.create-users"
-
-- name: install RHEL/Fedora web console (cockpit)
-  hosts: init
-  roles:
-    - redhat.rhel_system_roles.cockpit
-  vars:
-    cockpit_packages: default
-  tags: cockpit
-
-- name: configure firewall for web console
-  hosts: all
-  roles:
-    - redhat.rhel_system_roles.firewall
-  vars:
-    firewall:
-      service: cockpit
-  tags: cockpit
