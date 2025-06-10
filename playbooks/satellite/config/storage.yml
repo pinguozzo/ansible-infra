@@ -1,4 +1,6 @@
-- hosts: all
+---
+- name: Add storage
+  hosts: all
 
   tasks:
     - name: Identify data disks that are 50 GB

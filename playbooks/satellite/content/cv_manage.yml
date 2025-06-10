@@ -1,5 +1,5 @@
 ---
-- name: manage content views
+- name: Manage content views
   hosts: "{{ targeted_host| default('localhost') }}"
   gather_facts: false
 

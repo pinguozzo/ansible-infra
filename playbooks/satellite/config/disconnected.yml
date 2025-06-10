@@ -17,22 +17,6 @@
         directory: sat6
         mountpoint: /media/sat6
 
-  pre_tasks:
-    - name: Set platform/version/env specific variables
-      include_vars: "{{ __vars_file }}"
-      loop:
-        - "satellite-{{ hostvars[inventory_hostname].env }}.yml"
-      vars:
-        __vars_file: "{{ playbook_dir }}/../../../vars/satellite-{{ hostvars[inventory_hostname].env }}.yml"
-      when: __vars_file is file
-    - name: Set login/env specific variables
-      include_vars: "{{ __vars_file }}"
-      loop:
-        - "satellite-{{ hostvars[inventory_hostname].env }}.yml"
-      vars:
-        __vars_file: "{{ playbook_dir }}/../../../vaults/{{ hostvars[inventory_hostname].env }}-vault.yml"
-      when: __vars_file is file
-
   tasks:
     - name: Ensure directories are created
       ansible.builtin.file:
@@ -45,6 +29,9 @@
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/../../../files/rhel.repo"
         dest: /etc/yum.repos.d/rhel.repo
+        owner: root
+        group: root
+        mode: '0440'
 
     - name: Download rhel-9.5-x86_64-dvd.iso
       ansible.builtin.get_url:

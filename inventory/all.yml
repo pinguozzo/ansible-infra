@@ -28,17 +28,7 @@ all:
     localhost:
       ansible_connection: local
       ansible_python_interpreter: "{{ ansible_playbook_python }}"
-    terlicium.wg.pinguozzo.com:
-      ansible_ssh_host: 10.0.0.10
-      ansible_user: rex
-
   children:
-    ddns:
-     hosts:
-       terlicium.wg.pinguozzo.com
-    terlicium:
-     hosts:
-       terlicium.wg.pinguozzo.com
     INFRA:
       children:
         ceph:

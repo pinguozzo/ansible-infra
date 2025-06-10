@@ -1,17 +1,19 @@
 ---
-- name: configure repositories
+- name: Configure Red Hat repositories
   hosts: "{{ targeted_host| default('localhost') }}"
   connection: local
-  gather_facts: no
+  gather_facts: false
 
   roles:
     - role: redhat.satellite.repositories
+      vars:
+        ansible_python_interpreter: "{{ ansible_playbook_python }}"
 
   post_tasks:
-    - name: "Sync Red Hat repository"
+    - name: "Run Sync Red Hat repository"
       when: sync_repos | bool
       block:
-        - name: sync repositories
+        - name: Sync repositories
           redhat.satellite.repository_sync:
             product: "{{ item }}"
             server_url: "{{ satellite_server_url }}"
@@ -25,7 +27,7 @@
           poll: 0
           register: async_results
 
-        - name: check async status for sync repository
+        - name: Check async status for sync repository
           ansible.builtin.async_status:
             jid: "{{ item.ansible_job_id }}"
           register: async_poll_results
@@ -33,15 +35,14 @@
           changed_when: async_poll_results.rc is defined and async_poll_results.rc == 2
           failed_when:
             - (not async_poll_results.finished) or (async_poll_results.rc is defined and async_poll_results.rc not in [0, 2])
-          retries: "{{ (( satellite_timeout | int) / 5) | round | int }}"
+          retries: "{{ ((satellite_timeout | int) / 5) | round | int }}"
           delay: 5
           when:
             - not ansible_check_mode
-          with_items: "{{ async_results| community.general.json_query('results[*]')}}"
+          with_items: "{{ async_results | community.general.json_query('results[*]') }}"
 
-        - name: clean up async file
+        - name: Clean up async file
           ansible.builtin.async_status:
             jid: '{{ item.ansible_job_id }}'
             mode: cleanup
-          with_items: "{{ async_results| community.general.json_query('results[*]')}}"
-
+          with_items: "{{ async_results | community.general.json_query('results[*]') }}"

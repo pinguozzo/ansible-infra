@@ -1,9 +1,9 @@
-- name: configure global_parameters
+- name: Configure global_parameters
   hosts: "{{ targeted_host| default('localhost') }}"
-  gather_facts: no
+  gather_facts: false
 
   tasks:
-    - name: configure global_parameters
+    - name: Run Configure global_parameters
       redhat.satellite.global_parameter:
         name: "{{ item.name }}"
         value: "{{ item.value }}"

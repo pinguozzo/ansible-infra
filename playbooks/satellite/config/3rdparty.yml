@@ -80,13 +80,13 @@
           delay: 5
           when:
             - not ansible_check_mode
-          with_items: "{{ async_results_3rd | community.general.json_query('results[*]')}}"
+          with_items: "{{ async_results_3rd | community.general.json_query('results[*]') }}"
 
         - name: Clean up async file
           ansible.builtin.async_status:
             jid: '{{ item.ansible_job_id }}'
             mode: cleanup
-          with_items: "{{ async_results_3rd | community.general.json_query('results[*]')}}"
+          with_items: "{{ async_results_3rd | community.general.json_query('results[*]') }}"
 
 
         #    - name: enable sync for products

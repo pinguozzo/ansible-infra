@@ -6,112 +6,61 @@
 - name: Include disconnected.yml
   ansible.builtin.import_playbook: disconnected.yml
   tags: disconnected
-  when: disconnected | bool
+  when: set_disconnected | bool
 
 - name: Include storage.yml
   ansible.builtin.import_playbook: storage.yml
   tags: lvm
-  when: lvm_setup | bool
+  when: set_lvm | bool
 
 - name: Include satellite-installer.yml
   ansible.builtin.import_playbook: satellite-installer.yml
   tags: installer
+  when: set_installer | bool
 
 - name: Include manifest.yml
   ansible.builtin.import_playbook: manifest.yml
   tags: manifest
+  when: set_manifest | bool
 
 - name: Include location.yml
   ansible.builtin.import_playbook: location.yml
-  tags: location
+  tags: locations
+  when: set_locations | bool
 
 - name: Include global_parameters.yml
   ansible.builtin.import_playbook: global_parameters.yml
-  tags: global_parameters
+  tags: global
+  when: set_global | bool
 
 - name: Include repos.yml
   ansible.builtin.import_playbook: repos.yml
   tags: repos
+  when: set_repos | bool
 
 - name: Include 3rdparty.yml
   ansible.builtin.import_playbook: 3rdparty.yml
   tags: 3rdparty
+  when: set_3rdparty | bool
 
 - name: Include sync-plan.yml
   ansible.builtin.import_playbook: sync-plan.yml
   tags: sync_plan
+  when: set_sync_plan | bool
 
 - name: Include environment.yml
   ansible.builtin.import_playbook: environments.yml
   tags: environments
+  when: set_environments | bool
 
 - name: Include cv_manage.yml
   ansible.builtin.import_playbook: "{{ playbook_dir }}/../content/cv_manage.yml"
   tags: cv
+  when: set_cv | bool
 
 - name: Include activation_keys.yml
   ansible.builtin.import_playbook: "{{ playbook_dir }}/../config/activation_keys.yml"
   tags: ak
+  when: set_ak | bool
 
-# - name: satellite ansible post-installer
-#   hosts: "{{ targeted_host| default('localhost') }}"
-#   tags: post_install
-# 
-#   collections:
-#     - redhat.satellite
-# 
-#   pre_tasks:
-#     - name: set platform/version/env specific variables
-#       include_vars: "{{ __vars_file }}"
-#       loop:
-#         - "satellite-{{ hostvars[inventory_hostname].env }}.yml"
-#       vars:
-#         __vars_file: "{{ playbook_dir }}/../../../vars/satellite-{{ hostvars[inventory_hostname].env }}.yml"
-#       when: __vars_file is file
-#   
-#     - name: set login/env specific variables
-#       include_vars: "{{ __vault_file }}"
-#       loop:
-#         - "{{ hostvars[inventory_hostname].env }}.yml"
-#       vars:
-#         __vault_file: "{{ playbook_dir }}/../../../vaults/{{ hostvars[inventory_hostname].env }}-vault.yml"
-#       when: __vault_file is file
-
-#   roles:
-#     - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/firewalld"
-#       tags: firewalld
-
-# - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/host-collections"
-#   tags: host-collections
-
-# - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/proxy"
-
-# - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/sat-settings"
-
-# - role: "{{ playbook_dir }}/../../../roles/ldelouw.rh-satellite/gpg-keys"
-#    tags: gpg-keys
-#  - role: repos
-#  - role: 3rdpartyrepos
-#    tags: 3rdpartyrepos
-#  - role: content-views
-#    tags: content-views
-#  - role: ptable
-#    tags: ptable
-#  - role: os
-#    tags: os
-#  - role: sat-domains
-#    tags: sat-domains
-#  - role: sat-subnets
-#    tags: sat-subnets
-#  - role: compute-resources
-#  - role: host-groups
-#    tags: host-groups
-#  - role: activationkeys
-#    tags: activationkeys
-#  - role: global_parameters
-#    tags: global_parameters
-#  - role: sat-ldap-auth
-#    tags: ldap-auth
-#  - role: sat-usergroups
-#    tags: usergroups
 ...

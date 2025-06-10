@@ -1,7 +1,7 @@
 ---
-- name: create and upload manifest to satellite host
+- name: Create and upload manifest to satellite host
   hosts: "{{ targeted_host| default('localhost') }}"
-  gather_facts: no  
+  gather_facts: false
 
   module_defaults:
     redhat.satellite.redhat_manifest:
@@ -16,7 +16,7 @@
     path: /tmp/manifest.zip
 
   pre_tasks:
-    - name: check that required variables are defined
+    - name: Check that required variables are defined
       ansible.builtin.assert:
         that:
           - manifest_name is defined
@@ -26,10 +26,7 @@
           - satellite_server_url is defined
         fail_msg: "manifest_name, pool_id, quantity, path, satellite_server_url hmust be defined"
 
-
-    - debug: var=satellite_server
-
-    - name: create satellite manifest and add 100 sub
+    - name: Create satellite manifest and add 100 sub
       redhat.satellite.redhat_manifest:
         name: "{{ manifest_name }}"
         content_access_mode: org_environment
@@ -39,7 +36,8 @@
         validate_certs: false
       register: out
 
-    - set_fact:
+    - name: Set satellite_manifest_uuid
+      set_fact:
         satellite_manifest_uuid: "{{ out.uuid }}"
 
   roles:
@@ -47,4 +45,4 @@
       vars:
         validate_certs: false
         satellite_manifest_path: "/tmp/manifest.zip"
-        satellite_manifest_download: True
+        satellite_manifest_download: true
