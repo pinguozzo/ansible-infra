@@ -38,6 +38,11 @@
   tags: repos
   when: set_repos | bool
 
+- name: Include repo_sync.yml
+  ansible.builtin.import_playbook: repo_sync.yml
+  tags: sync
+  when: set_sync | bool
+
 - name: Include 3rdparty.yml
   ansible.builtin.import_playbook: 3rdparty.yml
   tags: 3rdparty

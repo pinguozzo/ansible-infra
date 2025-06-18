@@ -8,9 +8,6 @@ lifecycle_paths:
 lifecycle_environments: "{{ lifecycle_paths | flatten | map(attribute='label') | list }}"
 
 satellite_composite_content_views:
-  - name: ccv-capsules_soe
-    lfe:
-      - INFRA
   - name: ccv-rhel10_soe
     lfe:
       - LAB
@@ -20,11 +17,6 @@ satellite_composite_content_views:
   - name: ccv-rhel8_soe
     lfe:
       - LAB
-
-        # satellite_infra_content_views:
-        #   satellite:
-        #     name: cv-capsules
-        #     lfe: INFRA
 
 satellite_activation_keys:
   - name: "ak-rhel8"
@@ -109,6 +101,14 @@ satellite_content_views:
       - { name: 'Red Hat Ceph Storage Tools 5 for RHEL 9 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
       - { name: 'Red Hat Ceph Storage Tools 6 for RHEL 9 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
       - { name: 'Red Hat Ceph Storage Tools 7 for RHEL 9 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Satellite 6.16 for RHEL 9 x86_64 RPMs', product: 'Red Hat Satellite' }
+      - { name: 'Red Hat Satellite 6.17 for RHEL 9 x86_64 RPMs', product: 'Red Hat Satellite' }
+      - { name: 'Red Hat Satellite Capsule 6.16 for RHEL 9 x86_64 RPMs', product: 'Red Hat Satellite Capsule' }
+      - { name: 'Red Hat Satellite Capsule 6.17 for RHEL 9 x86_64 RPMs', product: 'Red Hat Satellite Capsule' }
+      - { name: 'Red Hat Satellite Maintenance 6.16 for RHEL 9 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Satellite Maintenance 6.17 for RHEL 9 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Satellite Utils 6.16 for RHEL 9 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Satellite Utils 6.17 for RHEL 9 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
 
   - name: cv-rhel8_soe
     description: "RHEL 8 SOE Content"
@@ -116,7 +116,9 @@ satellite_content_views:
       - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream Kickstart 8.0', product: 'Red Hat Enterprise Linux for x86_64' }
       - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS Kickstart 8.0', product: 'Red Hat Enterprise Linux for x86_64' }
       - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream RPMs 8', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream RPMs 8.10', product: 'Red Hat Enterprise Linux for x86_64' }
       - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS RPMs 8', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS RPMs 8.10', product: 'Red Hat Enterprise Linux for x86_64' }
       - { name: 'Red Hat Ansible Engine 2 for RHEL 8 x86_64 RPMs', product: 'Red Hat Ansible Engine' }
       - { name: 'Fast Datapath for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux Fast Datapath' }
       - { name: 'Red Hat Satellite Client 6 for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
@@ -140,13 +142,11 @@ satellite_content_views:
       - { name: 'Red Hat CodeReady Linux Builder for RHEL 8 x86_64 RPMs 8', product: 'Red Hat CodeReady Linux Builder for x86_64' }
       - { name: 'Red Hat Enterprise Linux 8 for x86_64 - AppStream - Telecommunications Update Service RPMs 8.6', product: 'Red Hat Enterprise Linux Server - TUS'}
       - { name: 'Red Hat Enterprise Linux 8 for x86_64 - BaseOS - Telecommunications Update Service RPMs 8.6', product: 'Red Hat Enterprise Linux Server - TUS'}
-
-  - name: ccv-capsules_soe
-    description: "CCV CAPSULES SOE"
-    lifecycle_environment: "INFRA"
-    components:
-      - content_view: cv-capsules_soe
-        latest: true
+      - { name: 'Red Hat Ansible Engine 2 for RHEL 8 x86_64 RPMs', product: 'Red Hat Ansible Engine' }
+      - { name: 'Red Hat Satellite 6.16 for RHEL 8 x86_64 RPMs', product: 'Red Hat Satellite' }
+      - { name: 'Red Hat Satellite Capsule 6.16 for RHEL 8 x86_64 RPMs', product: 'Red Hat Satellite Capsule' }
+      - { name: 'Red Hat Satellite Maintenance 6.16 for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
+      - { name: 'Red Hat Satellite Utils 6.16 for RHEL 8 x86_64 RPMs', product: 'Red Hat Enterprise Linux for x86_64' }
 
   - name: ccv-rhel10_soe
     description: "CCV RHEL10 SOE"
@@ -197,6 +197,13 @@ additional_repos:
     gpg_key: RPM-GPG-KEY-EPEL-9-SOE
     download_policy: on_demand
 
+  - name: "el10"
+    url: "https://mirror.init7.net/fedora/epel/10/Everything/x86_64/"
+    product: "EPEL"
+    sync_plan: Weekly
+    gpg_key: RPM-GPG-KEY-EPEL-10
+    download_policy: on_demand
+
 satellite_content_credentials:
   - name: RPM-GPG-KEY-EPEL-8-SOE
     content_type: gpg_key
@@ -205,6 +212,10 @@ satellite_content_credentials:
   - name: RPM-GPG-KEY-EPEL-9-SOE
     content_type: gpg_key
     content: "{{ lookup('url', 'http://mirror.init7.net/fedora/epel/RPM-GPG-KEY-EPEL-9', split_lines=False) }}"
+
+  - name: RPM-GPG-KEY-EPEL-10
+    content_type: gpg_key
+    content: "{{ lookup('url', 'http://mirror.init7.net/fedora/epel/RPM-GPG-KEY-EPEL-10', split_lines=False) }}"
 
 satellite_products:
   - name: Red Hat Enterprise Linux for x86_64
@@ -229,8 +240,12 @@ satellite_products:
         releasever: 8
       - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
         releasever: 8.6
+      - name: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+        releasever: "8.10"
       - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
         releasever: 8.6
+      - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
+        releasever: "8.10"
       - name: Red Hat Enterprise Linux 8 for x86_64 - Supplementary (RPMs)
         releasever: 8
       - name: Red Hat Enterprise Linux 9 for x86_64 - Supplementary (RPMs)
