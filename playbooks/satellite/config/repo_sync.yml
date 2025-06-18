@@ -1,0 +1,22 @@
+---
+- name: Run reposync
+  hosts: "{{ targeted_host| default('localhost') }}"
+  gather_facts: false
+
+  vars:
+    satellite_content_rhel_sync_now: true
+
+  tasks:
+    - name: "Sync RHEL repositories"
+      redhat.satellite.repository_sync:
+        username: "{{ satellite_username }}"
+        password: "{{ satellite_password }}"
+        organization: "{{ satellite_organization }}"
+        server_url: "{{ satellite_server_url }}"
+        validate_certs: "{{ satellite_validate_certs }}"
+        product: "{{ item.name }}"
+      loop: "{{ satellite_products }}"
+      async: 14400
+      poll: 0
+      register: __satellite_rhel8_sync
+      when: satellite_content_rhel_sync_now
