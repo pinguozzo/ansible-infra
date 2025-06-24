@@ -41,6 +41,15 @@ satellite_activation_keys:
         override: enabled
 
 satellite_content_views:
+  - name: cv-rhel10
+  - name: cv-rhel10_extras
+  - name: cv-rhel9
+  - name: cv-rhel9_extras
+  - name: cv-rhel8
+  - name: cv-rhel8_extras
+  - name: cv-rhel7
+
+content_views:
   - name: cv-capsules_soe
     description: "Red Hat Capsules Content"
     repositories:
