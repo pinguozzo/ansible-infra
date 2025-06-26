@@ -29,7 +29,7 @@ satellite_activation_keys:
       - label: "satellite-maintenance-6.16-for-rhel-8-x86_64-rpms"
         override: enabled
 
-satellite_content_views:
+content_views:
   - name: cv-capsules
     description: "Red Hat Capsules Content"
     repositories:

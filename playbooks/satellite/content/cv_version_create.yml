@@ -14,6 +14,7 @@
         organization: "{{ satellite_organization }}"
         name: "{{ item.name }}"
         repositories: "{{ item.repositories }}"
+        validate_certs: false
       loop: "{{ content_views }}"
       tags: content_views
 
@@ -22,6 +23,7 @@
         username: "{{ satellite_username }}"
         password: "{{ satellite_password }}"
         server_url: "{{ satellite_server_url }}"
+        validate_certs: false
         organization: "{{ satellite_organization }}"
         name: "{{ item.name }}"
         composite: true
