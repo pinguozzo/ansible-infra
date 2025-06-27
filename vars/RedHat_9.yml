@@ -20,5 +20,5 @@ cv: "ccv-rhel9_soe"
 satellite_repos:
   - rhel-9-for-x86_64-baseos-rpms
   - rhel-9-for-x86_64-appstream-rpms
-  - satellite-6.16-for-rhel-9-x86_64-rpms
-  - satellite-maintenance-6.16-for-rhel-9-x86_64-rpms
+  - satellite-6.17-for-rhel-9-x86_64-rpms
+  - satellite-maintenance-6.17-for-rhel-9-x86_64-rpms
